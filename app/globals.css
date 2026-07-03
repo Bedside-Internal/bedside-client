@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-cream: #fdfcfb;
+  --color-sand: #f5f1e8;
+  --color-ink: #1a1a1a;
+  --color-mint: #3bba9c;
+  --color-coral: #e85d4a;
+  --color-amber: #f9a03f;
+  --color-violet: #7c6af7;
+
+  /* Fonts (variables set by next/font in layout.tsx) */
+  --font-display: var(--font-instrument-serif), serif;
+  --font-sans: var(--font-dm-sans), sans-serif;
+
+  /* Shadows */
+  --shadow-hard: 5px 5px 0 #1a1a1a;
+  --shadow-hard-sm: 3px 3px 0 #1a1a1a;
+  --shadow-hard-lg: 8px 8px 0 #1a1a1a;
+  --shadow-hard-mint: 5px 5px 0 #3bba9c;
+
+  /* Animations */
+  --animate-float-a: float-a 6.5s ease-in-out infinite;
+  --animate-float-b: float-b 8s ease-in-out infinite;
+  --animate-float-c: float-c 5.5s ease-in-out infinite;
+  --animate-marquee: marquee 26s linear infinite;
+  --animate-hero-in: hero-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-pulse-dot: pulse-dot 1.8s ease-in-out infinite;
+}
+
+@keyframes float-a {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(3deg);
+  }
+}
+@keyframes float-b {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-2deg);
+  }
+}
+@keyframes float-c {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fdfcfb;
+  color: #1a1a1a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom cursor: hide default cursor site-wide, CustomCursor component draws its own */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  * {
+    cursor: none !important;
+  }
+}
+
+/* Scroll-reveal utility. Elements start hidden; ui/RevealOnScroll adds .is-visible */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d1 {
+  transition-delay: 0.12s;
+}
+.reveal-d2 {
+  transition-delay: 0.24s;
+}
+.reveal-d3 {
+  transition-delay: 0.36s;
+}
+.reveal-d4 {
+  transition-delay: 0.48s;
+}
+.reveal-d5 {
+  transition-delay: 0.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .animate-float-a,
+  .animate-float-b,
+  .animate-float-c,
+  .animate-marquee,
+  .animate-hero-in,
+  .animate-pulse-dot {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

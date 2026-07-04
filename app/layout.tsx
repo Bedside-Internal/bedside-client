@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
+import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
 
@@ -30,8 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${instrumentSerif.variable}`}>
       <body className="font-sans bg-cream text-ink">
-        <CustomCursor />
-        {children}
+        <ClerkProvider>
+            <CustomCursor />
+            {children}
+          </ClerkProvider>
       </body>
     </html>
   );

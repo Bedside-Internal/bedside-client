@@ -138,7 +138,6 @@ export default function Hero() {
       ref={containerRef}
       className="relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-center overflow-hidden px-[5vw] pb-[60px] pt-20 text-center"
     >
-      {/* Sparkle top-left */}
       <div
         data-parallax="-0.08"
         className="pointer-events-none absolute left-[7%] top-[9%] z-0 animate-float-a text-mint"
@@ -151,7 +150,6 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* Ghost sparkle top-right */}
       <div
         data-parallax="-0.04"
         className="pointer-events-none absolute right-[8%] top-[10%] animate-float-b text-ink opacity-[0.06]"
@@ -164,7 +162,6 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* Floating interview card */}
       <div
         data-parallax="-0.13"
         className="pointer-events-none absolute right-[3.5%] top-[16%] z-10 hidden max-w-[272px] animate-float-c md:block"
@@ -172,7 +169,6 @@ export default function Hero() {
         <InterviewCard />
       </div>
 
-      {/* Badge: 6 formats */}
       <div
         data-parallax="-0.06"
         className="pointer-events-none absolute bottom-[24%] left-[4%] z-10 hidden animate-float-a sm:block"
@@ -182,7 +178,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* AI feedback chip */}
       <div
         data-parallax="-0.09"
         className="pointer-events-none absolute bottom-[22%] right-[4%] z-10 hidden max-w-[210px] animate-float-b md:block"
@@ -198,7 +193,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Small sparkle bottom-left ghost */}
       <div
         data-parallax="-0.03"
         className="pointer-events-none absolute bottom-[10%] left-[12%] animate-float-b text-mint opacity-30"
@@ -211,7 +205,7 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* Main content */}
+      {/* Main */}
       <div className="relative z-20 max-w-[900px]">
         <div className="mb-9 inline-flex animate-hero-in items-center gap-2 rounded-full border-2 border-ink bg-white px-[18px] py-1.5 shadow-hard-sm">
           <svg width="11" height="11" viewBox="0 0 11 11" fill="none">

@@ -33,7 +33,7 @@ export default function Navbar() {
           </a>
         ))}
         <MagneticButton
-          href="#"
+          href="/sign-in"
           className="rounded-md border-2 border-ink bg-mint px-5 py-2.5 text-sm font-bold text-ink shadow-hard-sm transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:shadow-[2px_2px_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px]"
         >
           Get started →

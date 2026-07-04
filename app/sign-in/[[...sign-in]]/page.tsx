@@ -1,7 +1,6 @@
-// app/sign-in/[[...sign-in]]/page.tsx
-// (Clerk's catch-all route convention — adjust the path to match your router setup)
-
 import { SignIn } from "@clerk/nextjs";
+import { poppins } from "@/lib/fonts";
+import clsx from "clsx";
 
 export default function SignInPage() {
   return (
@@ -16,7 +15,7 @@ export default function SignInPage() {
           <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
             Welcome back
           </p>
-          <h1 className="text-4xl font-bold leading-tight text-white">
+          <h1 className={clsx(poppins.className, "text-4xl font-bold leading-tight text-white")}>
             Good to have
             <br />
             you back.

@@ -6,8 +6,15 @@ export default function SignInPage() {
   return (
     <div className="flex min-h-screen w-full bg-black">
       <div className="relative hidden w-full max-w-md flex-col justify-between overflow-hidden bg-neutral-950 px-10 py-10 lg:flex">
-        <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-emerald-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-10 right-0 h-40 w-40 rounded-full border border-white/5" />
+        <svg
+          className="pointer-events-none absolute -bottom-48 -right-32 h-[500px] w-[500px]"
+          viewBox="0 0 500 500"
+          fill="none"
+        >
+          <circle cx="250" cy="250" r="230" stroke="white" strokeOpacity="0.06" />
+          <circle cx="250" cy="250" r="160" stroke="white" strokeOpacity="0.05" />
+          <circle cx="250" cy="250" r="95" fill="green" fillOpacity="0.04" />
+        </svg>
 
         <span className="text-sm text-neutral-400">Login</span>
 
@@ -34,8 +41,8 @@ export default function SignInPage() {
 
       <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-white">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-[0.06]"
-          style={{ backgroundImage: "url('/images/boardroom-sketch.jpg')" }}
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{ backgroundImage: "url('/images/background_login.png')" }}
         />
         <div className="relative z-10">
           <SignIn

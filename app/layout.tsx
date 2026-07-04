@@ -7,7 +7,7 @@ import CustomCursor from "@/components/layout/CustomCursor";
 export const metadata: Metadata = {
   title: "PrepAce — Stop guessing how you'd do. Find out.",
   description:
-    "Unlimited mock interviews in every med school format — MMI, panel, traditional, CASPer, and more.",
+    "Unlimited mock interviews in every med school format: MMI, panel, traditional, CASPer, and more.",
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${dmSans.variable} ${instrumentSerif.variable}`}>
       <body className="font-sans bg-cream text-ink">
-        <ClerkProvider>
+        <ClerkProvider afterSignOutUrl="/sign-in">
             <CustomCursor />
             {children}
           </ClerkProvider>

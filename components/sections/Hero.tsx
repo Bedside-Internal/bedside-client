@@ -1,7 +1,119 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MagneticButton from "@/components/ui/MagneticButton";
+
+const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz#@$%&!?';
+const QUESTION = '"You discover a colleague is falsifying patient records to meet a quota. What do you do?"';
+
+function scramble(el: HTMLSpanElement, finalText: string, startDelay: number) {
+  let frame = 0;
+  setTimeout(() => {
+    const tick = () => {
+      const revealed = Math.floor(frame / 3);
+      let out = '';
+      for (let i = 0; i < finalText.length; i++) {
+        if (i < revealed) out += finalText[i];
+        else if (finalText[i] === ' ') out += ' ';
+        else out += CHARS[Math.floor(Math.random() * CHARS.length)];
+      }
+      el.innerHTML = [...out].map((ch, i) =>
+        i < revealed
+          ? ch
+          : `<span class="text-teal-400">${ch}</span>`
+      ).join('');
+      frame++;
+      if (Math.floor(frame / 3) < finalText.length) requestAnimationFrame(tick);
+      else el.textContent = finalText;
+    };
+    tick();
+  }, startDelay);
+}
+
+export function HeroHeadline() {
+  const line1 = useRef<HTMLSpanElement>(null);
+  const line2 = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (line1.current) scramble(line1.current, 'Stop guessing', 200);
+    if (line2.current) scramble(line2.current, "how you'd do.", 520);
+  
+    const handleScroll = () => {
+      const shear = Math.min(window.scrollY * 0.14, 80);
+      if (line1.current) line1.current.style.transform = `translateX(${-shear}px)`;
+      if (line2.current) line2.current.style.transform = `translateX(${shear}px)`;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
+  return (
+  <h1 className="mb-3 font-display text-[clamp(58px,9vw,116px)] leading-[0.92] tracking-tighter text-ink overflow-visible">
+    <span ref={line1} className="inline-block">Stop guessing</span>
+    <br />
+    <span ref={line2} className="inline-block">how you&apos;d do.</span>
+  </h1>
+  );
+}
+
+function useTypewriter(text: string, startDelay = 1000) {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
+  useEffect(() => {
+    let i = 0;
+    const timeout = setTimeout(function tick() {
+      setDisplayed(text.slice(0, i + 1));
+      i++;
+      if (i < text.length) {
+        setTimeout(tick, text[i - 1] === ' ' ? 55 : 22 + Math.random() * 28);
+      } else {
+        setDone(true);
+      }
+    }, startDelay);
+    return () => clearTimeout(timeout);
+  }, [text, startDelay]);
+  return { displayed, done };
+}
+
+function useCountdown(startSeconds = 167) { // 2:47
+  const [secs, setSecs] = useState(startSeconds);
+  useEffect(() => {
+    const id = setInterval(() => setSecs(s => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const m = Math.floor(secs / 60);
+  const s = String(secs % 60).padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+export function InterviewCard() {
+  const { displayed, done } = useTypewriter(QUESTION, 1000);
+  const time = useCountdown(167);
+
+  return (
+    <div className="rounded-lg border-[2.5px] border-ink bg-white p-[18px_20px] text-left shadow-hard">
+      <div className="mb-2.5 flex items-center gap-1.5">
+        <div className="h-[7px] w-[7px] flex-shrink-0 animate-pulse-dot rounded-full bg-coral" />
+        <span className="text-[10px] font-bold uppercase tracking-wider text-mint">
+          MMI · Station 3 / 8
+        </span>
+      </div>
+      <p className="mb-3.5 min-h-[5.2em] text-[13.5px] font-medium leading-relaxed text-ink">
+        {displayed}
+        {!done && <span className="inline-block w-[1.5px] h-[1em] bg-mint ml-[1px] align-text-bottom animate-blink" />}
+      </p>
+      <div className="flex items-center justify-between">
+        <span className={`text-[11px] font-medium tabular-nums ${parseInt(time) === 0 ? 'text-coral' : 'text-neutral-400'}`}>
+          Thinking time: {time}
+        </span>
+        <div className="rounded border-[1.5px] border-ink bg-mint px-3 py-1 text-[11px] font-bold">
+          Answer →
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,26 +169,7 @@ export default function Hero() {
         data-parallax="-0.13"
         className="pointer-events-none absolute right-[3.5%] top-[16%] z-10 hidden max-w-[272px] animate-float-c md:block"
       >
-        <div className="rounded-lg border-[2.5px] border-ink bg-white p-[18px_20px] text-left shadow-hard">
-          <div className="mb-2.5 flex items-center gap-1.5">
-            <div className="h-[7px] w-[7px] flex-shrink-0 animate-pulse-dot rounded-full bg-coral" />
-            <span className="text-[10px] font-bold uppercase tracking-wider text-mint">
-              MMI · Station 3 / 8
-            </span>
-          </div>
-          <p className="mb-3.5 text-[13.5px] font-medium leading-relaxed text-ink">
-            &quot;You discover a colleague is falsifying patient records to
-            meet a quota. What do you do?&quot;
-          </p>
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium text-neutral-400">
-              Thinking time: 2:47
-            </span>
-            <div className="rounded border-[1.5px] border-ink bg-mint px-3 py-1 text-[11px] font-bold">
-              Answer →
-            </div>
-          </div>
-        </div>
+        <InterviewCard />
       </div>
 
       {/* Badge: 6 formats */}
@@ -132,14 +225,7 @@ export default function Hero() {
           </span>
         </div>
 
-        <h1
-          className="mb-3 animate-hero-in font-display text-[clamp(58px,9vw,116px)] leading-[0.92] tracking-tighter text-ink"
-          style={{ animationDelay: "0.07s" }}
-        >
-          Stop guessing
-          <br />
-          how you&apos;d do.
-        </h1>
+        <HeroHeadline />
 
         <div
           className="mb-11 inline-block animate-hero-in rounded-lg border-[2.5px] border-ink bg-mint px-[22px] pb-1.5 shadow-hard-lg"
@@ -154,7 +240,7 @@ export default function Hero() {
           className="mx-auto mb-12 max-w-[520px] animate-hero-in text-[clamp(16px,1.8vw,19px)] leading-relaxed text-neutral-600"
           style={{ animationDelay: "0.21s" }}
         >
-          Unlimited mock interviews in every med school format — MMI, panel,
+          Unlimited mock interviews in every med school format: MMI, panel,
           traditional, CASPer, and more. No paywalled tracks. All of it, one
           place.
         </p>
@@ -182,7 +268,7 @@ export default function Hero() {
           style={{ animationDelay: "0.36s" }}
         >
           <span className="text-[13px] font-medium text-neutral-400">
-            ✓ No credit card
+            ✓ Unlimited practice
           </span>
           <span className="text-neutral-300">·</span>
           <span className="text-[13px] font-medium text-neutral-400">

@@ -73,13 +73,14 @@ const STATIONS = [
 
 export default function MmiPage() {
     return (
-        <div className="min-h-screen bg-[var(--color-sand)]">
+        <div className="min-h-screen relative">
+            <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
             <Image
                 src="/images/mmi.png"
                 alt=""
                 fill
                 priority={false}
-                className="pointer-events-none z-0 object-cover opacity-20"
+                className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20"
             />
             <div className="flex items-center justify-between px-6 py-5">
                 <BreadcrumbNav
@@ -105,23 +106,21 @@ export default function MmiPage() {
                 </div>
             </div>
 
-            <div className="pointer-events-none fixed inset-x-0 bottom-32">
-                <div className="mx-auto flex max-w-6xl justify-end px-6">
-                    <div className="pointer-events-auto flex items-center gap-3">
-                        <button
-                            type="button"
-                            className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)]"
-                        >
-                            Practice a specific station
-                        </button>
-                        <button
-                            type="button"
-                            className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
-                        >
-                            Start a full circuit
-                            <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-                        </button>
-                    </div>
+            <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
+                <div className="flex items-center gap-3">
+                    <button
+                        type="button"
+                        className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)]"
+                    >
+                        Practice a specific station
+                    </button>
+                    <button
+                        type="button"
+                        className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
+                    >
+                        Start a full circuit
+                        <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                    </button>
                 </div>
             </div>
         </div>

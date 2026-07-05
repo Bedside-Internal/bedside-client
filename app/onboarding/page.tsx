@@ -2,8 +2,8 @@ import { currentUser } from "@clerk/nextjs/server";
 import { Circle, Monitor, Users, ClipboardList } from "lucide-react";
 import { SessionBar } from "@/components/onboarding/SessionBar";
 import { TrackCard } from "@/components/onboarding/TrackCard";
-import { HandshakeIllustration } from "@/components/onboarding/HandshakeIllustration";
-import { ChecklistIllustration } from "@/components/onboarding/ChecklistIllustration";
+import { HandshakeIllustration } from "@/components/onboarding/Illustrations/HandshakeIllustration";
+import { ChecklistIllustration } from "@/components/onboarding/Illustrations/ChecklistIllustration";
 
 const tracks = [
   {
@@ -47,7 +47,7 @@ export default async function OnboardingPage() {
           <p className="mb-2 text-center text-sm font-semibold text-emerald-600">
             Welcome {firstName}
           </p>
-          <h1 className="mb-2 whitespace-nowrap font-serif text-4xl font-bold text-slate-900 sm:text-5xl">
+          <h1 className="mb-2 font-serif text-4xl font-bold text-slate-900 sm:text-5xl">
             What are you preparing for?
           </h1>
           <p className="mb-10 text-slate-400">

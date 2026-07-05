@@ -2,16 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Users, Grid2x2, Monitor, Video } from "lucide-react";
+import { ChevronLeft, ChevronRight, Users, Grid2x2, Monitor, Video, type LucideIcon } from "lucide-react";
 import { SelectableCard } from "./SelectableCard";
 
-const formats = [
+interface Format {
+  id: string;
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  disabled?: boolean;
+}
+
+const formats: Format[] = [
   {
     id: "traditional",
     icon: Users,
     title: "Traditional",
     description: "Panel & one-on-one interviews with faculty or an admissions committee",
-    disabled: true,
   },
   {
     id: "mmi",
@@ -48,14 +55,13 @@ export function FormatSelector() {
         {formats.map((format) => (
           <SelectableCard
             key={format.id}
+            variant="vertical"
             icon={format.icon}
             title={format.title}
             description={format.description}
-            selected={selected === format.id}
-            onSelect={() => setSelected(format.id)}
             disabled={format.disabled}
-            iconStyle="plain"
-            variant="vertical"
+            selected={selected === format.id}
+            onSelect={format.disabled ? undefined : () => setSelected(format.id)}
           />
         ))}
       </div>

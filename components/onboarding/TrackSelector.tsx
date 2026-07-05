@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import { TrackCard } from "./TrackCard";
+import { SelectableCard } from "./SelectableCard";
 
 interface Track {
   id: string;
@@ -30,10 +30,11 @@ export function TrackSelector({ tracks }: { tracks: Track[] }) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {tracks.map((track) => (
           <div key={track.id} className={track.disabled ? "" : "sm:col-span-2"}>
-            <TrackCard
+            <SelectableCard
+              variant="horizontal"
               icon={track.icon}
               title={track.title}
-              subtitle={track.subtitle}
+              description={track.subtitle}
               disabled={track.disabled}
               selected={selected === track.id}
               onSelect={track.disabled ? undefined : () => setSelected(track.id)}

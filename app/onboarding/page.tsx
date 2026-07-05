@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { Stethoscope, GraduationCap, Users, ClipboardList } from "lucide-react";
 import { SessionBar } from "@/components/onboarding/SessionBar";
-import { TrackCard } from "@/components/onboarding/TrackCard";
+import { SelectableCard } from "@/components/onboarding/SelectableCard";
 import { HandshakeIllustration } from "@/components/onboarding/Illustrations/HandshakeIllustration";
 import { ChecklistIllustration } from "@/components/onboarding/Illustrations/ChecklistIllustration";
 
@@ -18,7 +18,6 @@ const tracks = [
     icon: GraduationCap,
     title: "College / University Interview",
     subtitle: "Coming soon",
-    //subtitle: "Ivy League · honors programs · scholarships",
     disabled: true,
   },
   {
@@ -66,7 +65,14 @@ export default async function OnboardingPage() {
                 key={track.id}
                 className={track.disabled ? "" : "sm:col-span-2"}
               >
-                <TrackCard {...track} />
+                <SelectableCard
+                  variant="horizontal"
+                  icon={track.icon}
+                  title={track.title}
+                  description={track.subtitle}
+                  href={track.href}
+                  disabled={track.disabled}
+                />
               </div>
             ))}
           </div>

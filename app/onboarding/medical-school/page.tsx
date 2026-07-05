@@ -11,7 +11,7 @@ export default async function MedicalSchoolFormatPage() {
     return (
         <div className="relative min-h-screen overflow-hidden bg-slate-50">
             <Image
-                src="/backgrounds/medical-school.png"
+                src="/images/medical_school.jpg"
                 alt=""
                 fill
                 priority={false}

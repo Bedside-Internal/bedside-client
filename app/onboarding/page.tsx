@@ -87,7 +87,7 @@ export default async function OnboardingPage() {
           </div>
 
           <p className="mt-8 text-sm text-slate-300">
-            Switch tracks anytime from the sidebar
+            Switch tracks anytime in your dashboard
           </p>
         </div>
       </main>

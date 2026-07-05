@@ -96,7 +96,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Custom cursor: hide default cursor site-wide, CustomCursor component draws its own */
 @media (hover: hover) and (pointer: fine) {
   html,
   body,
@@ -105,7 +104,6 @@ body {
   }
 }
 
-/* Scroll-reveal utility. Elements start hidden; ui/RevealOnScroll adds .is-visible */
 .reveal {
   opacity: 0;
   transform: translateY(32px);

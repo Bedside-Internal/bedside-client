@@ -1,17 +1,20 @@
 import Image from "next/image";
 import { UserButton } from "@clerk/nextjs";
-import { FormatSelector } from "@/components/onboarding/FormatIllustrator";
+import { FormatSelector } from "@/components/onboarding/FormatSelector";
 import { NurseIllustration } from "@/components/onboarding/Illustrations/NurseIllustration";
+import { saveTrack } from "@/lib/actions";
 
-export default function MedicalSchoolFormatPage() {
+export default async function MedicalSchoolFormatPage() {
+    await saveTrack("medical-school");
+
     return (
         <div className="relative min-h-screen overflow-hidden bg-slate-50">
             <Image
-                src="/images/medical_school.jpg"
+                src="/backgrounds/medical-school.png"
                 alt=""
                 fill
                 priority={false}
-                className="pointer-events-none z-0 object-cover opacity-18"
+                className="pointer-events-none z-0 object-cover opacity-20"
             />
             <div className="relative z-10 flex justify-end px-6 py-4">
                 <UserButton />

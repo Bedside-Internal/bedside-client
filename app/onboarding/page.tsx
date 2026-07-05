@@ -1,9 +1,11 @@
 import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { Stethoscope, GraduationCap, Users, ClipboardList } from "lucide-react";
 import { SessionBar } from "@/components/onboarding/SessionBar";
 import { SelectableCard } from "@/components/onboarding/SelectableCard";
 import { HandshakeIllustration } from "@/components/onboarding/Illustrations/HandshakeIllustration";
 import { ChecklistIllustration } from "@/components/onboarding/Illustrations/ChecklistIllustration";
+import { getOnboardingProgress } from "@/lib/actions";
 
 const tracks = [
   {
@@ -39,15 +41,24 @@ const tracks = [
 export default async function OnboardingPage() {
   const user = await currentUser();
   const firstName = user?.firstName ?? "there";
-
+ 
+  const progress = await getOnboardingProgress();
+  if (progress?.track && progress?.format) {
+    
+    redirect("/dashboard"); // Fully onboarded already
+  }
+  if (progress?.track) {
+    redirect(`/onboarding/${progress.track}`); // Picked a track last time but never finished picking a format, so resume there.
+  }
+ 
   return (
     <div className="min-h-screen bg-slate-50">
       <SessionBar />
-
+ 
       <main className="relative flex min-h-[calc(100vh-48px)] items-center justify-center overflow-hidden px-4">
         <HandshakeIllustration className="pointer-events-none absolute bottom-24 left-6 hidden h-auto w-56 lg:block" />
         <ChecklistIllustration className="pointer-events-none absolute bottom-24 right-6 hidden h-auto w-56 lg:block" />
-
+ 
         <div className="w-full min-w-0 max-w-xl py-16 text-center">
           <p className="mb-2 text-sm font-semibold text-emerald-600">
             Welcome {firstName}
@@ -58,7 +69,7 @@ export default async function OnboardingPage() {
           <p className="mb-10 text-slate-400">
             One workspace. All your interview prep.
           </p>
-
+ 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {tracks.map((track) => (
               <div
@@ -76,7 +87,7 @@ export default async function OnboardingPage() {
               </div>
             ))}
           </div>
-
+ 
           <p className="mt-8 text-sm text-slate-300">
             Switch tracks anytime from the sidebar
           </p>

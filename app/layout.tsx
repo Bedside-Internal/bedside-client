@@ -3,6 +3,7 @@ import { dmSans, instrumentSerif } from "@/lib/fonts";
 import { ClerkProvider, Show, SignUpButton, UserButton } from '@clerk/nextjs'
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
+import { DevResetOnboardingButton } from "@/components/ui/Devresetonboarding";
 
 export const metadata: Metadata = {
   title: "PrepAce — Stop guessing how you'd do. Find out.",
@@ -20,6 +21,7 @@ export default function RootLayout({
       <body className="font-sans bg-cream text-ink">
         <ClerkProvider afterSignOutUrl="/sign-in">
             <CustomCursor />
+            <DevResetOnboardingButton />
             {children}
           </ClerkProvider>
       </body>

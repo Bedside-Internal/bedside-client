@@ -4,8 +4,7 @@ import type { ReactNode } from "react";
 
 interface WeakestAreaCardProps {
   eyebrow: string;
-  /** Pass an already-rendered icon element (e.g. <Grid2X2 />), not the component itself — this crosses a server/client boundary. */
-  icon: ReactNode;
+  icon: ReactNode; // server-client boundary with rendered-icon element
   title: string;
   description: string;
   ctaLabel: string;

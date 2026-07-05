@@ -85,7 +85,7 @@ export default function MmiPage() {
             <div className="flex items-center justify-between px-6 py-5">
                 <BreadcrumbNav
                     items={[
-                        { label: "Medical School Interview", href: "/interview" },
+                        { label: "Medical School Interview", href: "/onboarding/medical-school" },
                         { label: "MMI" },
                     ]}
                 />

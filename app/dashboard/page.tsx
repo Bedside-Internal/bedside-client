@@ -1,4 +1,5 @@
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
+import { currentUser } from "@clerk/nextjs/server";
 
 import { TopBar } from "@/components/dashboard/Topbar";
 import { GreetingHeader } from "@/components/dashboard/Greetingheader";
@@ -78,13 +79,16 @@ const tracks = [
     { label: "7", completed: false },
   ];
    
-  export default function Dashboard() {
+  export default async function Dashboard() {
+    const user = await currentUser();
+    const firstName = user?.firstName ?? "there";
+    
     return (
       <div>
         <TopBar tracks={tracks} activeTrackId="med-school" />
    
         <div>
-          <GreetingHeader name="Jamie" streakDays={3} timeOfDay="morning" />
+          <GreetingHeader name={`${firstName}`} streakDays={3} timeOfDay="morning" />
           <CountdownCard daysRemaining={47} prepTimeUsedPercent={62} />
         </div>
    

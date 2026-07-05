@@ -3,6 +3,7 @@ import { UserButton } from "@clerk/nextjs";
 import { FormatSelector } from "@/components/onboarding/FormatSelector";
 import { NurseIllustration } from "@/components/onboarding/Illustrations/NurseIllustration";
 import { saveTrack } from "@/lib/actions";
+import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 
 export default async function MedicalSchoolFormatPage() {
     await saveTrack("medical-school");
@@ -24,13 +25,13 @@ export default async function MedicalSchoolFormatPage() {
 
             <main className="relative z-10 mx-auto flex min-h-[calc(100vh-64px)] max-w-xl flex-col justify-center px-4 py-10">
                 <div className="mb-8 min-w-0 text-center">
-                    <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-emerald-600">
-                        Medical School Interview
-                    </p>
-                    <h1 className="mb-2 font-serif text-4xl font-bold text-slate-900 sm:text-5xl">
-                        Which format are you preparing for?
-                    </h1>
-                    <p className="text-slate-400">Select one to get started</p>
+                    <OnboardingHeader
+                        className="mb-8"
+                        eyebrow="Medical School Interview"
+                        eyebrowClassName="uppercase tracking-wide"
+                        title="Which format are you preparing for?"
+                        subtitle="Select one to get started"
+                    />
                 </div>
 
                 <FormatSelector />

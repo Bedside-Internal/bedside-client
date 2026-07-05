@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { Circle, Monitor, Users, ClipboardList } from "lucide-react";
+import { Stethoscope, GraduationCap, Users, ClipboardList } from "lucide-react";
 import { SessionBar } from "@/components/onboarding/SessionBar";
 import { TrackCard } from "@/components/onboarding/TrackCard";
 import { HandshakeIllustration } from "@/components/onboarding/Illustrations/HandshakeIllustration";
@@ -8,17 +8,18 @@ import { ChecklistIllustration } from "@/components/onboarding/Illustrations/Che
 const tracks = [
   {
     id: "medical-school",
-    icon: Circle,
+    icon: Stethoscope,
     title: "Medical School Interview",
     subtitle: "MD/DO · Traditional, MMI, CASPer, PREview",
     href: "/onboarding/medical-school",
   },
   {
     id: "college",
-    icon: Monitor,
+    icon: GraduationCap,
     title: "College / University Interview",
-    subtitle: "Ivy League · honors programs · scholarships",
-    href: "/onboarding/college",
+    subtitle: "Coming soon",
+    //subtitle: "Ivy League · honors programs · scholarships",
+    disabled: true,
   },
   {
     id: "residency",

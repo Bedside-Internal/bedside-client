@@ -7,23 +7,28 @@ import { ChecklistIllustration } from "@/components/onboarding/Illustrations/Che
 
 const tracks = [
   {
+    id: "medical-school",
     icon: Circle,
     title: "Medical School Interview",
     subtitle: "MD/DO · Traditional, MMI, CASPer, PREview",
-    selected: true,
+    href: "/onboarding/medical-school",
   },
   {
+    id: "college",
     icon: Monitor,
     title: "College / University Interview",
     subtitle: "Ivy League · honors programs · scholarships",
+    href: "/onboarding/college",
   },
   {
+    id: "residency",
     icon: Users,
     title: "Residency Interview",
     subtitle: "Coming soon",
     disabled: true,
   },
   {
+    id: "job",
     icon: ClipboardList,
     title: "Job Interview",
     subtitle: "Coming soon",
@@ -44,7 +49,7 @@ export default async function OnboardingPage() {
         <ChecklistIllustration className="pointer-events-none absolute bottom-24 right-6 hidden h-auto w-56 lg:block" />
 
         <div className="w-full min-w-0 max-w-xl py-16 text-center">
-          <p className="mb-2 text-center text-sm font-semibold text-emerald-600">
+          <p className="mb-2 text-sm font-semibold text-emerald-600">
             Welcome {firstName}
           </p>
           <h1 className="mb-2 font-serif text-4xl font-bold text-slate-900 sm:text-5xl">
@@ -57,7 +62,7 @@ export default async function OnboardingPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {tracks.map((track) => (
               <div
-                key={track.title}
+                key={track.id}
                 className={track.disabled ? "" : "sm:col-span-2"}
               >
                 <TrackCard {...track} />

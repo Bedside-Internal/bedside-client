@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
 import {
     ArrowRight,
     CheckCircle2,
@@ -13,6 +12,7 @@ import {
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 import { StationCard } from "@/components/onboarding/StationCard";
+import { SessionBar } from "@/components/onboarding/SessionBar";
 
 const STATIONS = [
     {
@@ -89,7 +89,7 @@ export default function MmiPage() {
                         { label: "MMI" },
                     ]}
                 />
-                <UserButton />
+                <SessionBar />
             </div>
 
             <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">

@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
 import { FormatSelector } from "@/components/onboarding/FormatSelector";
 import { NurseIllustration } from "@/components/onboarding/Illustrations/NurseIllustration";
 import { saveTrack } from "@/lib/actions";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
+import { SessionBar } from "@/components/onboarding/SessionBar";
 
 export default async function MedicalSchoolFormatPage() {
     await saveTrack("medical-school");
@@ -18,7 +18,7 @@ export default async function MedicalSchoolFormatPage() {
                 className="pointer-events-none z-0 object-cover opacity-20"
             />
             <div className="relative z-10 flex justify-end px-6 py-4">
-                <UserButton />
+                <SessionBar />
             </div>
 
             <NurseIllustration className="pointer-events-none absolute bottom-6 left-6 z-10 hidden h-auto w-40 lg:block" />

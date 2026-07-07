@@ -1,5 +1,5 @@
-import { UserButton } from "@clerk/nextjs";
 import { TrackSwitcher, type Track } from "@/components/dashboard/Trackswitcher";
+import { SessionBar } from "../onboarding/SessionBar";
 
 interface TopBarProps {
     tracks: Track[];
@@ -17,7 +17,7 @@ export function TopBar({ tracks, activeTrackId, onSelectTrack, onAddTrack }: Top
                 onSelectTrack={onSelectTrack}
                 onAddTrack={onAddTrack}
             />
-            <UserButton />
+            <SessionBar />
         </div>
     );
 }

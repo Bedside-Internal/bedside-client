@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { dmSans, instrumentSerif } from "@/lib/fonts";
-import { ClerkProvider, Show, SignUpButton, UserButton } from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
 import { DevResetOnboardingButton } from "@/components/ui/Devresetonboarding";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import * as SwitchPrimitive from "@radix-ui/react-switch";
+import { Switch } from "@/components/ui/Switch";
 
 interface InterviewFormat {
   id: string;
@@ -25,27 +25,6 @@ function daysAway(dateStr: string): number | null {
   target.setHours(0, 0, 0, 0);
   const diff = Math.round((target.getTime() - today.getTime()) / 86_400_000);
   return diff;
-}
-
-function Switch({
-  checked,
-  onChange,
-  label,
-}: {
-  checked: boolean;
-  onChange: () => void;
-  label: string;
-}) {
-  return (
-    <SwitchPrimitive.Root
-      checked={checked}
-      onCheckedChange={onChange}
-      aria-label={label}
-      className="relative h-6 w-10 shrink-0 rounded-full bg-slate-200 outline-none transition-colors data-[state=checked]:bg-[var(--color-mint)] focus-visible:ring-2 focus-visible:ring-[var(--color-mint)] focus-visible:ring-offset-2"
-    >
-      <SwitchPrimitive.Thumb className="block h-4.5 w-4.5 translate-x-1 rounded-full bg-white shadow-sm transition-transform data-[state=checked]:translate-x-[22px]" />
-    </SwitchPrimitive.Root>
-  );
 }
 
 /** A single labeled row, mirroring Clerk's own <UserProfile /> row layout. */
@@ -119,11 +98,11 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-[var(--color-cream)]">
       <div className="flex-1 overflow-y-auto px-1 py-1">
         <h2 className="text-xl font-bold text-[var(--color-ink)]">Interview Setup</h2>
         <p className="mt-1 text-sm text-slate-400">
-          Tell us about your upcoming interview so we can personalize your prep.
+          Tell us about your upcoming interview so we can personalise your prep.
         </p>
 
         <div className="mt-6 border-t border-slate-100">

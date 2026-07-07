@@ -2,7 +2,8 @@
 
 import { UserButton } from "@clerk/nextjs";
 import { InterviewSetupPanel } from "@/components/UserProfile/InterviewSection";
-import { Video } from "lucide-react";
+import { Sun, Video } from "lucide-react";
+import { AppearancePanel } from "@/components/UserProfile/AppearanceSection";
 
 
 export function SessionBar({ label = "" }: { label?: string }) { // TODO: logo-placement
@@ -11,9 +12,12 @@ export function SessionBar({ label = "" }: { label?: string }) { // TODO: logo-p
       <span className="text-sm text-slate-400">{label}</span>
       <UserButton>
         <UserButton.UserProfilePage label="Interview Setup" url="interview-setup" labelIcon={<Video className="h-4 w-4" />}>
-          <InterviewSetupPanel onSave={async (data) => { /* save to your backend */ }} />
+          <InterviewSetupPanel onSave={async (data) => { }} />
         </UserButton.UserProfilePage>
-      </ UserButton>
+        <UserButton.UserProfilePage label="Appearance" url="appearance" labelIcon={<Sun className="h-4 w-4" />}>
+          <AppearancePanel onSave={async (data) => { }} />
+        </UserButton.UserProfilePage>
+      </UserButton>
 
     </div>
   );

@@ -12,6 +12,8 @@ import { QuickActionRow } from "@/components/dashboard/Quickactionrow";
 import { ReadinessSummary } from "@/components/dashboard/Readinesssummary";
 import { ActivityRow } from "@/components/dashboard/Activityrow";
 import { StreakCard } from "@/components/dashboard/Streakcard";
+import { getOnboardingProgress } from "@/lib/actions";
+import { redirect } from "next/navigation";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -85,6 +87,12 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default async function Dashboard() {
+    const progress = await getOnboardingProgress();
+
+    if (!progress?.track || !progress?.format) {
+      redirect("/onboarding");
+    }
+    
     const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
     const firstName = user?.firstName ?? "there";
 

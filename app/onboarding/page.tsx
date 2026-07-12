@@ -43,15 +43,6 @@ export default async function OnboardingPage() {
   const user = await currentUser();
   const firstName = user?.firstName ?? "there";
 
-  const progress = await getOnboardingProgress();
-  if (progress?.track && progress?.format) {
-
-    redirect("/dashboard"); // Fully onboarded already
-  }
-  if (progress?.track) {
-    redirect(`/onboarding/${progress.track}`); // Picked a track last time but never finished picking a format, so resume there.
-  }
-
   return (
     <div className="min-h-screen bg-slate-50">
       <SessionBar />

@@ -1,54 +1,142 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/Switch";
 
+// Same pattern as page.tsx's getDashboardData — the API may not be same-origin.
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
+/**
+ * Mirrors the backend's notificationSettingsSchema shape:
+ * { "daily-practice": boolean, streak: boolean, "weekly-summary": boolean, "new-resources": boolean }
+ */
+interface NotificationSettingsInput {
+  "daily-practice": boolean;
+  streak: boolean;
+  "weekly-summary": boolean;
+  "new-resources": boolean;
+}
+
 interface NotificationSetting {
-  id: string;
+  id: keyof NotificationSettingsInput;
   title: string;
   description: string;
   enabled: boolean;
 }
 
-const INITIAL_SETTINGS: NotificationSetting[] = [
+const SETTINGS_META: Omit<NotificationSetting, "enabled">[] = [
   {
     id: "daily-practice",
     title: "Daily practice reminder",
     description: "Remind me to practise each day at my preferred time",
-    enabled: true,
   },
   {
     id: "streak",
     title: "Streak reminders",
     description: "Alert me before I lose my daily streak",
-    enabled: true,
   },
   {
     id: "weekly-summary",
     title: "Weekly progress summary",
     description: "Email me a weekly summary of my practice scores",
-    enabled: false,
   },
   {
     id: "new-resources",
     title: "New resources available",
     description: "Notify me when new guides or videos are added to the library",
-    enabled: false,
   },
 ];
 
+const DEFAULT_ENABLED: NotificationSettingsInput = {
+  "daily-practice": true,
+  streak: true,
+  "weekly-summary": false,
+  "new-resources": false,
+};
+
+/** Type guard matching the backend schema: every key present and boolean. */
+function isNotificationSettingsInput(value: unknown): value is NotificationSettingsInput {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return (
+    typeof v["daily-practice"] === "boolean" &&
+    typeof v["streak"] === "boolean" &&
+    typeof v["weekly-summary"] === "boolean" &&
+    typeof v["new-resources"] === "boolean"
+  );
+}
+
+function buildSettings(enabledMap: NotificationSettingsInput): NotificationSetting[] {
+  return SETTINGS_META.map((meta) => ({
+    ...meta,
+    enabled: enabledMap[meta.id],
+  }));
+}
+
+function toEnabledMap(settings: NotificationSetting[]): NotificationSettingsInput {
+  return {
+    "daily-practice": settings.find((s) => s.id === "daily-practice")!.enabled,
+    streak: settings.find((s) => s.id === "streak")!.enabled,
+    "weekly-summary": settings.find((s) => s.id === "weekly-summary")!.enabled,
+    "new-resources": settings.find((s) => s.id === "new-resources")!.enabled,
+  };
+}
+
 interface NotificationsPanelProps {
-  onSave?: (settings: Record<string, boolean>) => Promise<void> | void;
+  onSave?: (settings: NotificationSettingsInput) => Promise<void> | void;
 }
 
 export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
-  const [settings, setSettings] = useState(INITIAL_SETTINGS);
-  const [initial] = useState(INITIAL_SETTINGS);
+  const [settings, setSettings] = useState<NotificationSetting[]>(
+    buildSettings(DEFAULT_ENABLED)
+  );
+  const [initial, setInitial] = useState<NotificationSetting[]>(
+    buildSettings(DEFAULT_ENABLED)
+  );
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/settings/notifications`, {
+          credentials: "include",
+        });
+        if (!res.ok) {
+          throw new Error(`Failed to load notifications (${res.status})`);
+        }
+        const json = await res.json();
+        if (cancelled) return;
+
+        if (!isNotificationSettingsInput(json)) {
+          throw new Error("Notification settings response did not match expected shape");
+        }
+        const built = buildSettings(json);
+        setSettings(built);
+        setInitial(built);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Failed to load notifications");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const isDirty = settings.some((s, i) => s.enabled !== initial[i].enabled);
 
-  function toggle(id: string) {
+  function toggle(id: NotificationSetting["id"]) {
     setSettings((prev) =>
       prev.map((s) => (s.id === id ? { ...s, enabled: !s.enabled } : s))
     );
@@ -60,11 +148,36 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
 
   async function handleSave() {
     setSaving(true);
+    setError(null);
     try {
-      await onSave?.(Object.fromEntries(settings.map((s) => [s.id, s.enabled])));
+      const payload = toEnabledMap(settings);
+      const res = await fetch(`${API_BASE_URL}/api/settings/notification`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to save notifications (${res.status})`);
+      }
+      const json = await res.json().catch(() => payload);
+      const built = buildSettings(isNotificationSettingsInput(json) ? json : payload);
+      setSettings(built);
+      setInitial(built);
+      await onSave?.(toEnabledMap(built));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save notifications");
     } finally {
       setSaving(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-slate-400">Loading…</p>
+      </div>
+    );
   }
 
   return (
@@ -74,6 +187,12 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
         <p className="mt-1 text-sm text-slate-400">
           Control what the app reminds you about and how.
         </p>
+
+        {error && (
+          <p className="mt-4 rounded-lg bg-[color-mix(in_srgb,var(--color-coral)_10%,transparent)] px-3 py-2 text-sm text-[var(--color-coral)]">
+            {error}
+          </p>
+        )}
 
         <div className="mt-6 divide-y divide-slate-100 rounded-xl border border-slate-100">
           {settings.map((setting) => (

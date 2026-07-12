@@ -64,6 +64,7 @@ export default function SignInPage() {
                   "bg-emerald-500 hover:bg-emerald-600 rounded-xl py-3 text-sm normal-case shadow-none",
               },
             }}
+            fallbackRedirectUrl="/dashboard"
           />
         </div>
       </div>

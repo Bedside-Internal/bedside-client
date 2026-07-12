@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Minus, Plus } from "lucide-react";
 
 const DAYS = [
@@ -13,81 +13,200 @@ const DAYS = [
   { id: "sat", label: "S" },
 ] as const;
 
-const INITIAL_DAYS: Record<string, boolean> = {
-  sun: false,
-  mon: true,
-  tue: true,
-  wed: false,
-  thu: true,
-  fri: false,
-  sat: true,
-};
-
 const THRESHOLD_FORMATS = [
   { id: "mmi", label: "MMI" },
   { id: "casper", label: "CASPer" },
   { id: "preview", label: "PREview" },
 ] as const;
 
-const INITIAL_THRESHOLDS: Record<string, number> = {
-  mmi: 80,
-  casper: 75,
-  preview: 70,
+const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+// Same pattern as page.tsx's getDashboardData — the API may not be same-origin.
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
+/** Mirrors the backend's goalsScheduleSchema shape. */
+interface GoalsScheduleInput {
+  weeklyGoal: number;
+  practiceDays: {
+    sun: boolean;
+    mon: boolean;
+    tue: boolean;
+    wed: boolean;
+    thu: boolean;
+    fri: boolean;
+    sat: boolean;
+  };
+  reminderTime: string;
+  thresholds: {
+    mmi: number;
+    casper: number;
+    preview: number;
+  };
+}
+
+const DEFAULT_DATA: GoalsScheduleInput = {
+  weeklyGoal: 4,
+  practiceDays: {
+    sun: false,
+    mon: true,
+    tue: true,
+    wed: false,
+    thu: true,
+    fri: false,
+    sat: true,
+  },
+  reminderTime: "18:00",
+  thresholds: { mmi: 80, casper: 75, preview: 70 },
 };
 
+function isValidScore(n: unknown): n is number {
+  return typeof n === "number" && Number.isInteger(n) && n >= 0 && n <= 100;
+}
+
+/** Manual check matching the backend's goalsScheduleSchema constraints. */
+function isGoalsScheduleInput(value: unknown): value is GoalsScheduleInput {
+  if (typeof value !== "object" || value === null) return false;
+  const v = value as Record<string, unknown>;
+
+  if (
+    typeof v.weeklyGoal !== "number" ||
+    !Number.isInteger(v.weeklyGoal) ||
+    v.weeklyGoal < 1 ||
+    v.weeklyGoal > 14
+  ) {
+    return false;
+  }
+
+  if (typeof v.reminderTime !== "string" || !TIME_REGEX.test(v.reminderTime)) {
+    return false;
+  }
+
+  const days = v.practiceDays as Record<string, unknown> | undefined;
+  if (
+    !days ||
+    DAYS.some((d) => typeof days[d.id] !== "boolean")
+  ) {
+    return false;
+  }
+
+  const thresholds = v.thresholds as Record<string, unknown> | undefined;
+  if (
+    !thresholds ||
+    THRESHOLD_FORMATS.some((f) => !isValidScore(thresholds[f.id]))
+  ) {
+    return false;
+  }
+
+  return true;
+}
+
 interface GoalsSchedulePanelProps {
-  onSave?: (data: {
-    weeklyGoal: number;
-    practiceDays: Record<string, boolean>;
-    reminderTime: string;
-    thresholds: Record<string, number>;
-  }) => Promise<void> | void;
+  onSave?: (data: GoalsScheduleInput) => Promise<void> | void;
 }
 
 export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
-  const [weeklyGoal, setWeeklyGoal] = useState(4);
-  const [practiceDays, setPracticeDays] = useState(INITIAL_DAYS);
-  const [reminderTime, setReminderTime] = useState("18:00");
-  const [thresholds, setThresholds] = useState(INITIAL_THRESHOLDS);
-  const [initial] = useState({
-    weeklyGoal: 4,
-    practiceDays: INITIAL_DAYS,
-    reminderTime: "18:00",
-    thresholds: INITIAL_THRESHOLDS,
-  });
+  const [data, setData] = useState<GoalsScheduleInput>(DEFAULT_DATA);
+  const [initial, setInitial] = useState<GoalsScheduleInput>(DEFAULT_DATA);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/settings/goals-schedule`, {
+          credentials: "include",
+        });
+        if (!res.ok) {
+          throw new Error(`Failed to load goals & schedule (${res.status})`);
+        }
+        const json = await res.json();
+        if (cancelled) return;
+
+        if (!isGoalsScheduleInput(json)) {
+          throw new Error("Goals & schedule response did not match expected shape");
+        }
+        setData(json);
+        setInitial(json);
+      } catch (err) {
+        if (!cancelled) {
+          setError(
+            err instanceof Error ? err.message : "Failed to load goals & schedule"
+          );
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const isDirty =
-    weeklyGoal !== initial.weeklyGoal ||
-    reminderTime !== initial.reminderTime ||
-    DAYS.some((d) => practiceDays[d.id] !== initial.practiceDays[d.id]) ||
-    THRESHOLD_FORMATS.some((f) => thresholds[f.id] !== initial.thresholds[f.id]);
+    data.weeklyGoal !== initial.weeklyGoal ||
+    data.reminderTime !== initial.reminderTime ||
+    DAYS.some((d) => data.practiceDays[d.id] !== initial.practiceDays[d.id]) ||
+    THRESHOLD_FORMATS.some((f) => data.thresholds[f.id] !== initial.thresholds[f.id]);
 
-  const selectedDayCount = DAYS.filter((d) => practiceDays[d.id]).length;
+  const selectedDayCount = DAYS.filter((d) => data.practiceDays[d.id]).length;
 
-  function toggleDay(id: string) {
-    setPracticeDays((prev) => ({ ...prev, [id]: !prev[id] }));
+  function toggleDay(id: (typeof DAYS)[number]["id"]) {
+    setData((prev) => ({
+      ...prev,
+      practiceDays: { ...prev.practiceDays, [id]: !prev.practiceDays[id] },
+    }));
   }
 
-  function setThreshold(id: string, value: number) {
-    const clamped = Math.min(100, Math.max(0, value));
-    setThresholds((prev) => ({ ...prev, [id]: clamped }));
+  function setThreshold(id: (typeof THRESHOLD_FORMATS)[number]["id"], value: number) {
+    const clamped = Math.min(100, Math.max(0, Math.round(value)));
+    setData((prev) => ({
+      ...prev,
+      thresholds: { ...prev.thresholds, [id]: clamped },
+    }));
   }
 
   function handleDiscard() {
-    setWeeklyGoal(initial.weeklyGoal);
-    setPracticeDays(initial.practiceDays);
-    setReminderTime(initial.reminderTime);
-    setThresholds(initial.thresholds);
+    setData(initial);
   }
 
   async function handleSave() {
     setSaving(true);
+    setError(null);
     try {
-      await onSave?.({ weeklyGoal, practiceDays, reminderTime, thresholds });
+      const res = await fetch(`${API_BASE_URL}/api/settings/goals-schedule`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to save goals & schedule (${res.status})`);
+      }
+      const json = await res.json().catch(() => data);
+      const merged = isGoalsScheduleInput(json) ? json : data;
+      setData(merged);
+      setInitial(merged);
+      await onSave?.(merged);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save goals & schedule");
     } finally {
       setSaving(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-sm text-slate-400">Loading…</p>
+      </div>
+    );
   }
 
   return (
@@ -97,6 +216,12 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
         <p className="mt-1 text-sm text-slate-400">
           Set your practice goals and let us know when to remind you.
         </p>
+
+        {error && (
+          <p className="mt-4 rounded-lg bg-[color-mix(in_srgb,var(--color-coral)_10%,transparent)] px-3 py-2 text-sm text-[var(--color-coral)]">
+            {error}
+          </p>
+        )}
 
         <div className="mt-6 border-t border-slate-100">
           {/* Weekly goal */}
@@ -111,18 +236,28 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
               <div className="flex items-center rounded-lg border border-slate-200">
                 <button
                   type="button"
-                  onClick={() => setWeeklyGoal((v) => Math.max(1, v - 1))}
+                  onClick={() =>
+                    setData((prev) => ({
+                      ...prev,
+                      weeklyGoal: Math.max(1, prev.weeklyGoal - 1),
+                    }))
+                  }
                   className="flex h-9 w-9 items-center justify-center text-slate-400 transition hover:text-[var(--color-ink)]"
                   aria-label="Decrease weekly goal"
                 >
                   <Minus className="h-4 w-4" />
                 </button>
                 <span className="w-10 text-center text-sm font-semibold text-[var(--color-ink)]">
-                  {weeklyGoal}
+                  {data.weeklyGoal}
                 </span>
                 <button
                   type="button"
-                  onClick={() => setWeeklyGoal((v) => Math.min(14, v + 1))}
+                  onClick={() =>
+                    setData((prev) => ({
+                      ...prev,
+                      weeklyGoal: Math.min(14, prev.weeklyGoal + 1),
+                    }))
+                  }
                   className="flex h-9 w-9 items-center justify-center text-slate-400 transition hover:text-[var(--color-ink)]"
                   aria-label="Increase weekly goal"
                 >
@@ -130,7 +265,7 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
                 </button>
               </div>
               <span className="text-sm text-slate-400">
-                {weeklyGoal === 1 ? "session" : "sessions"} / week
+                {data.weeklyGoal === 1 ? "session" : "sessions"} / week
               </span>
             </div>
           </div>
@@ -146,7 +281,7 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
             <div>
               <div className="flex gap-2">
                 {DAYS.map((day) => {
-                  const selected = practiceDays[day.id];
+                  const selected = data.practiceDays[day.id];
                   return (
                     <button
                       key={day.id}
@@ -196,10 +331,8 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
                       min={0}
                       max={100}
                       step={5}
-                      value={thresholds[format.id]}
-                      onChange={(e) =>
-                        setThreshold(format.id, Number(e.target.value))
-                      }
+                      value={data.thresholds[format.id]}
+                      onChange={(e) => setThreshold(format.id, Number(e.target.value))}
                       className="w-16 rounded-lg border border-slate-200 px-2 py-1.5 text-right text-sm text-[var(--color-ink)] outline-none focus:border-[var(--color-mint)]"
                     />
                     <span className="text-sm text-slate-400">%</span>
@@ -219,8 +352,10 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
             </div>
             <input
               type="time"
-              value={reminderTime}
-              onChange={(e) => setReminderTime(e.target.value)}
+              value={data.reminderTime}
+              onChange={(e) =>
+                setData((prev) => ({ ...prev, reminderTime: e.target.value }))
+              }
               className="w-full max-w-[160px] rounded-lg border border-slate-200 px-3 py-2 text-sm text-[var(--color-ink)] outline-none focus:border-[var(--color-mint)]"
             />
           </div>

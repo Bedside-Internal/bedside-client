@@ -1,4 +1,6 @@
+import { cookies } from "next/headers";
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { TopBar } from "@/components/dashboard/Topbar";
@@ -11,98 +13,102 @@ import { ReadinessSummary } from "@/components/dashboard/Readinesssummary";
 import { ActivityRow } from "@/components/dashboard/Activityrow";
 import { StreakCard } from "@/components/dashboard/Streakcard";
 
-// mock data for now...need to actually link it up to backend/data stores
+// TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
     { id: "med-school", label: "Medical School", icon: <GraduationCap /> },
     { id: "college-admissions", label: "College Admissions", icon: <School /> },
 ];
 
-const formats = [
-    {
-        icon: Grid2X2,
-        title: "MMI",
-        subtitle: "Multiple Mini Interview",
-        score: 84,
-        metrics: [
-            { label: "Ethical", value: 90 },
-            { label: "Role Play", value: 71, tone: "amber" as const },
-            { label: "Critical", value: 79 },
-        ],
-        progressLabel: "38 of 114 questions",
-        continueHref: "/practice/mmi",
-    },
-    {
-        icon: FileText,
-        title: "CASPer",
-        subtitle: "Situational Judgment",
-        score: 85,
-        metrics: [
-            { label: "Empathy", value: 90 },
-            { label: "Profess.", value: 74, tone: "amber" as const },
-            { label: "Ethics", value: 87 },
-        ],
-        progressLabel: "14 of 96 sections",
-        continueHref: "/practice/casper",
-    },
-    {
-        icon: Video,
-        title: "PREview",
-        subtitle: "Video Assessment",
-        score: 84,
-        metrics: [
-            { label: "Empathy", value: 92 },
-            { label: "Profess.", value: 73, tone: "amber" as const },
-            { label: "Comm.", value: 87 },
-        ],
-        progressLabel: "10 of 52 scenarios",
-        continueHref: "/practice/preview",
-    },
-];
+// Maps the API's iconKey strings to actual Lucide components.
+const iconMap: Record<string, LucideIcon> = {
+    grid: Grid2X2,
+    "file-text": FileText,
+    video: Video,
+    mmi: Grid2X2,
+    casper: FileText,
+    preview: Video,
+};
 
-const quickActions = [
-    { icon: Grid2X2, title: "Full MMI circuit", subtitle: "6 stations · ~48 min", href: "/practice/mmi/full" },
-    { icon: FileText, title: "CASPer full mock", subtitle: "12 sections · ~60 min", href: "/practice/casper/full" },
-    { icon: Video, title: "PREview mock test", subtitle: "8 scenarios · ~24 min", href: "/practice/preview/full" },
-];
+function getIcon(key: string): LucideIcon {
+    return iconMap[key] ?? Grid2X2;
+}
 
-const recentActivity = [
-    { status: "success" as const, title: "MMI Ethical Reasoning", meta: "Q3 · Scored 90/100 · 2h ago", score: 90 },
-    { status: "success" as const, title: "CASPer Full Mock Test", meta: "12 sections · Scored 85/100 · Yesterday", score: 85 },
-    { status: "warning" as const, title: "MMI Role Play", meta: "Q2 · Scored 71/100 · 2 days ago", score: 71 },
-    { status: "success" as const, title: "PREview Communication", meta: "Scenario 2 · Scored 84/100 · 2 days ago", score: 84 },
-];
+interface DashboardApiResponse {
+    track: { id: string; slug: string; label: string };
+    countdown: { daysRemaining: number; prepTimeUsedPercent: number };
+    formats: Array<{
+        iconKey: string;
+        title: string;
+        subtitle: string;
+        score: number;
+        metrics: Array<{ label: string; value: number; tone?: "mint" | "amber" | "coral" | "slate" }>;
+        progressLabel: string;
+        continueHref: string;
+    }>;
+    weakestArea: {
+        eyebrow: string;
+        iconKey: string;
+        title: string;
+        description: string;
+        ctaLabel: string;
+    };
+    quickActions: Array<{ iconKey: string; title: string; subtitle: string; href: string }>;
+    readiness: { overallScore: number; breakdown: Array<{ label: string; value: number }> };
+    recentActivity: Array<{ status: "success" | "warning"; title: string; meta: string; score: number }>;
+    streak: {
+        streakDays: number;
+        message: string;
+        days: Array<{ label: string; completed: boolean; isToday?: boolean }>;
+    };
+}
 
-const streakDays = [
-    { label: "4", completed: false },
-    { label: "5", completed: false },
-    { label: "6", completed: false },
-    { label: "7", completed: false },
-];
+async function getDashboardData(): Promise<DashboardApiResponse> {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+    const cookieStore = await cookies();
+
+    const res = await fetch(`${baseUrl}/api/dashboard`, {
+        cache: "no-store",
+        headers: {
+            cookie: cookieStore.toString(),
+        },
+    });
+
+    if (!res.ok) {
+        throw new Error(`Failed to fetch dashboard data: ${res.status}`);
+    }
+
+    return res.json();
+}
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
     return <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">{children}</p>;
 }
 
 export default async function Dashboard() {
-    const user = await currentUser();
+    const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
     const firstName = user?.firstName ?? "there";
-    
+
+    const WeakestIcon = getIcon(data.weakestArea.iconKey);
+
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
-            <TopBar tracks={tracks} activeTrackId="med-school" />
+            <TopBar tracks={tracks} activeTrackId={data.track.slug} />
 
             <div className="mx-auto max-w-7xl px-6">
                 <div className="mb-8 flex flex-col items-start justify-between gap-6 border-b border-[var(--color-sand)] pb-8 sm:flex-row">
-                    <GreetingHeader name={`${firstName}`} streakDays={3} timeOfDay="morning" />
-                    <CountdownCard daysRemaining={47} prepTimeUsedPercent={62} />
+                    <GreetingHeader name={firstName} streakDays={data.streak.streakDays} timeOfDay="morning" />
+                    <CountdownCard
+                        daysRemaining={data.countdown.daysRemaining}
+                        prepTimeUsedPercent={data.countdown.prepTimeUsedPercent}
+                    />
                 </div>
 
                 <div className="grid grid-cols-1 gap-8 pb-12 lg:grid-cols-3">
                     <section aria-label="Your formats">
                         <SectionLabel>Your formats</SectionLabel>
                         <div className="space-y-6">
-                            {formats.map((format) => (
-                                <FormatCard key={format.title} {...format} />
+                            {data.formats.map((format) => (
+                                <FormatCard key={format.title} {...format} icon={getIcon(format.iconKey)} />
                             ))}
                         </div>
                     </section>
@@ -111,18 +117,18 @@ export default async function Dashboard() {
                         <div>
                             <SectionLabel>Recommended next</SectionLabel>
                             <WeakestAreaCard
-                                eyebrow="Weakest area"
-                                icon={<Grid2X2 />}
-                                title="MMI Role Play"
-                                description="Your lowest station — 71/100 across 4 attempts"
-                                ctaLabel="Start Role Play practice"
+                                eyebrow={data.weakestArea.eyebrow}
+                                icon={<WeakestIcon />}
+                                title={data.weakestArea.title}
+                                description={data.weakestArea.description}
+                                ctaLabel={data.weakestArea.ctaLabel}
                             />
                         </div>
                         <div>
                             <SectionLabel>Quick actions</SectionLabel>
                             <div className="space-y-3">
-                                {quickActions.map((action) => (
-                                    <QuickActionRow key={action.title} {...action} />
+                                {data.quickActions.map((action) => (
+                                    <QuickActionRow key={action.title} {...action} icon={getIcon(action.iconKey)} />
                                 ))}
                             </div>
                         </div>
@@ -131,24 +137,21 @@ export default async function Dashboard() {
                     <section aria-label="Overall readiness" className="space-y-8">
                         <div>
                             <SectionLabel>Overall readiness</SectionLabel>
-                            <ReadinessSummary
-                                overallScore={84}
-                                breakdown={[
-                                    { label: "MMI", value: 84 },
-                                    { label: "CASPer", value: 85 },
-                                    { label: "PREview", value: 84 },
-                                ]}
-                            />
+                            <ReadinessSummary overallScore={data.readiness.overallScore} breakdown={data.readiness.breakdown} />
                         </div>
                         <div>
                             <SectionLabel>Recent activity</SectionLabel>
                             <div className="divide-y divide-[var(--color-sand)] rounded-2xl border border-[var(--color-sand)] bg-white px-5 shadow-sm">
-                                {recentActivity.map((activity) => (
-                                    <ActivityRow key={activity.title} {...activity} />
+                                {data.recentActivity.map((activity, i) => (
+                                    <ActivityRow key={`${activity.title}-${i}`} {...activity} />
                                 ))}
                             </div>
                         </div>
-                        <StreakCard streakDays={3} message="Practice again today to keep it going" days={streakDays} />
+                        <StreakCard
+                            streakDays={data.streak.streakDays}
+                            message={data.streak.message}
+                            days={data.streak.days}
+                        />
                     </section>
                 </div>
             </div>

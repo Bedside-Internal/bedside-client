@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
 import { DevResetOnboardingButton } from "@/components/ui/Devresetonboarding";
+import { SomeComponent } from "@/components/ui/Tokenretrieval";
 
 export const metadata: Metadata = {
   title: "PrepAce — Stop guessing how you'd do. Find out.",
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body className="font-sans bg-cream text-ink">
         <ClerkProvider afterSignOutUrl="/sign-in">
             <CustomCursor />
+            <SomeComponent />
             <DevResetOnboardingButton />
             {children}
           </ClerkProvider>

@@ -64,4 +64,4 @@ export async function resetOnboarding() {
     await client.users.updateUserMetadata(userId, {
       publicMetadata: { onboarding: null },
     });
-  }
+}

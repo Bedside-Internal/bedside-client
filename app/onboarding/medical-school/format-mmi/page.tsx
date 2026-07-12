@@ -1,77 +1,16 @@
 import Image from "next/image";
-import {
-    ArrowRight,
-    CheckCircle2,
-    MessageSquare,
-    GitFork,
-    Users,
-    Share2,
-    User,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 import { StationCard } from "@/components/onboarding/StationCard";
 import { SessionBar } from "@/components/onboarding/SessionBar";
+import { getMmiStations } from "@/lib/api/stations";
+import { resolveIcon } from "@/lib/iconRegistry";
 
-const STATIONS = [
-    {
-        icon: CheckCircle2,
-        title: "Ethical Reasoning",
-        description:
-            "Navigate moral dilemmas in clinical and social contexts with structured frameworks",
-        totalQuestions: 24,
-        completedQuestions: 8,
-        href: "/mmi/ethical-reasoning",
-    },
-    {
-        icon: MessageSquare,
-        title: "Communication",
-        description:
-            "Demonstrate empathy, active listening, and clear articulation under pressure",
-        totalQuestions: 18,
-        completedQuestions: 0,
-        href: "/mmi/communication",
-    },
-    {
-        icon: GitFork,
-        title: "Critical Thinking",
-        description:
-            "Analyse complex scenarios, weigh evidence, and reason to well-structured conclusions",
-        totalQuestions: 20,
-        completedQuestions: 5,
-        href: "/mmi/critical-thinking",
-    },
-    {
-        icon: Users,
-        title: "Role Play",
-        description:
-            "Act as a physician or peer in live scenarios — de-escalate, counsel, and connect",
-        totalQuestions: 16,
-        completedQuestions: 0,
-        href: "/mmi/role-play",
-    },
-    {
-        icon: Share2,
-        title: "Collaboration",
-        description:
-            "Work with a confederate or team to solve a shared problem under observation",
-        totalQuestions: 14,
-        completedQuestions: 12,
-        href: "/mmi/collaboration",
-    },
-    {
-        icon: User,
-        title: "Personal & Reflective",
-        description:
-            "Speak to your motivations, background, and growth with authentic self-awareness",
-        totalQuestions: 22,
-        completedQuestions: 3,
-        href: "/mmi/personal-reflective",
-    },
-];
+export default async function MmiPage() {
+    const stations = await getMmiStations();
 
-export default function MmiPage() {
     return (
         <div className="min-h-screen relative">
             <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
@@ -100,8 +39,8 @@ export default function MmiPage() {
                 />
 
                 <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {STATIONS.map((station) => (
-                        <StationCard key={station.title} {...station} />
+                    {stations.map((station) => (
+                        <StationCard key={station.title} {...station} icon={resolveIcon(station.icon)} />
                     ))}
                 </div>
             </div>

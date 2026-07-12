@@ -1,0 +1,79 @@
+import { auth } from "@clerk/nextjs/server";
+import type {
+    Attempt,
+    QuestionDetail,
+    QuestionListItem,
+    SubmitResponsePayload,
+    SubmitResponseResult,
+} from "@/types/mmi";
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+
+export class MmiApiError extends Error {
+    status: number;
+    payload: unknown;
+
+    constructor(status: number, payload: unknown) {
+        super(`MMI API request failed with status ${status}`);
+        this.status = status;
+        this.payload = payload;
+    }
+}
+
+async function authedFetch<T>(path: string, init?: RequestInit): Promise<T> {
+    const { getToken } = await auth();
+    const token = await getToken();
+
+    const res = await fetch(`${BASE_URL}${path}`, {
+        ...init,
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            ...init?.headers,
+        },
+        cache: "no-store", // per-user progress/attempt state — never cache across users
+    });
+
+    if (!res.ok) {
+        let payload: unknown = null;
+        try {
+            payload = await res.json();
+        } catch {
+            // response had no JSON body
+        }
+        throw new MmiApiError(res.status, payload);
+    }
+
+    return res.json() as Promise<T>;
+}
+
+/** Server-Component-only — call once, when a station page first loads. */
+export async function getStationQuestions(slug: string): Promise<QuestionListItem[]> {
+    return authedFetch<QuestionListItem[]>(
+        `/api/mmi/sections/${encodeURIComponent(slug)}/questions`
+    );
+}
+
+/** Server-Component-only — call once per circuit, before the first question renders. */
+export async function startAttempt(): Promise<Attempt> {
+    return authedFetch<Attempt>("/api/mmi/attempts", { method: "POST" });
+}
+
+/** Server Action — the client StationRunner calls this on Prev/Next. */
+export async function getQuestion(questionId: string): Promise<QuestionDetail> {
+    "use server";
+    return authedFetch<QuestionDetail>(
+        `/api/mmi/questions/${encodeURIComponent(questionId)}`
+    );
+}
+
+/** Server Action — the client StationRunner calls this on submit. */
+export async function submitResponse(
+    payload: SubmitResponsePayload
+): Promise<SubmitResponseResult> {
+    "use server";
+    return authedFetch<SubmitResponseResult>("/api/mmi/responses", {
+        method: "POST",
+        body: JSON.stringify(payload),
+    });
+}

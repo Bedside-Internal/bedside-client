@@ -59,19 +59,17 @@ export async function startAttempt(): Promise<Attempt> {
     return authedFetch<Attempt>("/api/mmi/attempts", { method: "POST" });
 }
 
-/** Server Action — the client StationRunner calls this on Prev/Next. */
+/** Server-only. Client components should call the wrapped version in mmi-actions.ts instead. */
 export async function getQuestion(questionId: string): Promise<QuestionDetail> {
-    "use server";
     return authedFetch<QuestionDetail>(
         `/api/mmi/questions/${encodeURIComponent(questionId)}`
     );
 }
 
-/** Server Action — the client StationRunner calls this on submit. */
+/** Server-only. Client components should call the wrapped version in mmi-actions.ts instead. */
 export async function submitResponse(
     payload: SubmitResponsePayload
 ): Promise<SubmitResponseResult> {
-    "use server";
     return authedFetch<SubmitResponseResult>("/api/mmi/responses", {
         method: "POST",
         body: JSON.stringify(payload),

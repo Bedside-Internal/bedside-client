@@ -3,7 +3,7 @@
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
-import { getQuestion, submitResponse } from "@/lib/api/mmi";
+import { getQuestion, submitResponse } from "@/lib/api/mmi-actions";
 import type { QuestionDetail, QuestionListItem } from "@/types/mmi";
 
 const STATION_LIST_HREF = "/onboarding/medical-school/format-mmi";

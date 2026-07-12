@@ -6,10 +6,24 @@ import { ChecklistIllustration } from "@/components/onboarding/Illustrations/Che
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 import { getFeatures } from "@/lib/features";
 import { resolveIcon } from "@/lib/iconRegistry";
+import { redirect } from "next/navigation";
+import { getOnboardingProgress } from "@/lib/actions";
+
+const validTracks = ["medical-school", "dental-school", /* ... */];
 
 export default async function OnboardingPage() {
+  const progress = await getOnboardingProgress();
+  if (progress?.track && progress?.format) {
+    redirect("/dashboard");
+  }
+  if (progress?.track && validTracks.includes(progress.track)) {
+    redirect(`/onboarding/${progress.track}`);
+  }
+
   const user = await currentUser();
+  
   const firstName = user?.firstName ?? "there";
+  
 
   // Already sorted by `order` server-side. Unavailable tracks are included
   // (not filtered out) — they render as visible-but-disabled "coming soon"

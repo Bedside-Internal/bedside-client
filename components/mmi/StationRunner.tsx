@@ -13,6 +13,7 @@ interface StationRunnerProps {
     stationTitle: string;
     questionIds: QuestionListItem[];
     attemptId: string;
+    initialIndex: number;
     initialQuestion: QuestionDetail;
 }
 
@@ -21,10 +22,11 @@ export function StationRunner({
     stationTitle,
     questionIds,
     attemptId,
+    initialIndex,
     initialQuestion,
 }: StationRunnerProps) {
     const router = useRouter();
-    const [index, setIndex] = useState(0);
+    const [index, setIndex] = useState(initialIndex);
     const [question, setQuestion] = useState<QuestionDetail>(initialQuestion);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -40,12 +42,17 @@ export function StationRunner({
                     const detail = await getQuestion(questionIds[clamped].id);
                     setQuestion(detail);
                     setIndex(clamped);
+                    // Keep the URL in sync — a refresh resumes here instead of
+                    // starting a brand-new attempt at question 1.
+                    router.replace(`/mmi/${slug}?attempt=${attemptId}&q=${clamped}`, {
+                        scroll: false,
+                    });
                 } catch {
                     setError("Couldn't load that question. Try again.");
                 }
             });
         },
-        [index, questionIds]
+        [index, questionIds, slug, attemptId, router]
     );
 
     const handleSubmit = useCallback(
@@ -82,7 +89,8 @@ export function StationRunner({
                 ]}
                 onExit={() => router.push(STATION_LIST_HREF)}
                 onSubmit={handleSubmit}
-                submitting={submitting || isPending}
+                submitting={submitting}
+                navPending={isPending}
                 onPrev={() => goToIndex(index - 1)}
                 onNext={() => goToIndex(index + 1)}
                 hasPrev={index > 0}

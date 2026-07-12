@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, User } from "lucide-react";
-import { Timer } from "@/components/mmi/Timer";
+import { Timer } from "./Timer";
 import { ScenarioPanel } from "./ScenarioPanel";
 import { ResponseComposer } from "./ResponseComposer";
 import type { QuestionDetail } from "@/types/mmi";
@@ -20,6 +20,8 @@ interface QuestionRunnerProps {
     onExit: () => void;
     onSubmit: (text: string) => Promise<void>;
     submitting?: boolean;
+    /** True while a Prev/Next question fetch is in flight — distinct from `submitting`. */
+    navPending?: boolean;
     onPrev?: () => void;
     onNext?: () => void;
     hasPrev?: boolean;
@@ -32,12 +34,23 @@ export function QuestionRunner({
     onExit,
     onSubmit,
     submitting = false,
+    navPending = false,
     onPrev,
     onNext,
     hasPrev = false,
     hasNext = false,
 }: QuestionRunnerProps) {
     const [phase, setPhase] = useState<Phase>("reading");
+
+    // Once responding starts, Prev/Next are locked until the response is
+    // submitted — otherwise navigating away silently drops what's typed.
+    const navLocked = phase === "responding" || navPending;
+    const navLockedReason =
+        phase === "responding"
+            ? "Submit your response before moving on"
+            : navPending
+            ? "Loading…"
+            : undefined;
 
     // A new question always starts back at the reading phase.
     useEffect(() => {
@@ -98,8 +111,9 @@ export function QuestionRunner({
                     <div className="mt-8 flex items-center gap-3">
                         <button
                             type="button"
-                            disabled={!hasPrev}
+                            disabled={!hasPrev || navLocked}
                             onClick={onPrev}
+                            title={navLockedReason}
                             className="flex items-center gap-1 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
                         >
                             <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
@@ -107,8 +121,9 @@ export function QuestionRunner({
                         </button>
                         <button
                             type="button"
-                            disabled={!hasNext}
+                            disabled={!hasNext || navLocked}
                             onClick={onNext}
+                            title={navLockedReason}
                             className="flex items-center gap-1 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
                         >
                             Next

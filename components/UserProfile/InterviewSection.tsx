@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Switch } from "@/components/ui/Switch";
+import { toast } from "sonner";
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -185,9 +186,13 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
       const merged = isInterviewSetupInput(json) ? json : data;
       setData(merged);
       setInitial(merged);
+      toast.success("Interview setup saved");
       await onSave?.(merged);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save interview setup");
+      const message =
+        err instanceof Error ? err.message : "Failed to save interview setup";
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Minus, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 const DAYS = [
   { id: "sun", label: "S" },
@@ -193,9 +194,13 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
       const merged = isGoalsScheduleInput(json) ? json : data;
       setData(merged);
       setInitial(merged);
+      toast.success("Goals & schedule saved");
       await onSave?.(merged);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save goals & schedule");
+      const message =
+        err instanceof Error ? err.message : "Failed to save goals & schedule";
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }

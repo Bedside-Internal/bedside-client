@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/Switch";
+import { toast } from "sonner";
 
 // Same pattern as page.tsx's getDashboardData — the API may not be same-origin.
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
@@ -164,9 +165,13 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
       const built = buildSettings(isNotificationSettingsInput(json) ? json : payload);
       setSettings(built);
       setInitial(built);
+      toast.success("Notification settings saved");
       await onSave?.(toEnabledMap(built));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save notifications");
+      const message =
+        err instanceof Error ? err.message : "Failed to save notifications";
+      setError(message);
+      toast.error(message);
     } finally {
       setSaving(false);
     }

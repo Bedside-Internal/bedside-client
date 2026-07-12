@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { dmSans, instrumentSerif } from "@/lib/fonts";
 import { ClerkProvider } from '@clerk/nextjs'
+import { Toaster } from "sonner";
 import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
 import { DevResetOnboardingButton } from "@/components/ui/Devresetonboarding";
@@ -25,6 +26,7 @@ export default function RootLayout({
             <SomeComponent />
             <DevResetOnboardingButton />
             {children}
+            <Toaster richColors position="top-right" />
           </ClerkProvider>
       </body>
     </html>

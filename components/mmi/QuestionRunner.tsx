@@ -99,7 +99,7 @@ export function QuestionRunner({
             </div>
 
             <div className="grid grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
-                <div className="flex flex-col">
+                <div className="flex flex-col lg:min-h-[600px]">
                     <ScenarioPanel
                         text={question.scenario.text}
                         footerHint={

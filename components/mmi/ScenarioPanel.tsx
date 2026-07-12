@@ -5,7 +5,7 @@ interface ScenarioPanelProps {
 
 export function ScenarioPanel({ text, footerHint }: ScenarioPanelProps) {
     return (
-        <div className="flex h-full flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between">
             <div>
                 <span className="text-xs font-semibold tracking-[0.2em] text-[var(--color-ink)]/45">
                     SCENARIO

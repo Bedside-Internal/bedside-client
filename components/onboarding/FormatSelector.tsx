@@ -2,46 +2,22 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight, Users, Grid2x2, Monitor, Video, type LucideIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SelectableCard } from "./SelectableCard";
 import { saveFormat } from "@/lib/actions";
+import { resolveIcon } from "@/lib/iconRegistry";
+import type { PublicFeature } from "@/lib/features";
 
-interface Format {
-    id: string;
-    icon: LucideIcon;
-    title: string;
-    description: string;
-    disabled?: boolean;
+interface FormatSelectorProps {
+    track?: string;
+    // Fetched server-side by the parent page via getFeatures("format", toTrackId(track))
+    // and passed down — this component itself never talks to the API directly,
+    // since it's a client component and the features endpoint requires
+    // server-side Clerk auth forwarding.
+    formats: PublicFeature[];
 }
 
-const formats: Format[] = [
-    {
-        id: "traditional",
-        icon: Users,
-        title: "Traditional",
-        description: "Panel & one-on-one interviews with faculty or an admissions committee",
-    },
-    {
-        id: "mmi",
-        icon: Grid2x2,
-        title: "MMI",
-        description: "Multiple Mini Interviews — timed ethical and situational stations in a circuit",
-    },
-    {
-        id: "casper",
-        icon: Monitor,
-        title: "CASPer",
-        description: "Situational Judgment Test — written and video responses completed online",
-    },
-    {
-        id: "preview",
-        icon: Video,
-        title: "PREview",
-        description: "Professional Readiness Evaluation — video-based assessment by Acuity Insights",
-    },
-];
-
-export function FormatSelector({ track = "medical-school" }: { track?: string }) {
+export function FormatSelector({ track = "medical-school", formats }: FormatSelectorProps) {
     const [selected, setSelected] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
@@ -59,14 +35,14 @@ export function FormatSelector({ track = "medical-school" }: { track?: string })
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {formats.map((format) => (
                     <SelectableCard
-                        key={format.id}
+                        key={format.key}
                         variant="vertical"
-                        icon={format.icon}
+                        icon={resolveIcon(format.icon)}
                         title={format.title}
-                        description={format.description}
-                        disabled={format.disabled}
-                        selected={selected === format.id}
-                        onSelect={format.disabled ? undefined : () => setSelected(format.id)}
+                        description={format.subtitle}
+                        disabled={!format.available}
+                        selected={selected === format.key}
+                        onSelect={format.available ? () => setSelected(format.key) : undefined}
                     />
                 ))}
             </div>

@@ -2,11 +2,15 @@ import Image from "next/image";
 import { FormatSelector } from "@/components/onboarding/FormatSelector";
 import { NurseIllustration } from "@/components/onboarding/Illustrations/NurseIllustration";
 import { saveTrack } from "@/lib/actions";
+import { getFeatures, toTrackId } from "@/lib/features";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 import { SessionBar } from "@/components/onboarding/SessionBar";
 
 export default async function MedicalSchoolFormatPage() {
-    await saveTrack("medical-school");
+    const [, formats] = await Promise.all([
+        saveTrack("medical-school"),
+        getFeatures("format", toTrackId("medical-school")),
+    ]);
 
     return (
         <div className="relative min-h-screen overflow-hidden bg-slate-50">
@@ -34,7 +38,7 @@ export default async function MedicalSchoolFormatPage() {
                     />
                 </div>
 
-                <FormatSelector />
+                <FormatSelector track="medical-school" formats={formats} />
             </main>
         </div>
     );

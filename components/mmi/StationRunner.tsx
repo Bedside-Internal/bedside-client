@@ -4,7 +4,7 @@ import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
 import { getQuestion, submitResponse } from "@/lib/api/mmi-actions";
-import type { QuestionDetail, QuestionListItem } from "@/types/mmi";
+import type { QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/mmi";
 
 const STATION_LIST_HREF = "/onboarding/medical-school/format-mmi";
 
@@ -30,6 +30,7 @@ export function StationRunner({
     const [question, setQuestion] = useState<QuestionDetail>(initialQuestion);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [feedback, setFeedback] = useState<ResponseFeedback | null>(null);
     const [isPending, startTransition] = useTransition();
 
     const goToIndex = useCallback(
@@ -37,13 +38,12 @@ export function StationRunner({
             const clamped = Math.max(0, Math.min(questionIds.length - 1, nextIndex));
             if (clamped === index) return;
             setError(null);
+            setFeedback(null); // clear stale feedback before the new question loads
             startTransition(async () => {
                 try {
                     const detail = await getQuestion(questionIds[clamped].id);
                     setQuestion(detail);
                     setIndex(clamped);
-                    // Keep the URL in sync — a refresh resumes here instead of
-                    // starting a brand-new attempt at question 1.
                     router.replace(`/mmi/${slug}?attempt=${attemptId}&q=${clamped}`, {
                         scroll: false,
                     });
@@ -60,7 +60,8 @@ export function StationRunner({
             setSubmitting(true);
             setError(null);
             try {
-                await submitResponse({ attemptId, questionId: question.id, text });
+                const result = await submitResponse({ attemptId, questionId: question.id, text });
+                setFeedback(result.feedback);
             } catch {
                 setError(
                     "Couldn't submit that response — your answer is still here, try again."
@@ -90,6 +91,7 @@ export function StationRunner({
                 onExit={() => router.push(STATION_LIST_HREF)}
                 onSubmit={handleSubmit}
                 submitting={submitting}
+                feedback={feedback}
                 navPending={isPending}
                 onPrev={() => goToIndex(index - 1)}
                 onNext={() => goToIndex(index + 1)}

@@ -1,14 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import {
-    ArrowRight,
-    ChevronDown,
-    Lock,
-    Mic,
-    PenLine,
-    Video,
-} from "lucide-react";
+import { ArrowRight, ChevronDown, Mic, PenLine, Video } from "lucide-react";
+import { AudioRecorder } from "./AudioRecorder";
+import { VideoRecorder } from "./VideoRecorder";
 
 export type ComposerMode = "written" | "audio" | "video";
 
@@ -16,17 +11,16 @@ interface ModeConfig {
     id: ComposerMode;
     label: string;
     icon: typeof PenLine;
-    enabled: boolean;
 }
 
 const MODES: ModeConfig[] = [
-    { id: "written", label: "Write", icon: PenLine, enabled: true },
-    { id: "audio", label: "Audio", icon: Mic, enabled: false },
-    { id: "video", label: "Video", icon: Video, enabled: false },
+    { id: "written", label: "Write", icon: PenLine },
+    { id: "audio", label: "Audio", icon: Mic },
+    { id: "video", label: "Video", icon: Video },
 ];
 
-const DISABLED_TITLE =
-    "Coming soon — recording needs storage we're still setting up";
+const SUBMIT_DISABLED_TITLE =
+    "Submitting audio/video is coming soon — recording works, feedback wiring is next";
 
 interface ResponseComposerProps {
     guidanceNote?: string;
@@ -44,6 +38,10 @@ export function ResponseComposer({
     const [mode, setMode] = useState<ComposerMode>("written");
     const [text, setText] = useState("");
     const [hintsOpen, setHintsOpen] = useState(false);
+    // Recorded blobs live here so a later pass can wire them into submit —
+    // not used for anything yet.
+    const [, setAudioBlob] = useState<Blob | null>(null);
+    const [, setVideoBlob] = useState<Blob | null>(null);
 
     const wordCount = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
     const canSubmit = mode === "written" && wordCount >= minWords && !submitting;
@@ -51,27 +49,22 @@ export function ResponseComposer({
     return (
         <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-                {MODES.map(({ id, label, icon: Icon, enabled }) => {
+                {MODES.map(({ id, label, icon: Icon }) => {
                     const active = mode === id;
                     return (
                         <button
                             key={id}
                             type="button"
-                            disabled={!enabled}
-                            title={enabled ? undefined : DISABLED_TITLE}
-                            onClick={() => enabled && setMode(id)}
+                            onClick={() => setMode(id)}
                             className={[
                                 "flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-semibold transition",
                                 active
                                     ? "bg-[var(--color-mint)] text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)]"
-                                    : enabled
-                                    ? "bg-white text-[var(--color-ink)] hover:bg-[var(--color-sand)]"
-                                    : "cursor-not-allowed bg-[var(--color-sand)] text-[var(--color-ink)]/35",
+                                    : "bg-white text-[var(--color-ink)] hover:bg-[var(--color-sand)]",
                             ].join(" ")}
                         >
                             <Icon className="h-4 w-4" strokeWidth={2.25} />
                             {label}
-                            {!enabled && <Lock className="h-3 w-3" strokeWidth={2.5} />}
                         </button>
                     );
                 })}
@@ -94,6 +87,10 @@ export function ResponseComposer({
                     </div>
                 </div>
             )}
+
+            {mode === "audio" && <AudioRecorder onRecordingChange={setAudioBlob} />}
+
+            {mode === "video" && <VideoRecorder onRecordingChange={setVideoBlob} />}
 
             {guidanceNote && (
                 <div className="rounded-xl border border-[var(--color-ink)]/10 bg-white">
@@ -121,6 +118,7 @@ export function ResponseComposer({
             <button
                 type="button"
                 disabled={!canSubmit}
+                title={mode !== "written" ? SUBMIT_DISABLED_TITLE : undefined}
                 onClick={() => canSubmit && onSubmit(text)}
                 className="flex items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:opacity-40"
             >

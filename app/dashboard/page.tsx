@@ -53,7 +53,7 @@ interface DashboardApiResponse {
         title: string;
         description: string;
         ctaLabel: string;
-    };
+    } | null;
     quickActions: Array<{ iconKey: string; title: string; subtitle: string; href: string }>;
     readiness: { overallScore: number; breakdown: Array<{ label: string; value: number }> };
     recentActivity: Array<{ status: "success" | "warning"; title: string; meta: string; score: number }>;
@@ -90,13 +90,13 @@ export default async function Dashboard() {
     const progress = await getOnboardingProgress();
 
     if (!progress?.track || !progress?.format) {
-      redirect("/onboarding");
+        redirect("/onboarding");
     }
-    
+
     const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
     const firstName = user?.firstName ?? "there";
 
-    const WeakestIcon = getIcon(data.weakestArea.iconKey);
+    const WeakestIcon = data.weakestArea ? getIcon(data.weakestArea.iconKey) : null;
 
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
@@ -122,16 +122,18 @@ export default async function Dashboard() {
                     </section>
 
                     <section aria-label="Recommended next" className="space-y-8">
-                        <div>
-                            <SectionLabel>Recommended next</SectionLabel>
-                            <WeakestAreaCard
-                                eyebrow={data.weakestArea.eyebrow}
-                                icon={<WeakestIcon />}
-                                title={data.weakestArea.title}
-                                description={data.weakestArea.description}
-                                ctaLabel={data.weakestArea.ctaLabel}
-                            />
-                        </div>
+                        {data.weakestArea && WeakestIcon && (
+                            <div>
+                                <SectionLabel>Recommended next</SectionLabel>
+                                <WeakestAreaCard
+                                    eyebrow={data.weakestArea.eyebrow}
+                                    icon={<WeakestIcon />}
+                                    title={data.weakestArea.title}
+                                    description={data.weakestArea.description}
+                                    ctaLabel={data.weakestArea.ctaLabel}
+                                />
+                            </div>
+                        )}
                         <div>
                             <SectionLabel>Quick actions</SectionLabel>
                             <div className="space-y-3">

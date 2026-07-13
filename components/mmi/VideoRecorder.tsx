@@ -5,7 +5,6 @@ import { RotateCcw, Video as VideoIcon } from "lucide-react";
 import { formatDuration, useMediaRecorder } from "./useMediaRecorder";
 
 interface VideoRecorderProps {
-    /** Fires whenever the recorded blob changes — wire this to submit later. */
     onRecordingChange?: (blob: Blob | null) => void;
 }
 
@@ -13,6 +12,7 @@ export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
     const { status, error, mediaBlobUrl, mediaBlob, durationSeconds, liveStream, start, stop, reset } =
         useMediaRecorder({ kind: "video" });
     const liveRef = useRef<HTMLVideoElement | null>(null);
+    const playbackRef = useRef<HTMLVideoElement | null>(null);
 
     useEffect(() => {
         if (liveRef.current) liveRef.current.srcObject = liveStream;
@@ -22,6 +22,34 @@ export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
         onRecordingChange?.(mediaBlob);
     }, [mediaBlob, onRecordingChange]);
 
+    // MediaRecorder's webm output frequently has no duration in its metadata —
+    // Chrome reports duration: Infinity and paints nothing but a black frame.
+    // Seeking once past the end and back forces a real duration + first frame.
+    useEffect(() => {
+        const videoEl = playbackRef.current;
+        if (!videoEl || !mediaBlobUrl) return;
+
+        const fixDuration = () => {
+            if (!Number.isFinite(videoEl.duration) || videoEl.duration === 0) {
+                videoEl.currentTime = 1e101;
+                const handleSeeked = () => {
+                    videoEl.currentTime = 0;
+                    videoEl.removeEventListener("seeked", handleSeeked);
+                };
+                videoEl.addEventListener("seeked", handleSeeked);
+            }
+        };
+
+        if (videoEl.readyState >= 1) {
+            // HAVE_METADATA or higher already — the event already fired, run now.
+            fixDuration();
+        } else {
+            videoEl.addEventListener("loadedmetadata", fixDuration, { once: true });
+        }
+
+        return () => videoEl.removeEventListener("loadedmetadata", fixDuration);
+    }, [mediaBlobUrl]);
+
     const recording = status === "recording";
     const recorded = status === "recorded" && mediaBlobUrl;
 
@@ -29,10 +57,17 @@ export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
         <div className="flex flex-col gap-3">
             <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-[var(--color-ink)]">
                 {recorded ? (
-                    <video controls src={mediaBlobUrl} className="h-full w-full object-cover" />
+                    <video
+                        key="playback"
+                        ref={playbackRef}
+                        controls
+                        playsInline
+                        src={mediaBlobUrl}
+                        className="h-full w-full object-cover"
+                    />
                 ) : recording ? (
                     <>
-                        <video ref={liveRef} autoPlay muted playsInline className="h-full w-full object-cover" />
+                        <video key="live" ref={liveRef} autoPlay muted playsInline className="h-full w-full object-cover" />
                         <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-[var(--color-coral)] px-2.5 py-1 text-xs font-bold text-white">
                             <span className="h-1.5 w-1.5 rounded-full bg-white" />
                             REC {formatDuration(durationSeconds)}

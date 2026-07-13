@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import fixWebmDuration from "fix-webm-duration";
 
 export type RecorderStatus =
     | "idle"
@@ -55,6 +56,7 @@ export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRec
         setLiveStream(null);
     }, []);
 
+    const startedAtRef = useRef<number>(0);
     const start = useCallback(async () => {
         setError(null);
         setStatus("requesting");
@@ -68,8 +70,7 @@ export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRec
         setMediaBlob(null);
 
         try {
-            const constraints: MediaStreamConstraints =
-                kind === "video" ? { audio: true, video: true } : { audio: true };
+            const constraints: MediaStreamConstraints = kind === "video" ? { audio: true, video: true } : { audio: true };
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
             streamRef.current = stream;
             if (kind === "video") setLiveStream(stream);
@@ -80,18 +81,33 @@ export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRec
                 mimeType ? { mimeType } : undefined
             );
             chunksRef.current = [];
+            console.log("MediaRecorder using mimeType:", recorder.mimeType, "| requested:", mimeType);
 
             recorder.ondataavailable = (event) => {
                 if (event.data.size > 0) chunksRef.current.push(event.data);
             };
 
-            recorder.onstop = () => {
-                const blob = new Blob(chunksRef.current, {
-                    type: mimeType ?? (kind === "video" ? "video/webm" : "audio/webm"),
-                });
-                const url = URL.createObjectURL(blob);
+            recorder.onstop = async () => {
+                const resolvedType = mimeType ?? (kind === "video" ? "video/webm" : "audio/webm");
+                const rawBlob = new Blob(chunksRef.current, { type: resolvedType });
+
+                const elapsedMs = Date.now() - startedAtRef.current;
+                
+                // Chrome's MediaRecorder omits the duration/cues index from webm
+                // output, so <video>.duration stays Infinity forever — patch the
+                // real elapsed time into the blob's EBML header directly.
+                let finalBlob = rawBlob;
+                if (kind === "video" && resolvedType.includes("webm")) {
+                    try {
+                        finalBlob = await fixWebmDuration(rawBlob, elapsedMs);
+                    } catch {
+                        finalBlob = rawBlob; // patch failed — fall back to the raw blob rather than losing the recording
+                    }
+                }
+
+                const url = URL.createObjectURL(finalBlob);
                 urlRef.current = url;
-                setMediaBlob(blob);
+                setMediaBlob(finalBlob);
                 setMediaBlobUrl(url);
                 setStatus("recorded");
                 clearTimer();
@@ -100,6 +116,7 @@ export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRec
 
             recorder.start();
             recorderRef.current = recorder;
+            startedAtRef.current = Date.now();
             setDurationSeconds(0);
             setStatus("recording");
             timerRef.current = setInterval(() => {

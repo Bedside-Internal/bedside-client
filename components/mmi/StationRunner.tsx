@@ -3,8 +3,8 @@
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
-import { getQuestion, submitResponse } from "@/lib/api/mmi-actions";
-import type { QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/mmi";
+import { getQuestion, submitMediaResponse, submitResponse } from "@/lib/api/mmi-actions";
+import type { ComposePayload, QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/mmi";
 
 const STATION_LIST_HREF = "/onboarding/medical-school/format-mmi";
 
@@ -56,12 +56,22 @@ export function StationRunner({
     );
 
     const handleSubmit = useCallback(
-        async (text: string) => {
+        async (payload: ComposePayload) => {
             setSubmitting(true);
             setError(null);
             try {
-                const result = await submitResponse({ attemptId, questionId: question.id, text });
-                setFeedback(result.feedback);
+                if (payload.mode === "written") {
+                    const result = await submitResponse({ attemptId, questionId: question.id, text: payload.text });
+                    setFeedback(result.feedback);
+                } else {
+                    const formData = new FormData();
+                    formData.set("attemptId", attemptId);
+                    formData.set("questionId", question.id);
+                    formData.set("mediaType", payload.mode);
+                    formData.set("media", payload.blob);
+                    const result = await submitMediaResponse(formData);
+                    setFeedback(result.feedback);
+                }
             } catch {
                 setError(
                     "Couldn't submit that response — your answer is still here, try again."

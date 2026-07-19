@@ -58,3 +58,14 @@ export interface SubmitResponseResult {
     responseDocId: string;
     feedback: ResponseFeedback | null;
 }
+
+export type ComposePayload =
+    | { mode: "written"; text: string }
+    | { mode: "audio" | "video"; blob: Blob };
+
+export interface SubmitMediaResponsePayload {
+    attemptId: string;
+    questionId: string;
+    mediaType: "audio" | "video";
+    blob: Blob;
+}

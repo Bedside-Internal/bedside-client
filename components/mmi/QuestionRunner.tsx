@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, User } from "lucide-react";
 import { Timer } from "./Timer";
 import { ScenarioPanel } from "./ScenarioPanel";
 import { ResponseComposer } from "./ResponseComposer";
-import type { QuestionDetail, ResponseFeedback } from "@/types/mmi";
+import type { ComposePayload, QuestionDetail, ResponseFeedback } from "@/types/mmi";
 
 type Phase = "reading" | "responding" | "submitted";
 
@@ -18,7 +18,7 @@ interface QuestionRunnerProps {
     question: QuestionDetail;
     breadcrumb: Crumb[];
     onExit: () => void;
-    onSubmit: (text: string) => Promise<void>;
+    onSubmit: (payload: ComposePayload) => Promise<void>;
     submitting?: boolean;
     feedback: ResponseFeedback | null;
     navPending?: boolean;
@@ -55,9 +55,9 @@ export function QuestionRunner({
         setPhase("reading");
     }, [question.id]);
 
-    async function handleSubmit(text: string) {
+    async function handleSubmit(payload: ComposePayload) {
         try {
-            await onSubmit(text);
+            await onSubmit(payload);
             setPhase("submitted");
         } catch {
             // Parent (StationRunner) surfaces the error; stay in the responding phase.
@@ -170,7 +170,7 @@ export function QuestionRunner({
                     )}
 
                     {phase === "submitted" && (
-                        <div className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
+                         <div className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
                             {feedback ? (
                                 <>
                                     <div className="flex items-center justify-between">

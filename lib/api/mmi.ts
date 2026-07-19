@@ -3,6 +3,7 @@ import type {
     Attempt,
     QuestionDetail,
     QuestionListItem,
+    SubmitMediaResponsePayload,
     SubmitResponsePayload,
     SubmitResponseResult,
 } from "@/types/mmi";
@@ -24,14 +25,16 @@ async function authedFetch<T>(path: string, init?: RequestInit): Promise<T> {
     const { getToken } = await auth();
     const token = await getToken();
 
+    const isFormData = init?.body instanceof FormData;
+
     const res = await fetch(`${BASE_URL}${path}`, {
         ...init,
         headers: {
-            "Content-Type": "application/json",
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
             Authorization: `Bearer ${token}`,
             ...init?.headers,
         },
-        cache: "no-store", // per-user progress/attempt state — never cache across users
+        cache: "no-store",
     });
 
     if (!res.ok) {
@@ -73,5 +76,20 @@ export async function submitResponse(
     return authedFetch<SubmitResponseResult>("/api/mmi/responses", {
         method: "POST",
         body: JSON.stringify(payload),
+    });
+}
+
+export async function submitMediaResponse(
+    payload: SubmitMediaResponsePayload
+): Promise<SubmitResponseResult> {
+    const formData = new FormData();
+    formData.set("attemptId", payload.attemptId);
+    formData.set("questionId", payload.questionId);
+    formData.set("mediaType", payload.mediaType);
+    formData.set("media", payload.blob); // field name must match multer's upload.single("media")
+
+    return authedFetch<SubmitResponseResult>("/api/mmi/responses/media", {
+        method: "POST",
+        body: formData,
     });
 }

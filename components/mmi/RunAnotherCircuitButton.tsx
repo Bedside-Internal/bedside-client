@@ -1,0 +1,28 @@
+"use client";
+
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { startCircuit } from "@/lib/api/circuit-actions";
+
+export function RunAnotherCircuitButton() {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  function handleClick() {
+    startTransition(async () => {
+      const attempt = await startCircuit();
+      router.push(`/mmi/circuit/run?attempt=${attempt.attemptId}&station=0&phase=question`);
+    });
+  }
+
+  return (
+    <button
+      type="button"
+      disabled={isPending}
+      onClick={handleClick}
+      className="rounded-xl bg-[var(--color-mint)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-mint-hover)] disabled:opacity-50"
+    >
+      {isPending ? "Starting…" : "Run another circuit →"}
+    </button>
+  );
+}

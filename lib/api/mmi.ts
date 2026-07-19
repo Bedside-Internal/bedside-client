@@ -7,6 +7,7 @@ import type {
     SubmitResponsePayload,
     SubmitResponseResult,
 } from "@/types/mmi";
+import { CircuitAttemptState, CircuitPreview, CircuitResults } from "@/types/circuit";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 

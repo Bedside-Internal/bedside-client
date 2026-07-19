@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, User } from "lucide-react";
 import { Timer } from "./Timer";
 import { ScenarioPanel } from "./ScenarioPanel";
 import { ResponseComposer } from "./ResponseComposer";
-import type { QuestionDetail } from "@/types/mmi";
+import type { ComposePayload, QuestionDetail, ResponseFeedback } from "@/types/mmi";
 
 type Phase = "reading" | "responding" | "submitted";
 
@@ -18,9 +18,9 @@ interface QuestionRunnerProps {
     question: QuestionDetail;
     breadcrumb: Crumb[];
     onExit: () => void;
-    onSubmit: (text: string) => Promise<void>;
+    onSubmit: (payload: ComposePayload) => Promise<void>;
     submitting?: boolean;
-    /** True while a Prev/Next question fetch is in flight — distinct from `submitting`. */
+    feedback: ResponseFeedback | null;
     navPending?: boolean;
     onPrev?: () => void;
     onNext?: () => void;
@@ -34,6 +34,7 @@ export function QuestionRunner({
     onExit,
     onSubmit,
     submitting = false,
+    feedback,
     navPending = false,
     onPrev,
     onNext,
@@ -42,8 +43,6 @@ export function QuestionRunner({
 }: QuestionRunnerProps) {
     const [phase, setPhase] = useState<Phase>("reading");
 
-    // Once responding starts, Prev/Next are locked until the response is
-    // submitted — otherwise navigating away silently drops what's typed.
     const navLocked = phase === "responding" || navPending;
     const navLockedReason =
         phase === "responding"
@@ -52,14 +51,13 @@ export function QuestionRunner({
             ? "Loading…"
             : undefined;
 
-    // A new question always starts back at the reading phase.
     useEffect(() => {
         setPhase("reading");
     }, [question.id]);
 
-    async function handleSubmit(text: string) {
+    async function handleSubmit(payload: ComposePayload) {
         try {
-            await onSubmit(text);
+            await onSubmit(payload);
             setPhase("submitted");
         } catch {
             // Parent (StationRunner) surfaces the error; stay in the responding phase.
@@ -172,19 +170,75 @@ export function QuestionRunner({
                     )}
 
                     {phase === "submitted" && (
-                        <div className="flex w-full max-w-xl flex-col items-center gap-3 rounded-2xl bg-white px-8 py-12 text-center shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
-                            <span className="text-lg font-semibold text-[var(--color-ink)]">
-                                Response submitted
-                            </span>
-                            <p className="text-sm text-[var(--color-ink)]/60">
-                                AI feedback for this station is on its way — for now, move on
-                                to the next question whenever you&apos;re ready.
-                            </p>
+                         <div className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
+                            {feedback ? (
+                                <>
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-lg font-semibold text-[var(--color-ink)]">
+                                            Response submitted
+                                        </span>
+                                        <span className="rounded-full bg-[var(--color-mint)]/10 px-3 py-1 text-sm font-bold text-[var(--color-mint-hover)]">
+                                            {feedback.overallScore}/100
+                                        </span>
+                                    </div>
+                                    <p className="text-sm leading-relaxed text-[var(--color-ink)]/70">
+                                        {feedback.summary}
+                                    </p>
+                                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                        {feedback.dimensionScores.map((d) => (
+                                            <div
+                                                key={d.label}
+                                                className="rounded-xl bg-[var(--color-sand)] px-4 py-3"
+                                            >
+                                                <div className="flex items-center justify-between text-sm font-semibold text-[var(--color-ink)]">
+                                                    <span>{d.label}</span>
+                                                    <span>{d.score}/10</span>
+                                                </div>
+                                                <p className="mt-1 text-xs text-[var(--color-ink)]/60">
+                                                    {d.rationale}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-mint-hover)]">
+                                                Strengths
+                                            </p>
+                                            <ul className="mt-1 space-y-1 text-sm text-[var(--color-ink)]/70">
+                                                {feedback.strengths.map((s, i) => (
+                                                    <li key={i}>• {s}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-coral)]">
+                                                Areas to improve
+                                            </p>
+                                            <ul className="mt-1 space-y-1 text-sm text-[var(--color-ink)]/70">
+                                                {feedback.areasToImprove.map((s, i) => (
+                                                    <li key={i}>• {s}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="text-center">
+                                    <span className="text-lg font-semibold text-[var(--color-ink)]">
+                                        Response submitted
+                                    </span>
+                                    <p className="mt-2 text-sm text-[var(--color-ink)]/60">
+                                        We saved your response, but AI feedback couldn&apos;t be
+                                        generated this time.
+                                    </p>
+                                </div>
+                            )}
                             {hasNext && (
                                 <button
                                     type="button"
                                     onClick={onNext}
-                                    className="mt-3 flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--color-mint-hover)]"
+                                    className="mt-1 flex items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--color-mint-hover)]"
                                 >
                                     Next question
                                     <ArrowRight className="h-4 w-4" strokeWidth={2.5} />

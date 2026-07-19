@@ -38,3 +38,34 @@ export interface SubmitResponseResult {
 export interface ApiErrorPayload {
     error: unknown;
 }
+
+export interface DimensionScore {
+    label: string;
+    score: number;
+    rationale: string;
+}
+
+export interface ResponseFeedback {
+    overallScore: number;
+    dimensionScores: DimensionScore[];
+    strengths: string[];
+    areasToImprove: string[];
+    summary: string;
+}
+
+export interface SubmitResponseResult {
+    responseId: string;
+    responseDocId: string;
+    feedback: ResponseFeedback | null;
+}
+
+export type ComposePayload =
+    | { mode: "written"; text: string }
+    | { mode: "audio" | "video"; blob: Blob };
+
+export interface SubmitMediaResponsePayload {
+    attemptId: string;
+    questionId: string;
+    mediaType: "audio" | "video";
+    blob: Blob;
+}

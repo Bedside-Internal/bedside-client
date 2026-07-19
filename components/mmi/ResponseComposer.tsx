@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowRight, ChevronDown, Mic, PenLine, Video } from "lucide-react";
 import { AudioRecorder } from "./AudioRecorder";
 import { VideoRecorder } from "./VideoRecorder";
+import { ComposePayload } from "@/types/mmi";
 
 export type ComposerMode = "written" | "audio" | "video";
 
@@ -19,14 +20,11 @@ const MODES: ModeConfig[] = [
     { id: "video", label: "Video", icon: Video },
 ];
 
-const SUBMIT_DISABLED_TITLE =
-    "Submitting audio/video is coming soon — recording works, feedback wiring is next";
-
 interface ResponseComposerProps {
     guidanceNote?: string;
     minWords?: number;
     submitting?: boolean;
-    onSubmit: (text: string) => void;
+    onSubmit: (payload: ComposePayload) => void;
 }
 
 export function ResponseComposer({
@@ -38,13 +36,26 @@ export function ResponseComposer({
     const [mode, setMode] = useState<ComposerMode>("written");
     const [text, setText] = useState("");
     const [hintsOpen, setHintsOpen] = useState(false);
-    // Recorded blobs live here so a later pass can wire them into submit —
-    // not used for anything yet.
-    const [, setAudioBlob] = useState<Blob | null>(null);
-    const [, setVideoBlob] = useState<Blob | null>(null);
+    const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+    const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
 
     const wordCount = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
-    const canSubmit = mode === "written" && wordCount >= minWords && !submitting;
+    const canSubmit =
+        mode === "written"
+            ? wordCount >= minWords
+            : mode === "audio"
+                ? audioBlob !== null
+                : videoBlob !== null;
+
+    function handleSubmitClick() {
+        if (mode === "written") {
+            onSubmit({ mode: "written", text });
+        } else if (mode === "audio" && audioBlob) {
+            onSubmit({ mode: "audio", blob: audioBlob });
+        } else if (mode === "video" && videoBlob) {
+            onSubmit({ mode: "video", blob: videoBlob });
+        }
+    }
 
     return (
         <div className="flex flex-col gap-4">
@@ -89,7 +100,6 @@ export function ResponseComposer({
             )}
 
             {mode === "audio" && <AudioRecorder onRecordingChange={setAudioBlob} />}
-
             {mode === "video" && <VideoRecorder onRecordingChange={setVideoBlob} />}
 
             {guidanceNote && (
@@ -101,9 +111,8 @@ export function ResponseComposer({
                     >
                         Hints
                         <ChevronDown
-                            className={`h-4 w-4 transition-transform ${
-                                hintsOpen ? "rotate-180" : ""
-                            }`}
+                            className={`h-4 w-4 transition-transform ${hintsOpen ? "rotate-180" : ""
+                                }`}
                             strokeWidth={2.5}
                         />
                     </button>
@@ -118,8 +127,14 @@ export function ResponseComposer({
             <button
                 type="button"
                 disabled={!canSubmit}
-                title={mode !== "written" ? SUBMIT_DISABLED_TITLE : undefined}
-                onClick={() => canSubmit && onSubmit(text)}
+                title={
+                    !canSubmit
+                        ? mode === "written"
+                            ? `Write at least ${minWords} words to submit`
+                            : "Record a response before submitting"
+                        : undefined
+                }
+                onClick={handleSubmitClick}
                 className="flex items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:opacity-40"
             >
                 {submitting ? "Submitting…" : "Submit & get AI feedback"}

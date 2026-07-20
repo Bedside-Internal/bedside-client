@@ -5,10 +5,12 @@ interface StationCardProps {
   icon: LucideIcon;
   title: string;
   description: string;
-  /** Total questions available in this station's bank. */
+  /** Total questions/scenarios available in this station's bank. */
   totalQuestions: number;
   /** How many the user has completed. 0 or omitted renders as "Not started". */
   completedQuestions?: number;
+  /** Unit noun shown in the count pill and caption. Defaults to "questions". */
+  unitLabel?: string;
   /** Direct navigation target. Ignored if onSelect is provided. */
   href?: string;
   /** Presence of this prop puts the card in select-then-continue mode. */
@@ -29,6 +31,7 @@ export function StationCard({
   description,
   totalQuestions,
   completedQuestions = 0,
+  unitLabel = "questions",
   href,
   onSelect,
   selected,
@@ -50,7 +53,7 @@ export function StationCard({
           <Icon className="h-5 w-5 text-[var(--color-ink)]/70" strokeWidth={1.75} />
         </div>
         <span className="whitespace-nowrap rounded-full bg-[var(--color-sand)] px-3 py-1 text-xs font-medium text-[var(--color-ink)]/50">
-          {totalQuestions} questions
+          {totalQuestions} {unitLabel}
         </span>
       </div>
 
@@ -70,7 +73,7 @@ export function StationCard({
         </div>
         <p className="mt-2 text-xs text-[var(--color-ink)]/40">
           {started
-            ? `${completedQuestions} of ${totalQuestions} questions · ${percent}%`
+            ? `${completedQuestions} of ${totalQuestions} ${unitLabel} · ${percent}%`
             : "Not started"}
         </p>
       </div>

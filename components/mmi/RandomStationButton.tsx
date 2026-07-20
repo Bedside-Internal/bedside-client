@@ -1,10 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { StationDTO } from "@/types/stations";
+
+/** Minimal shape this component actually needs — works for StationDTO, CompetencyDTO, or anything else with an href. */
+interface RandomPickable {
+    href: string;
+}
 
 interface RandomStationButtonProps {
-  stations: StationDTO[];
+    stations: RandomPickable[];
 }
 
 export function RandomStationButton({ stations }: RandomStationButtonProps) {

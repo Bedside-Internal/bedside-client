@@ -13,6 +13,8 @@ import {
   GitFork,
   Share2,
   User,
+  Heart,
+  TrendingUp
 } from "lucide-react";
 
 /**
@@ -36,11 +38,14 @@ export const iconRegistry: Record<string, LucideIcon> = {
   "grid-2x2": Grid2x2,
   monitor: Monitor,
   video: Video,
+  "help-circle": HelpCircle,
   "check-circle-2": CheckCircle2,
   "message-square": MessageSquare,
   "git-fork": GitFork,
   "share-2": Share2,
   "user": User,
+  heart: Heart, 
+  "trending-up": TrendingUp
 };
 
 /**

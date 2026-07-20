@@ -4,7 +4,11 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { startCircuit } from "@/lib/api/circuit-actions";
 
-export function RunAnotherCircuitButton() {
+interface RunAnotherCircuitButtonProps {
+  label?: string;
+}
+
+export function RunAnotherCircuitButton({ label = "Run another circuit →" }: RunAnotherCircuitButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -22,7 +26,7 @@ export function RunAnotherCircuitButton() {
       onClick={handleClick}
       className="rounded-xl bg-[var(--color-mint)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-mint-hover)] disabled:opacity-50"
     >
-      {isPending ? "Starting…" : "Run another circuit →"}
+      {isPending ? "Starting…" : label}
     </button>
   );
 }

@@ -7,6 +7,8 @@ import { StationCard } from "@/components/onboarding/StationCard";
 import { SessionBar } from "@/components/onboarding/SessionBar";
 import { getMmiStations } from "@/lib/api/stations";
 import { resolveIcon } from "@/lib/iconRegistry";
+import { RunAnotherCircuitButton } from "@/components/mmi/RunAnotherCircuitButton";
+import { RandomStationButton } from "@/components/mmi/RandomStationButton";
 
 export default async function MmiPage() {
     const stations = await getMmiStations();
@@ -47,19 +49,8 @@ export default async function MmiPage() {
 
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
                 <div className="flex items-center gap-3">
-                    <button
-                        type="button"
-                        className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)]"
-                    >
-                        Practice a specific station
-                    </button>
-                    <button
-                        type="button"
-                        className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
-                    >
-                        Start a full circuit
-                        <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-                    </button>
+                    <RandomStationButton stations={stations} />
+                    <RunAnotherCircuitButton label="Start a full circuit →" />
                 </div>
             </div>
         </div>

@@ -1,9 +1,10 @@
 interface ScenarioPanelProps {
     text: string;
     footerHint?: string;
+    children?: React.ReactNode;
 }
 
-export function ScenarioPanel({ text, footerHint }: ScenarioPanelProps) {
+export function ScenarioPanel({ text, footerHint, children }: ScenarioPanelProps) {
     return (
         <div className="flex flex-1 flex-col justify-between">
             <div>
@@ -13,6 +14,7 @@ export function ScenarioPanel({ text, footerHint }: ScenarioPanelProps) {
                 <p className="mt-4 whitespace-pre-line text-2xl leading-snug text-[var(--color-ink)]">
                     {text}
                 </p>
+                {children}
             </div>
 
             {footerHint && (

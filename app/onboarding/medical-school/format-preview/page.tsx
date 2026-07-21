@@ -34,8 +34,8 @@ export default async function PreviewPage() {
             <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">
                 <OnboardingHeader
                     eyebrow="PREview - Professional Readiness Evaluation"
-                    title="Practice your video responses"
-                    subtitle="Watch a scenario, then record a 2-3 minute video response"
+                    title="Practice your responses"
+                    subtitle="Read a scenario and select from a scale"
                 />
 
                 <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">

@@ -3,11 +3,13 @@ import type {
     Attempt,
     QuestionDetail,
     QuestionListItem,
+    SectionQuestions,
     SubmitMediaResponsePayload,
+    SubmitRatingResult,
+    SubmitRatingsPayload,
     SubmitResponsePayload,
     SubmitResponseResult,
 } from "@/types/mmi";
-import { CircuitAttemptState, CircuitPreview, CircuitResults } from "@/types/circuit";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
@@ -52,15 +54,21 @@ async function authedFetch<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 /** Server-Component-only — call once, when a station page first loads. */
-export async function getStationQuestions(slug: string): Promise<QuestionListItem[]> {
-    return authedFetch<QuestionListItem[]>(
-        `/api/mmi/sections/${encodeURIComponent(slug)}/questions`
+export async function getStationQuestions(
+    slug: string,
+    formatSlug: string = "mmi",
+): Promise<SectionQuestions> {
+    return authedFetch<SectionQuestions>(
+        `/api/mmi/sections/${encodeURIComponent(slug)}/questions?format=${encodeURIComponent(formatSlug)}`
     );
 }
 
 /** Server-Component-only — call once per circuit, before the first question renders. */
-export async function startAttempt(): Promise<Attempt> {
-    return authedFetch<Attempt>("/api/mmi/attempts", { method: "POST" });
+export async function startAttempt(formatSlug: string = "mmi"): Promise<Attempt> {
+    return authedFetch<Attempt>("/api/mmi/attempts", {
+        method: "POST",
+        body: JSON.stringify({ formatSlug }),
+    });
 }
 
 /** Server-only. Client components should call the wrapped version in mmi-actions.ts instead. */
@@ -92,5 +100,14 @@ export async function submitMediaResponse(
     return authedFetch<SubmitResponseResult>("/api/mmi/responses/media", {
         method: "POST",
         body: formData,
+    });
+}
+
+export async function submitRatingResponse(
+    payload: SubmitRatingsPayload
+): Promise<SubmitRatingResult> {
+    return authedFetch<SubmitRatingResult>("/api/mmi/responses/ratings", {
+        method: "POST",
+        body: JSON.stringify(payload),
     });
 }

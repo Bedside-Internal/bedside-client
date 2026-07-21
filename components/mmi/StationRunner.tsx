@@ -3,12 +3,15 @@
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
-import { getQuestion, submitMediaResponse, submitResponse } from "@/lib/api/mmi-actions";
-import type { ComposePayload, QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/mmi";
+import { getQuestion, submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/mmi";
 
 const STATION_LIST_HREF = "/onboarding/medical-school/format-mmi";
 
 interface StationRunnerProps {
+    basePath: string;
+    formatLabel: string;
+    stationListHref: string;
     slug: string;
     stationTitle: string;
     questionIds: QuestionListItem[];
@@ -18,6 +21,9 @@ interface StationRunnerProps {
 }
 
 export function StationRunner({
+    basePath,
+    formatLabel,
+    stationListHref,
     slug,
     stationTitle,
     questionIds,
@@ -30,7 +36,7 @@ export function StationRunner({
     const [question, setQuestion] = useState<QuestionDetail>(initialQuestion);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [feedback, setFeedback] = useState<ResponseFeedback | null>(null);
+    const [feedback, setFeedback] = useState<AnyResponseFeedback | null>(null);
     const [isPending, startTransition] = useTransition();
 
     const goToIndex = useCallback(
@@ -38,21 +44,19 @@ export function StationRunner({
             const clamped = Math.max(0, Math.min(questionIds.length - 1, nextIndex));
             if (clamped === index) return;
             setError(null);
-            setFeedback(null); // clear stale feedback before the new question loads
+            setFeedback(null);
             startTransition(async () => {
                 try {
                     const detail = await getQuestion(questionIds[clamped].id);
                     setQuestion(detail);
                     setIndex(clamped);
-                    router.replace(`/mmi/${slug}?attempt=${attemptId}&q=${clamped}`, {
-                        scroll: false,
-                    });
+                    router.replace(`/${basePath}/${slug}?attempt=${attemptId}&q=${clamped}`, { scroll: false });
                 } catch {
                     setError("Couldn't load that question. Try again.");
                 }
             });
         },
-        [index, questionIds, slug, attemptId, router]
+        [index, questionIds, basePath, slug, attemptId, router]
     );
 
     const handleSubmit = useCallback(
@@ -62,6 +66,9 @@ export function StationRunner({
             try {
                 if (payload.mode === "written") {
                     const result = await submitResponse({ attemptId, questionId: question.id, text: payload.text });
+                    setFeedback(result.feedback);
+                } else if (payload.mode === "rated_items") {
+                    const result = await submitRatings({ attemptId, questionId: question.id, ratings: payload.ratings });
                     setFeedback(result.feedback);
                 } else {
                     const formData = new FormData();
@@ -73,9 +80,7 @@ export function StationRunner({
                     setFeedback(result.feedback);
                 }
             } catch {
-                setError(
-                    "Couldn't submit that response — your answer is still here, try again."
-                );
+                setError("Couldn't submit that response — your answer is still here, try again.");
                 throw new Error("submit-failed");
             } finally {
                 setSubmitting(false);
@@ -94,11 +99,11 @@ export function StationRunner({
             <QuestionRunner
                 question={question}
                 breadcrumb={[
-                    { label: "MMI", href: STATION_LIST_HREF },
-                    { label: stationTitle, href: `/mmi/${slug}` },
+                    { label: formatLabel, href: stationListHref },
+                    { label: stationTitle, href: `/${basePath}/${slug}` },
                     { label: `Question ${index + 1}` },
                 ]}
-                onExit={() => router.push(STATION_LIST_HREF)}
+                onExit={() => router.push(stationListHref)}
                 onSubmit={handleSubmit}
                 submitting={submitting}
                 feedback={feedback}

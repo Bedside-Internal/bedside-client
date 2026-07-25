@@ -4,8 +4,8 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
 import { CircuitStepTracker } from "./CircuitStepTracker";
-import { getQuestion, submitMediaResponse, submitResponse } from "@/lib/api/mmi-actions";
-import type { ComposePayload, QuestionDetail, ResponseFeedback } from "@/types/mmi";
+import { getQuestion, submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/mmi";
 import type { CircuitStationState } from "@/types/circuit";
 
 interface CircuitStationRunnerProps {
@@ -13,6 +13,10 @@ interface CircuitStationRunnerProps {
   stations: CircuitStationState[];
   currentIndex: number;
   initialQuestion: QuestionDetail;
+  basePath: string;
+  resultsPath: (attemptId: string) => string;
+  breadcrumbLabel: string;
+  exitHref?: string;
 }
 
 export function CircuitStationRunner({
@@ -20,12 +24,16 @@ export function CircuitStationRunner({
   stations,
   currentIndex,
   initialQuestion,
+  basePath,
+  resultsPath,
+  breadcrumbLabel,
+  exitHref = "/dashboard",
 }: CircuitStationRunnerProps) {
   const router = useRouter();
   const [question] = useState<QuestionDetail>(initialQuestion);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<ResponseFeedback | null>(null);
+  const [feedback, setFeedback] = useState<AnyResponseFeedback | null>(null);
 
   const station = stations[currentIndex];
   const isLastStation = currentIndex === stations.length - 1;
@@ -38,6 +46,9 @@ export function CircuitStationRunner({
         if (payload.mode === "written") {
           const result = await submitResponse({ attemptId, questionId: question.id, text: payload.text });
           setFeedback(result.feedback);
+        } else if (payload.mode === "rated_items") {
+          const result = await submitRatings({ attemptId, questionId: question.id, ratings: payload.ratings });
+          setFeedback(result.feedback);
         } else {
           const formData = new FormData();
           formData.set("attemptId", attemptId);
@@ -49,7 +60,6 @@ export function CircuitStationRunner({
         }
       } catch {
         setError("Couldn't submit that response — your answer is still here, try again.");
-        throw new Error("submit-failed");
       } finally {
         setSubmitting(false);
       }
@@ -59,9 +69,9 @@ export function CircuitStationRunner({
 
   function handleContinue() {
     if (isLastStation) {
-      router.push(`/mmi/circuit/${attemptId}/results`);
+      router.push(resultsPath(attemptId));
     } else {
-      router.push(`/mmi/circuit/run?attempt=${attemptId}&station=${currentIndex + 1}&phase=transition`);
+      router.push(`${basePath}/run?attempt=${attemptId}&station=${currentIndex + 1}&phase=transition`);
     }
   }
 
@@ -75,15 +85,12 @@ export function CircuitStationRunner({
       )}
       <QuestionRunner
         question={question}
-        breadcrumb={[{ label: "MMI Circuit" }, { label: station.title }]}
-        onExit={() => router.push("/dashboard")}
+        breadcrumb={[{ label: breadcrumbLabel }, { label: station.title }]}
+        onExit={() => router.push(exitHref)}
         onSubmit={handleSubmit}
         submitting={submitting}
         feedback={feedback}
-        // No going back mid-circuit — real MMI doesn't allow it either.
         hasPrev={false}
-        // "Next" here always means "move on" once feedback has rendered,
-        // whether that's a transition to the next station or the results screen.
         hasNext={feedback !== null}
         onNext={handleContinue}
       />

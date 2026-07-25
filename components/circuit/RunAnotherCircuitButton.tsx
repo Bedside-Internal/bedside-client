@@ -5,17 +5,19 @@ import { useRouter } from "next/navigation";
 import { startCircuit } from "@/lib/api/circuit-actions";
 
 interface RunAnotherCircuitButtonProps {
+  formatSlug: string;
+  basePath: string;
   label?: string;
 }
 
-export function RunAnotherCircuitButton({ label = "Run another circuit →" }: RunAnotherCircuitButtonProps) {
+export function RunAnotherCircuitButton({ formatSlug, basePath, label = "Run another circuit →" }: RunAnotherCircuitButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   function handleClick() {
     startTransition(async () => {
-      const attempt = await startCircuit();
-      router.push(`/mmi/circuit/run?attempt=${attempt.attemptId}&station=0&phase=question`);
+      const attempt = await startCircuit(formatSlug);
+      router.push(`${basePath}/run?attempt=${attempt.attemptId}&station=0&phase=question`);
     });
   }
 

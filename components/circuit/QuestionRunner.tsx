@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, User } from "lucide-react";
-import { Timer } from "./Timer";
-import { ScenarioPanel } from "./ScenarioPanel";
-import { ResponseComposer } from "./ResponseComposer";
+import { Timer } from "../mmi/Timer";
+import { ScenarioPanel } from "../mmi/ScenarioPanel";
+import { ResponseComposer } from "../mmi/ResponseComposer";
 import type { AnyResponseFeedback, ComposePayload, QuestionDetail, ResponseFeedback } from "@/types/mmi";
-import { RatingTaskAndLegend } from "./RatingTaskAndLegend";
-import { RatingFeedback } from "./RatingFeedback";
-import { RatingPanel } from "./RatingPanel";
+import { RatingTaskAndLegend } from "../mmi/RatingTaskAndLegend";
+import { RatingFeedback } from "../mmi/RatingFeedback";
+import { RatingPanel } from "../mmi/RatingPanel";
 
 type Phase = "reading" | "responding" | "submitted";
 

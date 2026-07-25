@@ -4,8 +4,8 @@ import { SessionBar } from "@/components/onboarding/SessionBar";
 import { CircuitIntro } from "@/components/circuit/CircuitIntro";
 import { getCircuitPreview } from "@/lib/api/circuit";
 
-export default async function CircuitIntroPage() {
-  const preview = await getCircuitPreview("mmi");
+export default async function PreviewFullMockIntroPage() {
+  const preview = await getCircuitPreview("preview");
 
   return (
     <div className="min-h-screen relative">
@@ -21,8 +21,8 @@ export default async function CircuitIntroPage() {
         <BreadcrumbNav
           items={[
             { label: "Medical School Interview", href: "/onboarding/medical-school" },
-            { label: "MMI", href: "/onboarding/medical-school/format-mmi" },
-            { label: "Full Circuit" },
+            { label: "PREview", href: "/onboarding/medical-school/format-preview" },
+            { label: "Full Mock" },
           ]}
         />
         <SessionBar />
@@ -31,9 +31,21 @@ export default async function CircuitIntroPage() {
       <main className="mx-auto flex max-w-md flex-col items-center px-4 pb-16 pt-6">
         <CircuitIntro
           preview={preview}
-          formatSlug="mmi"
-          basePath="/mmi/circuit"
-          copy={{ titleAccent: "MMI Circuit", unitLabel: "stations", backHref: "/dashboard" }}
+          formatSlug="preview"
+          basePath="/preview/full"
+          copy={{
+            eyebrow: "Writing Room",
+            titlePrefix: "Your",
+            titleAccent: "PREview",
+            accentColorVar: "--color-amber",
+            unitLabel: "prompts",
+            backHref: "/dashboard",
+            howItWorks: [
+              "30 seconds to read each prompt before recording starts.",
+              "One take per prompt, up to 3 minutes — this is a one-way video response, just like the real thing.",
+              "Once you submit a response you can't re-record it.",
+            ],
+          }}
         />
       </main>
     </div>

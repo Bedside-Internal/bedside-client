@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
 
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
@@ -7,7 +6,7 @@ import { StationCard } from "@/components/onboarding/StationCard";
 import { SessionBar } from "@/components/onboarding/SessionBar";
 import { getMmiStations } from "@/lib/api/stations";
 import { resolveIcon } from "@/lib/iconRegistry";
-import { RunAnotherCircuitButton } from "@/components/mmi/RunAnotherCircuitButton";
+import { RunAnotherCircuitButton } from "@/components/circuit/RunAnotherCircuitButton";
 import { RandomStationButton } from "@/components/mmi/RandomStationButton";
 
 export default async function MmiPage() {
@@ -50,7 +49,7 @@ export default async function MmiPage() {
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
                 <div className="flex items-center gap-3">
                     <RandomStationButton stations={stations} />
-                    <RunAnotherCircuitButton label="Start a full circuit →" />
+                    <RunAnotherCircuitButton formatSlug="mmi" basePath="/mmi/circuit" label="Start a full circuit →" />
                 </div>
             </div>
         </div>

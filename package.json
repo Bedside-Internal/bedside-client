@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "infisical run --env=dev --path=/client  -- next dev",
-    "build": "infisical run --env=prod --path=/client -- next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },

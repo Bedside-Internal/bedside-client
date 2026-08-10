@@ -5,9 +5,12 @@ import { useAuth } from "@clerk/nextjs";
 export function SomeComponent() {
   const { getToken } = useAuth();
 
+  if (process.env.NODE_ENV === "production") return null;
+
   async function callApi() {
     const token = await getToken();
-    const res = await fetch("http://localhost:3000/api/me", {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     console.log(await res.json());

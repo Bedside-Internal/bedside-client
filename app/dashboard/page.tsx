@@ -94,6 +94,11 @@ export default async function Dashboard() {
     }
 
     const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
+
+    if (data.recentActivity.length === 0) {
+        redirect(`/onboarding/${progress.track}/format-${progress.format}`);
+    }
+    
     const firstName = user?.firstName ?? "there";
 
     const WeakestIcon = data.weakestArea ? getIcon(data.weakestArea.iconKey) : null;

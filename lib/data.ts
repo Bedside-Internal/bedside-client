@@ -81,10 +81,6 @@ export const faqs: Faq[] = [
     a: "Right now we focus on med school interview formats — MMI, panel, traditional, CASPer, and behavioral. Healthcare graduate programs and nursing school are on the roadmap.",
   },
   {
-    q: "How realistic are the AI questions?",
-    a: "Questions come from real interview banks, updated regularly. The AI adapts its follow-ups based on your specific answers, so every session is different — just like a real interview.",
-  },
-  {
     q: "What makes Bedside different from other tools?",
     a: "Most tools lock individual formats behind separate paid tracks. Bedside gives you all six formats in one subscription — unlimited practice, instant feedback, no paywalled extras.",
   },

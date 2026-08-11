@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useApiFetch } from "@/lib/api/use-api-fetch";
 import { Crown, Shield } from "lucide-react";
 
 interface TierStatus {
@@ -13,7 +13,7 @@ interface TierStatus {
 }
 
 export function TierBadge() {
-  const { getToken } = useAuth();
+  const apiFetch = useApiFetch();
   const [status, setStatus] = useState<TierStatus | null>(null);
 
   useEffect(() => {
@@ -21,14 +21,7 @@ export function TierBadge() {
 
     async function load() {
       try {
-        const token = await getToken();
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
-        const res = await fetch(`${baseUrl}/api/me`, {
-          headers: { Authorization: `Bearer ${token}` },
-          cache: "no-store",
-        });
-        if (!res.ok) return;
-        const data = await res.json();
+        const data = await apiFetch<TierStatus>("/api/me");
         if (!cancelled) setStatus(data);
       } catch {
         // fail silently — badge just doesn't render rather than breaking the page
@@ -39,7 +32,7 @@ export function TierBadge() {
     return () => {
       cancelled = true;
     };
-  }, [getToken]);
+  }, [apiFetch]);
 
   if (!status) return null;
 

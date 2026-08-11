@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowLeft, ArrowRight, User } from "lucide-react";
 import { Timer } from "../mmi/Timer";
 import { ScenarioPanel } from "../mmi/ScenarioPanel";
 import { ResponseComposer } from "../mmi/ResponseComposer";
-import type { AnyResponseFeedback, ComposePayload, QuestionDetail, ResponseFeedback } from "@/types/mmi";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/mmi";
 import { RatingTaskAndLegend } from "../mmi/RatingTaskAndLegend";
 import { RatingFeedback } from "../mmi/RatingFeedback";
 import { RatingPanel } from "../mmi/RatingPanel";
@@ -46,15 +46,17 @@ export function QuestionRunner({
     hasNext = false,
 }: QuestionRunnerProps) {
     const [phase, setPhase] = useState<Phase>("reading");
+    const [prevQuestionId, setPrevQuestionId] = useState(question.id);
     const isRatedItems = question.scenario.response_mode === "rated_items";
 
     const navLocked = phase === "responding" || navPending;
     const navLockedReason =
         phase === "responding" ? "Submit your response before moving on" : navPending ? "Loading…" : undefined;
 
-    useEffect(() => {
+    if (question.id !== prevQuestionId) {
+        setPrevQuestionId(question.id);
         setPhase("reading");
-    }, [question.id]);
+    }
 
     async function handleSubmit(payload: ComposePayload) {
         try {

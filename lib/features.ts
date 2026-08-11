@@ -1,6 +1,5 @@
 import "server-only";
-import { cookies } from "next/headers";
-import { auth } from "@clerk/nextjs/server";
+import { serverApiFetch } from "./api/server-fetch";
 
 /**
  * lib/features.ts
@@ -32,27 +31,6 @@ export interface PublicFeature {
   available: boolean;
 }
 
-async function fetchApi<T>(path: string): Promise<T> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
-  const { getToken } = await auth();
-  const token = await getToken();
-  const cookieStore = await cookies();
-
-  const res = await fetch(`${baseUrl}${path}`, {
-    cache: "no-store", // feature availability should never be stale-cached at the fetch layer
-    headers: {
-      Authorization: `Bearer ${token}`,
-      cookie: cookieStore.toString(),
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error(`Feature API request failed (${res.status}): ${path}`);
-  }
-
-  return res.json() as Promise<T>;
-}
-
 /**
  * GET /api/features?type=track
  * GET /api/features?type=format&parent=track-medical-school
@@ -64,13 +42,13 @@ async function fetchApi<T>(path: string): Promise<T> {
 export async function getFeatures(type: FeatureType, parent?: string): Promise<PublicFeature[]> {
   const params = new URLSearchParams({ type });
   if (parent) params.set("parent", parent);
-  return fetchApi<PublicFeature[]>(`/api/features?${params.toString()}`);
+  return serverApiFetch<PublicFeature[]>(`/api/features?${params.toString()}`);
 }
 
 /** GET /api/features/:key — single lookup. */
 export async function getFeature(key: string): Promise<PublicFeature | null> {
   try {
-    return await fetchApi<PublicFeature>(`/api/features/${encodeURIComponent(key)}`);
+    return serverApiFetch<PublicFeature>(`/api/features/${encodeURIComponent(key)}`);
   } catch {
     return null;
   }

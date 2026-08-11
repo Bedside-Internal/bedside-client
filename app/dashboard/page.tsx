@@ -1,4 +1,3 @@
-import { cookies } from "next/headers";
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { currentUser } from "@clerk/nextjs/server";
@@ -15,6 +14,7 @@ import { StreakCard } from "@/components/dashboard/Streakcard";
 import { getOnboardingProgress } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { LockedActivityRow } from "@/components/dashboard/LockedActivityRow";
+import { serverApiFetch } from "@/lib/api/server-fetch";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -69,21 +69,7 @@ interface DashboardApiResponse {
 }
 
 async function getDashboardData(): Promise<DashboardApiResponse> {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-    const cookieStore = await cookies();
-
-    const res = await fetch(`${baseUrl}/api/dashboard`, {
-        cache: "no-store",
-        headers: {
-            cookie: cookieStore.toString(),
-        },
-    });
-
-    if (!res.ok) {
-        throw new Error(`Failed to fetch dashboard data: ${res.status}`);
-    }
-
-    return res.json();
+    return serverApiFetch<DashboardApiResponse>("/api/dashboard");
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -104,9 +90,7 @@ export default async function Dashboard() {
     }
 
     const firstName = user?.firstName ?? "there";
-
-    const WeakestIcon = data.weakestArea ? getIcon(data.weakestArea.iconKey) : null;
-
+    
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
             <TopBar tracks={tracks} activeTrackId={data.track.slug} />
@@ -131,12 +115,12 @@ export default async function Dashboard() {
                     </section>
 
                     <section aria-label="Recommended next" className="space-y-8">
-                        {data.weakestArea && WeakestIcon && (
+                        {data.weakestArea && (
                             <div>
                                 <SectionLabel>Recommended next</SectionLabel>
                                 <WeakestAreaCard
                                     eyebrow={data.weakestArea.eyebrow}
-                                    icon={<WeakestIcon />}
+                                    icon={getIcon(data.weakestArea.iconKey)}
                                     title={data.weakestArea.title}
                                     description={data.weakestArea.description}
                                     ctaLabel={data.weakestArea.ctaLabel}

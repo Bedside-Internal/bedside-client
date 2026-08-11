@@ -4,9 +4,7 @@ import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "../circuit/QuestionRunner";
 import { getQuestion, submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
-import type { AnyResponseFeedback, ComposePayload, QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/mmi";
-
-const STATION_LIST_HREF = "/onboarding/medical-school/format-mmi";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail, QuestionListItem } from "@/types/mmi";
 
 interface StationRunnerProps {
     basePath: string;

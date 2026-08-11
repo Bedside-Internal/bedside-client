@@ -1,12 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { Switch } from "@/components/ui/Switch";
 import { toast } from "sonner";
-
-// Same pattern as page.tsx's getDashboardData — the API may not be same-origin.
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+import { useApiFetch } from "@/lib/api/use-api-fetch";
 
 /**
  * Mirrors the backend's notificationSettingsSchema shape:
@@ -89,7 +86,8 @@ interface NotificationsPanelProps {
 }
 
 export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
-  const { getToken } = useAuth();
+  const apiFetch = useApiFetch();
+
   const [settings, setSettings] = useState<NotificationSetting[]>(
     buildSettings(DEFAULT_ENABLED)
   );
@@ -107,15 +105,7 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
       setLoading(true);
       setError(null);
       try {
-        const token = await getToken();
-        const res = await fetch(`${API_BASE_URL}/api/settings/notifications`, {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include",
-        });
-        if (!res.ok) {
-          throw new Error(`Failed to load notifications (${res.status})`);
-        }
-        const json = await res.json();
+        const json = await apiFetch<unknown>("/api/settings/notifications");
         if (cancelled) return;
 
         if (!isNotificationSettingsInput(json)) {
@@ -137,7 +127,7 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [apiFetch]);
 
   const isDirty = settings.some((s, i) => s.enabled !== initial[i].enabled);
 
@@ -155,19 +145,12 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
     setSaving(true);
     setError(null);
     try {
-      const token = await getToken();
-      const payload = toEnabledMap(settings);
-      const res = await fetch(`${API_BASE_URL}/api/settings/notification`, {
+      const json = await apiFetch<unknown>("/api/settings/notification", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        credentials: "include",
-        body: JSON.stringify(payload),
+        body: JSON.stringify(toEnabledMap(settings)),
       });
-      if (!res.ok) {
-        throw new Error(`Failed to save notifications (${res.status})`);
-      }
-      const json = await res.json().catch(() => payload);
-      const built = buildSettings(isNotificationSettingsInput(json) ? json : payload);
+
+      const built = buildSettings(isNotificationSettingsInput(json) ? json : toEnabledMap(settings));
       setSettings(built);
       setInitial(built);
       toast.success("Notification settings saved");
@@ -181,7 +164,7 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
       setSaving(false);
     }
   }
-
+  
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">

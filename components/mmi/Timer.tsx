@@ -35,13 +35,18 @@ export function Timer({
     resetKey,
 }: TimerProps) {
     const [remaining, setRemaining] = useState(durationSeconds);
+    const [prevSignal, setPrevSignal] = useState(`${durationSeconds}:${resetKey}`);
     const onCompleteRef = useRef(onComplete);
-    onCompleteRef.current = onComplete;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- resetKey is intentionally the resync trigger
     useEffect(() => {
+        onCompleteRef.current = onComplete;
+    });
+
+    const signal = `${durationSeconds}:${resetKey}`;
+    if (signal !== prevSignal) {
+        setPrevSignal(signal);
         setRemaining(durationSeconds);
-    }, [durationSeconds, resetKey]);
+    }
 
     useEffect(() => {
         if (!isRunning) return;

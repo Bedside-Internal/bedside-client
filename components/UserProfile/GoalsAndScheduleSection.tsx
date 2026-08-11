@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
+import { useApiFetch } from "@/lib/api/use-api-fetch";
 import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -22,9 +22,6 @@ const THRESHOLD_FORMATS = [
 ] as const;
 
 const TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d$/;
-
-// Same pattern as page.tsx's getDashboardData — the API may not be same-origin.
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 /** Mirrors the backend's goalsScheduleSchema shape. */
 interface GoalsScheduleInput {
@@ -107,7 +104,7 @@ interface GoalsSchedulePanelProps {
 }
 
 export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
-  const { getToken } = useAuth();
+  const apiFetch = useApiFetch();
   const [data, setData] = useState<GoalsScheduleInput>(DEFAULT_DATA);
   const [initial, setInitial] = useState<GoalsScheduleInput>(DEFAULT_DATA);
   const [loading, setLoading] = useState(true);
@@ -121,26 +118,17 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
       setLoading(true);
       setError(null);
       try {
-        const token = await getToken();
-        const res = await fetch(`${API_BASE_URL}/api/settings/goals-schedule`, {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include",
-        });
-        if (!res.ok) {
-          throw new Error(`Failed to load goals & schedule (${res.status})`);
-        }
-        const json = await res.json();
-        if (cancelled) return;
+        const json = await apiFetch<unknown>("/api/settings/goals-schedule");
 
         if (!isGoalsScheduleInput(json)) {
-          throw new Error("Goals & schedule response did not match expected shape");
+          throw new Error(`Goals &#39; schedule response did not match expected shape`);
         }
         setData(json);
         setInitial(json);
       } catch (err) {
         if (!cancelled) {
           setError(
-            err instanceof Error ? err.message : "Failed to load goals & schedule"
+            err instanceof Error ? err.message : "Failed to load goals &#39; schedule"
           );
         }
       } finally {
@@ -152,7 +140,7 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [apiFetch]);
 
   const isDirty =
     data.weeklyGoal !== initial.weeklyGoal ||
@@ -185,17 +173,10 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
     setSaving(true);
     setError(null);
     try {
-      const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/api/settings/goals-schedule`, {
+      const json = await apiFetch<unknown>("/api/settings/goals-schedule", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
-        credentials: "include",
         body: JSON.stringify(data),
       });
-      if (!res.ok) {
-        throw new Error(`Failed to save goals & schedule (${res.status})`);
-      }
-      const json = await res.json().catch(() => data);
       const merged = isGoalsScheduleInput(json) ? json : data;
       setData(merged);
       setInitial(merged);
@@ -299,11 +280,10 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
                       onClick={() => toggleDay(day.id)}
                       aria-pressed={selected}
                       aria-label={day.id}
-                      className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition ${
-                        selected
+                      className={`flex h-9 w-9 items-center justify-center rounded-full text-sm font-medium transition ${selected
                           ? "bg-[var(--color-mint)] text-white"
                           : "bg-slate-100 text-slate-400 hover:bg-slate-200"
-                      }`}
+                        }`}
                     >
                       {day.label}
                     </button>
@@ -323,7 +303,7 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
                 Score thresholds
               </p>
               <p className="mt-1 text-sm text-slate-400">
-                The score you're aiming for in each format.
+                The score you&apos;re aiming for in each format.
               </p>
             </div>
             <div className="divide-y divide-slate-100 rounded-xl border border-slate-100">

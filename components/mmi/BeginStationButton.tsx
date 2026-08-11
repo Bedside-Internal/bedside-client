@@ -30,7 +30,7 @@ export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin 
   if (blocked) {
     return (
       <p className="rounded-xl bg-[var(--color-coral)]/10 px-4 py-2 text-sm font-semibold text-[var(--color-coral)]">
-        You've used all your free attempts — upgrade coming soon.
+        You&apos;ve used all your free attempts — upgrade coming soon.
       </p>
     );
   }

@@ -17,16 +17,16 @@ export function SessionBar({ label = "" }: { label?: string }) { // TODO: logo-p
         <TierBadge />
         <UserButton>
           <UserButton.UserProfilePage label="Notifications" url="notifications" labelIcon={<Bell className="h-4 w-4" />}>
-            <NotificationsPanel onSave={async (data) => { }} />
+            <NotificationsPanel onSave={async () => { }} />
           </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="Interview Setup" url="interview-setup" labelIcon={<Video className="h-4 w-4" />}>
-            <InterviewSetupPanel onSave={async (data) => { }} />
+            <InterviewSetupPanel onSave={async () => { }} />
           </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="Appearance" url="appearance" labelIcon={<Sun className="h-4 w-4" />}>
-            <AppearancePanel onSave={async (data) => { }} />
+            <AppearancePanel onSave={async () => { }} />
           </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="Goals and Schedule" url="goals-schedule" labelIcon={<Target className="h-4 w-4" />}>
-            <GoalsSchedulePanel onSave={async (data) => { }} />
+            <GoalsSchedulePanel onSave={async () => { }} />
           </UserButton.UserProfilePage>
         </UserButton>
       </div>

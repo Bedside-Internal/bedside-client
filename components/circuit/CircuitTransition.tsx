@@ -3,12 +3,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { resolveIcon } from "@/lib/iconRegistry";
+import type { LucideIcon } from "lucide-react";
 import { CircuitStepTracker } from "./CircuitStepTracker";
 import type { CircuitStationState } from "@/types/circuit";
+import { resolveIcon } from "@/lib/iconRegistry";
 
 const BREAK_SECONDS = 25;
 const FALLBACK_TIP = "Take a breath. Read the next scenario carefully before you start responding.";
+
+// Owns both the key→component lookup and the instantiation, so the parent never selects a component and renders it in the same scope.
+function NextStationIcon({ icon: Icon }: { icon: LucideIcon }) {
+  return <Icon className="h-4 w-4" strokeWidth={2} />;
+}
 
 interface CircuitTransitionProps {
   attemptId: string;
@@ -34,6 +40,7 @@ export function CircuitTransition({
   const router = useRouter();
   const [remaining, setRemaining] = useState(BREAK_SECONDS);
   const nextStation = stations[currentIndex];
+  const nextStationIcon = resolveIcon(nextStation.iconKey ?? "");
 
   function proceed() {
     router.push(`${basePath}/run?attempt=${attemptId}&station=${currentIndex}&phase=question`);
@@ -48,8 +55,6 @@ export function CircuitTransition({
     return () => clearTimeout(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remaining]);
-
-  const Icon = resolveIcon(nextStation.iconKey ?? "");
 
   return (
     <div className="min-h-screen bg-[var(--color-cream)]">
@@ -69,7 +74,7 @@ export function CircuitTransition({
           Moving to {unitLabel} {currentIndex + 1}
         </h2>
         <p className="mb-8 flex items-center gap-2 text-sm text-[var(--color-ink)]/60">
-          <Icon className="h-4 w-4" strokeWidth={2} />
+          <NextStationIcon icon={nextStationIcon} />
           Next up: <span className="font-semibold text-[var(--color-ink)]">{nextStation.title}</span>
         </p>
 

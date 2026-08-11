@@ -1,14 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { Switch } from "@/components/ui/Switch";
 import { toast } from "sonner";
+import { useApiFetch } from "@/lib/api/use-api-fetch";
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-
-// Same pattern as page.tsx's getDashboardData — the API may not be same-origin.
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
 type FormatId = "mmi" | "casper" | "preview";
 
@@ -107,7 +104,7 @@ interface InterviewSetupPanelProps {
 }
 
 export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
-  const { getToken } = useAuth();
+  const apiFetch = useApiFetch();
   const [data, setData] = useState<InterviewSetupInput>(DEFAULT_DATA);
   const [initial, setInitial] = useState<InterviewSetupInput>(DEFAULT_DATA);
   const [loading, setLoading] = useState(true);
@@ -121,15 +118,7 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
       setLoading(true);
       setError(null);
       try {
-        const token = await getToken();
-        const res = await fetch(`${API_BASE_URL}/api/settings/interview`, {
-          headers: { Authorization: `Bearer ${token}` },
-          credentials: "include",
-        });
-        if (!res.ok) {
-          throw new Error(`Failed to load interview setup (${res.status})`);
-        }
-        const json = await res.json();
+        const json = await apiFetch<unknown>("/api/settings/interview");
         if (cancelled) return;
 
         if (!isInterviewSetupInput(json)) {
@@ -152,7 +141,7 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [apiFetch]);
 
   const formats = useMemo(() => buildFormats(data.formats), [data.formats]);
   const remaining = useMemo(() => daysAway(data.interviewDate), [data.interviewDate]);
@@ -177,17 +166,10 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
     setSaving(true);
     setError(null);
     try {
-      const token = await getToken();
-      const res = await fetch(`${API_BASE_URL}/api/settings/interview`, {
+      const json = await apiFetch<unknown>("/api/settings/interview", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
-        credentials: "include",
         body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        throw new Error(`Failed to save interview setup (${res.status})`);
-      }
-      const json = await res.json().catch(() => data);
+      }).catch(() => data);
       const merged = isInterviewSetupInput(json) ? json : data;
       setData(merged);
       setInitial(merged);

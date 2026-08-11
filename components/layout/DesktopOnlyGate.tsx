@@ -30,7 +30,7 @@ export default function DesktopOnlyGate({
             Best on desktop
           </h1>
           <p className="max-w-[320px] text-[15px] leading-relaxed text-neutral-500">
-            We're still tuning the mobile experience. Open this on a laptop or
+            We&apos;re still tuning the mobile experience. Open this on a laptop or
             desktop for now; full support is on the way!
           </p>
         </div>

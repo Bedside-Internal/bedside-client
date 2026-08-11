@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
 import { CircuitStepTracker } from "./CircuitStepTracker";
-import { getQuestion, submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
+import { submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
 import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/mmi";
 import type { CircuitStationState } from "@/types/circuit";
 

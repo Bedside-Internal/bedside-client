@@ -1,8 +1,7 @@
-import { auth } from "@clerk/nextjs/server";
+import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
 import type {
     Attempt,
     QuestionDetail,
-    QuestionListItem,
     SectionQuestions,
     SubmitMediaResponsePayload,
     SubmitRatingResult,
@@ -11,61 +10,23 @@ import type {
     SubmitResponseResult,
 } from "@/types/mmi";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
-
-export class MmiApiError extends Error {
-    status: number;
-    payload: unknown;
-
-    constructor(status: number, payload: unknown) {
-        super(`MMI API request failed with status ${status}`);
-        this.status = status;
-        this.payload = payload;
-    }
-}
-
-async function authedFetch<T>(path: string, init?: RequestInit): Promise<T> {
-    const { getToken } = await auth();
-    const token = await getToken();
-
-    const isFormData = init?.body instanceof FormData;
-
-    const res = await fetch(`${BASE_URL}${path}`, {
-        ...init,
-        headers: {
-            ...(isFormData ? {} : { "Content-Type": "application/json" }),
-            Authorization: `Bearer ${token}`,
-            ...init?.headers,
-        },
-        cache: "no-store",
-    });
-
-    if (!res.ok) {
-        let payload: unknown = null;
-        try {
-            payload = await res.json();
-        } catch {
-            // response had no JSON body
-        }
-        throw new MmiApiError(res.status, payload);
-    }
-
-    return res.json() as Promise<T>;
-}
+// Kept as an alias so existing `instanceof MmiApiError` checks elsewhere
+// (if any) keep working without a repo-wide rename.
+export const MmiApiError = ApiError;
 
 /** Server-Component-only — call once, when a station page first loads. */
 export async function getStationQuestions(
     slug: string,
     formatSlug: string = "mmi",
 ): Promise<SectionQuestions> {
-    return authedFetch<SectionQuestions>(
+    return serverApiFetch<SectionQuestions>(
         `/api/mmi/sections/${encodeURIComponent(slug)}/questions?format=${encodeURIComponent(formatSlug)}`
     );
 }
 
 /** Server-Component-only — call once per circuit, before the first question renders. */
 export async function startAttempt(formatSlug: string = "mmi"): Promise<Attempt> {
-    return authedFetch<Attempt>("/api/mmi/attempts", {
+    return serverApiFetch<Attempt>("/api/mmi/attempts", {
         method: "POST",
         body: JSON.stringify({ formatSlug }),
     });
@@ -73,7 +34,7 @@ export async function startAttempt(formatSlug: string = "mmi"): Promise<Attempt>
 
 /** Server-only. Client components should call the wrapped version in mmi-actions.ts instead. */
 export async function getQuestion(questionId: string): Promise<QuestionDetail> {
-    return authedFetch<QuestionDetail>(
+    return serverApiFetch<QuestionDetail>(
         `/api/mmi/questions/${encodeURIComponent(questionId)}`
     );
 }
@@ -82,7 +43,7 @@ export async function getQuestion(questionId: string): Promise<QuestionDetail> {
 export async function submitResponse(
     payload: SubmitResponsePayload
 ): Promise<SubmitResponseResult> {
-    return authedFetch<SubmitResponseResult>("/api/mmi/responses", {
+    return serverApiFetch<SubmitResponseResult>("/api/mmi/responses", {
         method: "POST",
         body: JSON.stringify(payload),
     });
@@ -97,7 +58,7 @@ export async function submitMediaResponse(
     formData.set("mediaType", payload.mediaType);
     formData.set("media", payload.blob); // field name must match multer's upload.single("media")
 
-    return authedFetch<SubmitResponseResult>("/api/mmi/responses/media", {
+    return serverApiFetch<SubmitResponseResult>("/api/mmi/responses/media", {
         method: "POST",
         body: formData,
     });
@@ -106,7 +67,7 @@ export async function submitMediaResponse(
 export async function submitRatingResponse(
     payload: SubmitRatingsPayload
 ): Promise<SubmitRatingResult> {
-    return authedFetch<SubmitRatingResult>("/api/mmi/responses/ratings", {
+    return serverApiFetch<SubmitRatingResult>("/api/mmi/responses/ratings", {
         method: "POST",
         body: JSON.stringify(payload),
     });

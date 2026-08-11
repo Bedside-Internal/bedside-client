@@ -9,7 +9,7 @@ import { SomeComponent } from "@/components/ui/Tokenretrieval";
 import DesktopOnlyGate from "@/components/layout/DesktopOnlyGate";
 
 export const metadata: Metadata = {
-  title: "PrepAce — Stop guessing how you'd do. Find out.",
+  title: "BedSide — Stop guessing how you'd do. Find out.",
   description:
     "Unlimited mock interviews in every med school format: MMI, panel, traditional, CASPer, and more.",
 };

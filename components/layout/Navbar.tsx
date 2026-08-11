@@ -18,7 +18,7 @@ export default function Navbar() {
           />
         </svg>
         <span className="font-display text-[22px] tracking-tight">
-          PrepAce
+        Bedside
         </span>
       </a>
 

@@ -24,7 +24,7 @@ export default function Footer() {
                 />
               </svg>
               <span className="font-display text-[22px] tracking-tight text-cream">
-                PrepAce
+                Bedside
               </span>
             </div>
             <p className="max-w-[240px] text-sm leading-relaxed text-cream/45">
@@ -71,7 +71,7 @@ export default function Footer() {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6">
           <span className="text-[13px] text-cream/30">
-            © {new Date().getFullYear()} PrepAce. All rights reserved.
+            © {new Date().getFullYear()} Bedside. All rights reserved.
           </span>
           <span className="text-[13px] text-cream/30">
             Built for the next generation of doctors.

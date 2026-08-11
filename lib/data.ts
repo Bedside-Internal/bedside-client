@@ -77,7 +77,7 @@ export type Faq = {
 
 export const faqs: Faq[] = [
   {
-    q: "Is PrepAce only for medical school?",
+    q: "Is Bedside only for medical school?",
     a: "Right now we focus on med school interview formats — MMI, panel, traditional, CASPer, and behavioral. Healthcare graduate programs and nursing school are on the roadmap.",
   },
   {
@@ -85,8 +85,8 @@ export const faqs: Faq[] = [
     a: "Questions come from real interview banks, updated regularly. The AI adapts its follow-ups based on your specific answers, so every session is different — just like a real interview.",
   },
   {
-    q: "What makes PrepAce different from other tools?",
-    a: "Most tools lock individual formats behind separate paid tracks. PrepAce gives you all six formats in one subscription — unlimited practice, instant feedback, no paywalled extras.",
+    q: "What makes Bedside different from other tools?",
+    a: "Most tools lock individual formats behind separate paid tracks. Bedside gives you all six formats in one subscription — unlimited practice, instant feedback, no paywalled extras.",
   },
   {
     q: "Can I try before subscribing?",

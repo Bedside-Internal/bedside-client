@@ -35,7 +35,7 @@ export default function DarkCTA() {
         </RevealOnScroll>
         <RevealOnScroll delay="d1">
           <p className="mx-auto mb-12 max-w-[440px] text-lg leading-relaxed text-cream/55">
-            Stop wasting prep time hunting across platforms. PrepAce has
+            Stop wasting prep time hunting across platforms. Bedside has
             everything — start a session in seconds.
           </p>
         </RevealOnScroll>

@@ -6,6 +6,7 @@ import "./globals.css";
 import CustomCursor from "@/components/layout/CustomCursor";
 import { DevResetOnboardingButton } from "@/components/ui/Devresetonboarding";
 import { SomeComponent } from "@/components/ui/Tokenretrieval";
+import DesktopOnlyGate from "@/components/layout/DesktopOnlyGate";
 
 export const metadata: Metadata = {
   title: "PrepAce — Stop guessing how you'd do. Find out.",
@@ -25,7 +26,7 @@ export default function RootLayout({
             <CustomCursor />
             <SomeComponent />
             <DevResetOnboardingButton />
-            {children}
+            <DesktopOnlyGate>{children}</DesktopOnlyGate>
             <Toaster richColors position="top-right" />
           </ClerkProvider>
       </body>

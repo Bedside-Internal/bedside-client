@@ -41,7 +41,7 @@ export default function DarkCTA() {
         </RevealOnScroll>
         <RevealOnScroll delay="d2">
           <MagneticButton
-            href="#"
+            href="/sign-in"
             className="rounded-md border-[2.5px] border-ink bg-mint px-7 py-4 text-base font-bold text-ink shadow-hard-mint transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:shadow-[2px_2px_0_#3BBA9C] hover:translate-x-[3px] hover:translate-y-[3px]"
           >
             Start practicing free →

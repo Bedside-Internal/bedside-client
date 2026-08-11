@@ -14,6 +14,7 @@ import { ActivityRow } from "@/components/dashboard/Activityrow";
 import { StreakCard } from "@/components/dashboard/Streakcard";
 import { getOnboardingProgress } from "@/lib/actions";
 import { redirect } from "next/navigation";
+import { LockedActivityRow } from "@/components/dashboard/LockedActivityRow";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -56,7 +57,10 @@ interface DashboardApiResponse {
     } | null;
     quickActions: Array<{ iconKey: string; title: string; subtitle: string; href: string }>;
     readiness: { overallScore: number; breakdown: Array<{ label: string; value: number }> };
-    recentActivity: Array<{ status: "success" | "warning"; title: string; meta: string; score: number }>;
+    recentActivity: {
+        items: Array<{ status: "success" | "warning"; title: string; meta: string; score: number }>;
+        lockedCount: number;
+    };
     streak: {
         streakDays: number;
         message: string;
@@ -95,7 +99,7 @@ export default async function Dashboard() {
 
     const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
 
-    if (data.recentActivity.length === 0) {
+    if (data.recentActivity.items.length === 0) {
         redirect(`/onboarding/${progress.track}/${progress.format}`);
     }
 
@@ -157,9 +161,12 @@ export default async function Dashboard() {
                         <div>
                             <SectionLabel>Recent activity</SectionLabel>
                             <div className="divide-y divide-[var(--color-sand)] rounded-2xl border border-[var(--color-sand)] bg-white px-5 shadow-sm">
-                                {data.recentActivity.map((activity, i) => (
+                                {data.recentActivity.items.map((activity, i) => (
                                     <ActivityRow key={`${activity.title}-${i}`} {...activity} />
                                 ))}
+                                {data.recentActivity.lockedCount > 0 && (
+                                    <LockedActivityRow count={data.recentActivity.lockedCount} />
+                                )}
                             </div>
                         </div>
                         <StreakCard

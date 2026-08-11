@@ -1,6 +1,6 @@
-import { redirect } from "next/navigation";
-import { getStationQuestions, getQuestion, startAttempt } from "@/lib/api/mmi";
+import { getStationQuestions, getQuestion } from "@/lib/api/mmi";
 import { StationRunner } from "@/components/mmi/StationRunner";
+import { BeginStationButton } from "@/components/mmi/BeginStationButton";
 
 interface StationPageProps {
     params: Promise<{ slug: string }>;
@@ -23,9 +23,20 @@ export default async function StationPage({ params, searchParams }: StationPageP
         );
     }
 
+    // No attempt started yet — show an explicit "Begin" step instead of
+    // eagerly creating an attempt row on every page load. This is the fix:
+    // a stray page load, refresh, or back/forward navigation no longer
+    // burns a real practice attempt; only an actual click does.
     if (!attemptParam) {
-        const attempt = await startAttempt("mmi");
-        redirect(`/mmi/${slug}?attempt=${attempt.attemptId}&q=0`);
+        return (
+            <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">
+                <p className="text-lg font-semibold text-[var(--color-ink)]">{sectionTitle}</p>
+                <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
+                    Ready when you are — starting counts as one practice attempt.
+                </p>
+                <BeginStationButton formatSlug="mmi" basePath="mmi" slug={slug} />
+            </div>
+        );
     }
 
     const requestedIndex = qParam ? parseInt(qParam, 10) : 0;

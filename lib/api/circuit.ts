@@ -4,6 +4,14 @@ import type { CircuitPreview, CircuitAttemptState, CircuitResults } from "@/type
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
 
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
 async function authedFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const { getToken } = await auth();
   const token = await getToken();
@@ -12,7 +20,7 @@ async function authedFetch<T>(path: string, init?: RequestInit): Promise<T> {
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...init?.headers },
     cache: "no-store",
   });
-  if (!res.ok) throw new Error(`Circuit API request failed (${res.status}): ${path}`);
+  if (!res.ok) throw new ApiError(`Circuit API request failed (${res.status}): ${path}`, res.status);
   return res.json() as Promise<T>;
 }
 

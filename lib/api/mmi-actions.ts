@@ -8,6 +8,23 @@ import type {
     SubmitResponsePayload,
     SubmitResponseResult,
 } from "@/types/mmi";
+import { startAttempt as startAttemptServer } from "./mmi";
+
+export type StartAttemptResult =
+    | { ok: true; attemptId: string }
+    | { ok: false; reason: "paywall" }
+    | { ok: false; reason: "unknown" };
+
+export async function startAttemptAction(formatSlug: string): Promise<StartAttemptResult> {
+    try {
+        const attempt = await startAttemptServer(formatSlug);
+        return { ok: true, attemptId: attempt.attemptId };
+    } catch (err) {
+        const status = err && typeof err === "object" && "status" in err ? (err as { status: number }).status : null;
+        if (status === 402) return { ok: false, reason: "paywall" };
+        return { ok: false, reason: "unknown" };
+    }
+}
 
 export async function getQuestion(questionId: string): Promise<QuestionDetail> {
     return fetchQuestion(questionId);

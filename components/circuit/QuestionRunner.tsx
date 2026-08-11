@@ -9,6 +9,7 @@ import type { AnyResponseFeedback, ComposePayload, QuestionDetail, ResponseFeedb
 import { RatingTaskAndLegend } from "../mmi/RatingTaskAndLegend";
 import { RatingFeedback } from "../mmi/RatingFeedback";
 import { RatingPanel } from "../mmi/RatingPanel";
+import { ResponseFeedbackCard } from "../mmi/ResponseFeedbackCard";
 
 type Phase = "reading" | "responding" | "submitted";
 
@@ -192,57 +193,7 @@ export function QuestionRunner({
                             {feedback && "items" in feedback ? (
                                 <RatingFeedback feedback={feedback} />
                             ) : feedback ? (
-                                <>
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-lg font-semibold text-[var(--color-ink)]">
-                                            Response submitted
-                                        </span>
-                                        <span className="rounded-full bg-[var(--color-mint)]/10 px-3 py-1 text-sm font-bold text-[var(--color-mint-hover)]">
-                                            {feedback.overallScore}/100
-                                        </span>
-                                    </div>
-                                    <p className="text-sm leading-relaxed text-[var(--color-ink)]/70">
-                                        {feedback.summary}
-                                    </p>
-                                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                        {feedback.dimensionScores.map((d) => (
-                                            <div
-                                                key={d.label}
-                                                className="rounded-xl bg-[var(--color-sand)] px-4 py-3"
-                                            >
-                                                <div className="flex items-center justify-between text-sm font-semibold text-[var(--color-ink)]">
-                                                    <span>{d.label}</span>
-                                                    <span>{d.score}/10</span>
-                                                </div>
-                                                <p className="mt-1 text-xs text-[var(--color-ink)]/60">
-                                                    {d.rationale}
-                                                </p>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        <div>
-                                            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-mint-hover)]">
-                                                Strengths
-                                            </p>
-                                            <ul className="mt-1 space-y-1 text-sm text-[var(--color-ink)]/70">
-                                                {feedback.strengths.map((s, i) => (
-                                                    <li key={i}>• {s}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            <p className="text-xs font-semibold uppercase tracking-wide text-[var(--color-coral)]">
-                                                Areas to improve
-                                            </p>
-                                            <ul className="mt-1 space-y-1 text-sm text-[var(--color-ink)]/70">
-                                                {feedback.areasToImprove.map((s, i) => (
-                                                    <li key={i}>• {s}</li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </>
+                                <ResponseFeedbackCard feedback={feedback} />
                             ) : (
                                 <div className="text-center">
                                     <span className="text-lg font-semibold text-[var(--color-ink)]">

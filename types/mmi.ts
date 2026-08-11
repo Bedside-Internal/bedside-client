@@ -73,6 +73,7 @@ export interface ResponseFeedback {
     strengths: string[];
     areasToImprove: string[];
     summary: string;
+    tier: "basic" | "full";
 }
 
 export interface RatingItemResult {

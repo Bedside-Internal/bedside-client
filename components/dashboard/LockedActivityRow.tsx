@@ -8,7 +8,7 @@ interface LockedActivityRowProps {
 export function LockedActivityRow({ count }: LockedActivityRowProps) {
   return (
     <Link
-      href="/pricing"
+      href="/#pricing"
       className="group flex items-center gap-3 py-3 transition hover:opacity-80"
     >
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100">

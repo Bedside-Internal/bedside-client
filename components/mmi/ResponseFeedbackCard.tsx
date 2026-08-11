@@ -65,7 +65,7 @@ export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
                     )}
 
                     <Link
-                        href="/pricing"
+                        href="/#pricing"
                         className="group flex items-center justify-between rounded-xl border border-dashed border-[var(--color-ink)]/15 bg-[var(--color-sand)]/60 px-4 py-3 transition hover:border-[var(--color-amber)]/50 hover:bg-[var(--color-amber)]/5"
                     >
                         <div className="flex items-center gap-2.5">

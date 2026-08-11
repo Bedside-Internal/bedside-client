@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 
 /**
  * lib/features.ts
@@ -33,11 +34,14 @@ export interface PublicFeature {
 
 async function fetchApi<T>(path: string): Promise<T> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+  const { getToken } = await auth();
+  const token = await getToken();
   const cookieStore = await cookies();
 
   const res = await fetch(`${baseUrl}${path}`, {
     cache: "no-store", // feature availability should never be stale-cached at the fetch layer
     headers: {
+      Authorization: `Bearer ${token}`,
       cookie: cookieStore.toString(),
     },
   });

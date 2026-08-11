@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { Switch } from "@/components/ui/Switch";
 import { toast } from "sonner";
 
@@ -106,6 +107,7 @@ interface InterviewSetupPanelProps {
 }
 
 export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
+  const { getToken } = useAuth();
   const [data, setData] = useState<InterviewSetupInput>(DEFAULT_DATA);
   const [initial, setInitial] = useState<InterviewSetupInput>(DEFAULT_DATA);
   const [loading, setLoading] = useState(true);
@@ -119,7 +121,9 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
       setLoading(true);
       setError(null);
       try {
+        const token = await getToken();
         const res = await fetch(`${API_BASE_URL}/api/settings/interview`, {
+          headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
         });
         if (!res.ok) {
@@ -173,9 +177,10 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
     setSaving(true);
     setError(null);
     try {
+      const token = await getToken();
       const res = await fetch(`${API_BASE_URL}/api/settings/interview`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
         credentials: "include",
         body: JSON.stringify(data),
       });

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { Switch } from "@/components/ui/Switch";
 import { toast } from "sonner";
 
@@ -88,6 +89,7 @@ interface NotificationsPanelProps {
 }
 
 export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
+  const { getToken } = useAuth();
   const [settings, setSettings] = useState<NotificationSetting[]>(
     buildSettings(DEFAULT_ENABLED)
   );
@@ -105,7 +107,9 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
       setLoading(true);
       setError(null);
       try {
+        const token = await getToken();
         const res = await fetch(`${API_BASE_URL}/api/settings/notifications`, {
+          headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
         });
         if (!res.ok) {
@@ -151,10 +155,11 @@ export function NotificationsPanel({ onSave }: NotificationsPanelProps) {
     setSaving(true);
     setError(null);
     try {
+      const token = await getToken();
       const payload = toEnabledMap(settings);
       const res = await fetch(`${API_BASE_URL}/api/settings/notification`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         credentials: "include",
         body: JSON.stringify(payload),
       });

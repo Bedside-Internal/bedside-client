@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { Minus, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -106,6 +107,7 @@ interface GoalsSchedulePanelProps {
 }
 
 export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
+  const { getToken } = useAuth();
   const [data, setData] = useState<GoalsScheduleInput>(DEFAULT_DATA);
   const [initial, setInitial] = useState<GoalsScheduleInput>(DEFAULT_DATA);
   const [loading, setLoading] = useState(true);
@@ -119,7 +121,9 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
       setLoading(true);
       setError(null);
       try {
+        const token = await getToken();
         const res = await fetch(`${API_BASE_URL}/api/settings/goals-schedule`, {
+          headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
         });
         if (!res.ok) {
@@ -181,9 +185,10 @@ export function GoalsSchedulePanel({ onSave }: GoalsSchedulePanelProps) {
     setSaving(true);
     setError(null);
     try {
+      const token = await getToken();
       const res = await fetch(`${API_BASE_URL}/api/settings/goals-schedule`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
         credentials: "include",
         body: JSON.stringify(data),
       });

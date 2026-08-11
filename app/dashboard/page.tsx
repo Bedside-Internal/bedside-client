@@ -69,7 +69,7 @@ interface DashboardApiResponse {
 }
 
 async function getDashboardData(): Promise<DashboardApiResponse> {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
     const cookieStore = await cookies();
 
     const res = await fetch(`${baseUrl}/api/dashboard`, {

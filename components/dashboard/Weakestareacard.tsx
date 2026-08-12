@@ -1,17 +1,17 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { ReactNode } from "react";
 
 interface WeakestAreaCardProps {
   eyebrow: string;
-  icon: LucideIcon;
+  icon: ReactNode;
   title: string;
   description: string;
   ctaLabel: string;
   onStart?: () => void;
 }
 
-export function WeakestAreaCard({ eyebrow, icon: Icon, title, description, ctaLabel, onStart }: WeakestAreaCardProps) {
+export function WeakestAreaCard({ eyebrow, icon, title, description, ctaLabel, onStart }: WeakestAreaCardProps) {
   return (
     <div
       className="rounded-2xl border p-6"
@@ -30,7 +30,7 @@ export function WeakestAreaCard({ eyebrow, icon: Icon, title, description, ctaLa
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-[var(--color-mint)]"
           style={{ backgroundColor: "color-mix(in srgb, var(--color-mint) 15%, white)" }}
         >
-          <Icon className="h-5 w-5" strokeWidth={2} />
+          {icon}
         </div>
       </div>
       <button

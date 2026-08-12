@@ -1,5 +1,6 @@
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { createElement } from "react";
 import { currentUser } from "@clerk/nextjs/server";
 
 import { TopBar } from "@/components/dashboard/Topbar";
@@ -90,7 +91,10 @@ export default async function Dashboard() {
     }
 
     const firstName = user?.firstName ?? "there";
-    
+    const weakestAreaIcon = data.weakestArea
+        ? createElement(getIcon(data.weakestArea.iconKey), { className: "h-5 w-5", strokeWidth: 2 })
+        : null;
+
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
             <TopBar tracks={tracks} activeTrackId={data.track.slug} />
@@ -115,12 +119,12 @@ export default async function Dashboard() {
                     </section>
 
                     <section aria-label="Recommended next" className="space-y-8">
-                        {data.weakestArea && (
+                        {data.weakestArea && weakestAreaIcon && (
                             <div>
                                 <SectionLabel>Recommended next</SectionLabel>
                                 <WeakestAreaCard
                                     eyebrow={data.weakestArea.eyebrow}
-                                    icon={getIcon(data.weakestArea.iconKey)}
+                                    icon={weakestAreaIcon}
                                     title={data.weakestArea.title}
                                     description={data.weakestArea.description}
                                     ctaLabel={data.weakestArea.ctaLabel}

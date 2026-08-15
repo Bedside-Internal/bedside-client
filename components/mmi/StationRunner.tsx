@@ -101,7 +101,7 @@ export function StationRunner({
                     { label: stationTitle, href: `/${basePath}/${slug}` },
                     { label: `Question ${index + 1}` },
                 ]}
-                onExit={() => router.push(stationListHref)}
+                onExit={() => router.push("/dashboard")}
                 onSubmit={handleSubmit}
                 submitting={submitting}
                 feedback={feedback}

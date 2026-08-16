@@ -3,6 +3,7 @@ import { getCircuitAttempt } from "@/lib/api/circuit";
 import { getQuestion } from "@/lib/api/mmi";
 import { CircuitTransition } from "@/components/circuit/CircuitTransition";
 import { CircuitStationRunner } from "@/components/circuit/CircuitStationRunner";
+import { getOnboardingProgress } from "@/lib/actions";
 
 const STATION_TIPS: Record<string, string> = {
   communication: "In Communication stations, interviewers assess tone and empathy as much as content — slow down and listen.",
@@ -21,7 +22,12 @@ export default async function CircuitRunPage({ searchParams }: CircuitRunPagePro
   const { attempt: attemptId, station: stationParam, phase } = await searchParams;
   if (!attemptId) redirect("/mmi/circuit");
 
-  const state = await getCircuitAttempt("mmi", attemptId);
+  const [state, progress] = await Promise.all([
+    getCircuitAttempt("mmi", attemptId),
+    getOnboardingProgress(),
+  ]);
+
+  const dashboardReady = Boolean(progress?.track && progress?.format);
   const stationIndex = stationParam ? parseInt(stationParam, 10) : 0;
   const index = Number.isFinite(stationIndex) ? Math.max(0, Math.min(state.stations.length - 1, stationIndex)) : 0;
   const currentStation = state.stations[index];
@@ -36,6 +42,8 @@ export default async function CircuitRunPage({ searchParams }: CircuitRunPagePro
         basePath="/mmi/circuit"
         unitLabel="Station"
         tips={STATION_TIPS}
+        exitHref="/onboarding/medical-school/format-mmi"
+        dashboardReady={dashboardReady}
       />
     );
   }
@@ -51,6 +59,8 @@ export default async function CircuitRunPage({ searchParams }: CircuitRunPagePro
       basePath="/mmi/circuit"
       resultsPath={(id) => `/mmi/circuit/${id}/results`}
       breadcrumbLabel="MMI Circuit"
+      exitHref="/onboarding/medical-school/format-mmi"
+      dashboardReady={dashboardReady}
     />
   );
 }

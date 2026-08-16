@@ -16,6 +16,7 @@ interface StationRunnerProps {
     attemptId: string;
     initialIndex: number;
     initialQuestion: QuestionDetail;
+    dashboardReady: boolean;
 }
 
 export function StationRunner({
@@ -28,6 +29,7 @@ export function StationRunner({
     attemptId,
     initialIndex,
     initialQuestion,
+    dashboardReady
 }: StationRunnerProps) {
     const router = useRouter();
     const [index, setIndex] = useState(initialIndex);
@@ -101,7 +103,9 @@ export function StationRunner({
                     { label: stationTitle, href: `/${basePath}/${slug}` },
                     { label: `Question ${index + 1}` },
                 ]}
-                onExit={() => router.push("/dashboard")}
+                onExit={() => router.push(stationListHref)}
+                dashboardReady={dashboardReady}
+                onDashboard={() => router.push("/dashboard")}
                 onSubmit={handleSubmit}
                 submitting={submitting}
                 feedback={feedback}

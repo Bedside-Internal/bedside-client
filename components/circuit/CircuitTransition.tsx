@@ -7,6 +7,7 @@ import type { LucideIcon } from "lucide-react";
 import { CircuitStepTracker } from "./CircuitStepTracker";
 import type { CircuitStationState } from "@/types/circuit";
 import { resolveIcon } from "@/lib/iconRegistry";
+import { DashboardHomeButton } from "../onboarding/DashboardHomeButton";
 
 const BREAK_SECONDS = 25;
 const FALLBACK_TIP = "Take a breath. Read the next scenario carefully before you start responding.";
@@ -24,7 +25,8 @@ interface CircuitTransitionProps {
   unitLabel?: string; // "Station" | "Scenario"
   tips?: Record<string, string>;
   defaultTip?: string;
-  exitHref?: string;
+  exitHref: string;
+  dashboardReady: boolean;
 }
 
 export function CircuitTransition({
@@ -35,7 +37,8 @@ export function CircuitTransition({
   unitLabel = "Station",
   tips = {},
   defaultTip = FALLBACK_TIP,
-  exitHref = "/dashboard",
+  exitHref,
+  dashboardReady,
 }: CircuitTransitionProps) {
   const router = useRouter();
   const [remaining, setRemaining] = useState(BREAK_SECONDS);
@@ -63,6 +66,7 @@ export function CircuitTransition({
           <ArrowLeft className="h-5 w-5 text-[var(--color-ink)]/50" />
         </button>
         <CircuitStepTracker stations={stations} currentIndex={currentIndex} />
+        <DashboardHomeButton ready={dashboardReady} />
         <div className="w-5" />
       </div>
 

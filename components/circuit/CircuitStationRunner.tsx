@@ -16,7 +16,8 @@ interface CircuitStationRunnerProps {
   basePath: string;
   resultsPath: (attemptId: string) => string;
   breadcrumbLabel: string;
-  exitHref?: string;
+  exitHref: string;
+  dashboardReady: boolean;
 }
 
 export function CircuitStationRunner({
@@ -27,7 +28,8 @@ export function CircuitStationRunner({
   basePath,
   resultsPath,
   breadcrumbLabel,
-  exitHref = "/dashboard",
+  exitHref,
+  dashboardReady,
 }: CircuitStationRunnerProps) {
   const router = useRouter();
   const [question] = useState<QuestionDetail>(initialQuestion);
@@ -87,6 +89,8 @@ export function CircuitStationRunner({
         question={question}
         breadcrumb={[{ label: breadcrumbLabel }, { label: station.title }]}
         onExit={() => router.push(exitHref)}
+        dashboardReady={dashboardReady}
+        onDashboard={() => router.push("/dashboard")}
         onSubmit={handleSubmit}
         submitting={submitting}
         feedback={feedback}

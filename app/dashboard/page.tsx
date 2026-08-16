@@ -1,5 +1,6 @@
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { User } from "@clerk/nextjs/server";
 import { createElement } from "react";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -84,7 +85,14 @@ export default async function Dashboard() {
         redirect("/onboarding");
     }
 
-    const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
+    let data: DashboardApiResponse;
+    let user: User | null;
+
+    try {
+        [user, data] = await Promise.all([currentUser(), getDashboardData()]);
+    } catch {
+        redirect(`/onboarding/${progress.track}/${progress.format}`);
+    }
 
     if (data.recentActivity.items.length === 0) {
         redirect(`/onboarding/${progress.track}/${progress.format}`);

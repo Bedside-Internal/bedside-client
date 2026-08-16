@@ -1,6 +1,7 @@
 import { getStationQuestions, getQuestion } from "@/lib/api/mmi";
 import { StationRunner } from "@/components/mmi/StationRunner";
 import { BeginStationButton } from "@/components/mmi/BeginStationButton";
+import { getOnboardingProgress } from "@/lib/actions";
 
 interface StationPageProps {
     params: Promise<{ slug: string }>;
@@ -11,8 +12,13 @@ export default async function StationPage({ params, searchParams }: StationPageP
     const { slug } = await params;
     const { attempt: attemptParam, q: qParam } = await searchParams;
 
-    const { sectionTitle, questions } = await getStationQuestions(slug, "mmi");
+    const [{ sectionTitle, questions }, progress] = await Promise.all([
+        getStationQuestions(slug, "mmi"),
+        getOnboardingProgress(),
+    ]);
 
+    const dashboardReady = Boolean(progress?.track && progress?.format);
+    
     if (questions.length === 0) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-[var(--color-cream)] px-6 text-center">
@@ -57,6 +63,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
             attemptId={attemptParam}
             initialIndex={index}
             initialQuestion={currentQuestion}
+            dashboardReady={dashboardReady}
         />
     );
 }

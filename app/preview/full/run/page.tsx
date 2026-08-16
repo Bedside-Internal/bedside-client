@@ -3,6 +3,7 @@ import { getCircuitAttempt } from "@/lib/api/circuit";
 import { getQuestion } from "@/lib/api/mmi";
 import { CircuitTransition } from "@/components/circuit/CircuitTransition";
 import { CircuitStationRunner } from "@/components/circuit/CircuitStationRunner";
+import { getOnboardingProgress } from "@/lib/actions";
 
 // ⚠️ Confirm these keys match the actual `sections.slug` values for the
 // "preview" format in Postgres — I inferred them from the competency
@@ -26,7 +27,11 @@ export default async function PreviewFullMockRunPage({ searchParams }: PreviewFu
     const { attempt: attemptId, station: stationParam, phase } = await searchParams;
     if (!attemptId) redirect("/preview/full");
 
-    const state = await getCircuitAttempt("preview", attemptId);
+    const [state, progress] = await Promise.all([
+        getCircuitAttempt("preview", attemptId),
+        getOnboardingProgress(),
+      ]);
+      const dashboardReady = Boolean(progress?.track && progress?.format);
     const stationIndex = stationParam ? parseInt(stationParam, 10) : 0;
     const index = Number.isFinite(stationIndex) ? Math.max(0, Math.min(state.stations.length - 1, stationIndex)) : 0;
     const currentStation = state.stations[index];
@@ -42,6 +47,8 @@ export default async function PreviewFullMockRunPage({ searchParams }: PreviewFu
                 unitLabel="Scenario"
                 tips={SCENARIO_TIPS}
                 defaultTip="Take a breath. Read the next scenario carefully before you start responding."
+                exitHref="/onboarding/medical-school/format-preview"
+                dashboardReady={dashboardReady}
             />
         );
     }
@@ -57,6 +64,8 @@ export default async function PreviewFullMockRunPage({ searchParams }: PreviewFu
             basePath="/preview/full"
             resultsPath={(id) => `/preview/full/${id}/results`}
             breadcrumbLabel="PREview Mock"
+            exitHref="/onboarding/medical-school/format-preview"
+            dashboardReady={dashboardReady}
         />
     );
 }

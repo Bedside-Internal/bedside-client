@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, User } from "lucide-react";
+import { ArrowLeft, ArrowRight, User, Home } from "lucide-react";
 import { Timer } from "../mmi/Timer";
 import { ScenarioPanel } from "../mmi/ScenarioPanel";
 import { ResponseComposer } from "../mmi/ResponseComposer";
@@ -30,6 +30,8 @@ interface QuestionRunnerProps {
     onNext?: () => void;
     hasPrev?: boolean;
     hasNext?: boolean;
+    dashboardReady?: boolean;
+    onDashboard?: () => void;
 }
 
 export function QuestionRunner({
@@ -44,6 +46,8 @@ export function QuestionRunner({
     onNext,
     hasPrev = false,
     hasNext = false,
+    dashboardReady = false,
+    onDashboard,
 }: QuestionRunnerProps) {
     const [phase, setPhase] = useState<Phase>("reading");
     const [prevQuestionId, setPrevQuestionId] = useState(question.id);
@@ -94,6 +98,19 @@ export function QuestionRunner({
                         className="rounded-lg p-2 text-[var(--color-ink)]/60 hover:bg-white"
                     >
                         <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={dashboardReady ? onDashboard : undefined}
+                        disabled={!dashboardReady}
+                        aria-label="Go to dashboard"
+                        title={dashboardReady ? "Go to dashboard" : "Finish onboarding to unlock your dashboard"}
+                        className={`rounded-lg p-2 transition ${dashboardReady
+                                ? "text-[var(--color-ink)]/60 hover:bg-white"
+                                : "cursor-not-allowed text-[var(--color-ink)]/25"
+                            }`}
+                    >
+                        <Home className="h-5 w-5" strokeWidth={2.25} />
                     </button>
                     <User className="h-6 w-6 text-[var(--color-ink)]/70" strokeWidth={1.75} />
                 </div>

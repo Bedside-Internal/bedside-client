@@ -1,6 +1,7 @@
 import { getStationQuestions, getQuestion } from "@/lib/api/mmi";
 import { StationRunner } from "@/components/mmi/StationRunner";
 import { BeginStationButton } from "@/components/mmi/BeginStationButton";
+import { getOnboardingProgress } from "@/lib/actions";
 
 interface PreviewStationPageProps {
     params: Promise<{ slug: string }>;
@@ -11,7 +12,12 @@ export default async function PreviewStationPage({ params, searchParams }: Previ
     const { slug } = await params;
     const { attempt: attemptParam, q: qParam } = await searchParams;
 
-    const { sectionTitle, questions } = await getStationQuestions(slug, "preview");
+    const [{ sectionTitle, questions }, progress] = await Promise.all([
+        getStationQuestions(slug, "preview"),
+        getOnboardingProgress(),
+    ]);
+
+    const dashboardReady = Boolean(progress?.track && progress?.format);
 
     if (questions.length === 0) {
         return (
@@ -56,6 +62,7 @@ export default async function PreviewStationPage({ params, searchParams }: Previ
             attemptId={attemptParam}
             initialIndex={index}
             initialQuestion={currentQuestion}
+            dashboardReady={dashboardReady}
         />
     );
 }

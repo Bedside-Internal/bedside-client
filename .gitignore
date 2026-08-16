@@ -43,3 +43,6 @@ sitemap-*.xml
 # clerk configuration (can include secrets)
 /.clerk/
 .infisical.json
+
+# Sentry Config File
+.env.sentry-build-plugin

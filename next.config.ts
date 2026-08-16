@@ -15,7 +15,7 @@ export default withSentryConfig(nextConfig, {
 
   org: "bedside-up",
 
-  project: "bedside-telemetry",
+  project: "bedside-frontend",
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

@@ -7,8 +7,17 @@ import Features from "@/components/sections/Features";
 import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
+import Testimonials from "@/components/sections/Testimonials";
+import { TestimonialDTO } from "@/types/testimonials";
+import { getTestimonials } from "@/lib/api/marketing";
 
-export default function Home() {
+export default async function Home() {
+  let testimonials: TestimonialDTO[] = [];
+  try {
+    testimonials = await getTestimonials();
+  } catch {
+  }
+
   return (
     <>
       <Navbar />
@@ -16,6 +25,7 @@ export default function Home() {
       <Marquee />
       <HowItWorks />
       <Features />
+      <Testimonials testimonials={testimonials} />
       <DarkCTA />
       <Pricing />
       <FAQ />

@@ -93,3 +93,129 @@ export const faqs: Faq[] = [
     a: "Absolutely. Filter by format, topic (ethics, teamwork, clinical reasoning), and difficulty level before each session to drill exactly what you need.",
   },
 ];
+
+export type TestimonialAudience = "applicant" | "partner";
+
+export type Testimonial = {
+  id: string;
+  name: string;
+  subtitle: string;
+  quote: string;
+  audience: TestimonialAudience;
+  avatarLabel: string;
+  avatarShape: "circle" | "square";
+  accent: "mint" | "coral" | "amber" | "violet";
+};
+
+export const testimonials: Testimonial[] = [
+  {
+    id: "meridian-medprep",
+    name: "Meridian MedPrep",
+    subtitle: "Admissions consultancy",
+    quote:
+      "We now recommend Bedside to every client as a required step before mock panel sessions with our coaches.",
+    audience: "partner",
+    avatarLabel: "MM",
+    avatarShape: "square",
+    accent: "mint",
+  },
+  {
+    id: "alder-university",
+    name: "Alder University Pre-Health",
+    subtitle: "Pre-health advising office",
+    quote:
+      "Our advising office points every applicant to Bedside. It's the most complete format coverage we've seen in one tool.",
+    audience: "partner",
+    avatarLabel: "AU",
+    avatarShape: "square",
+    accent: "coral",
+  },
+  {
+    id: "northgate-admissions",
+    name: "Northgate Admissions Coaching",
+    subtitle: "Independent coaching practice",
+    quote:
+      "The CASPer module alone replaced two of our internal prep documents. Students arrive to sessions already warmed up.",
+    audience: "partner",
+    avatarLabel: "NA",
+    avatarShape: "square",
+    accent: "amber",
+  },
+  {
+    id: "brightline-health-careers",
+    name: "Brightline Health Careers",
+    subtitle: "Career prep partner org",
+    quote:
+      "Session history and scoring gave our staff visibility into student progress we never had before.",
+    audience: "partner",
+    avatarLabel: "BH",
+    avatarShape: "square",
+    accent: "violet",
+  },
+  {
+    id: "priya-n",
+    name: "Priya N.",
+    subtitle: "Accepted, MMI format",
+    quote:
+      "The MMI stations felt exactly like the real thing. I walked into my actual interview and recognized the rhythm immediately.",
+    audience: "applicant",
+    avatarLabel: "PN",
+    avatarShape: "circle",
+    accent: "mint",
+  },
+  {
+    id: "aisha-r",
+    name: "Aisha R.",
+    subtitle: "Reapplicant, panel format",
+    quote:
+      "Practicing with multiple 'interviewers' at once exposed exactly where I froze up. Fixed it before it mattered.",
+    audience: "applicant",
+    avatarLabel: "AR",
+    avatarShape: "circle",
+    accent: "coral",
+  },
+  {
+    id: "sofia-l",
+    name: "Sofia L.",
+    subtitle: "Accepted, behavioral prep",
+    quote:
+      "The feedback called out my rambling answers directly. Blunt, specific, and actually useful.",
+    audience: "applicant",
+    avatarLabel: "SL",
+    avatarShape: "circle",
+    accent: "mint",
+  },
+  {
+    id: "marcus-t",
+    name: "Marcus T.",
+    subtitle: "Accepted, CASPer prep",
+    quote:
+      "Timed, typed scenarios with real feedback on my reasoning — nothing else I tried came close for CASPer specifically.",
+    audience: "applicant",
+    avatarLabel: "MT",
+    avatarShape: "square",
+    accent: "amber",
+  },
+  {
+    id: "daniel-k",
+    name: "Daniel K.",
+    subtitle: "Accepted, traditional format",
+    quote:
+      "Unlimited sessions meant I could drill the same weak spot ten times in a row instead of once a week.",
+    audience: "applicant",
+    avatarLabel: "DK",
+    avatarShape: "circle",
+    accent: "violet",
+  },
+  {
+    id: "james-o",
+    name: "James O.",
+    subtitle: "Accepted, MMI format",
+    quote:
+      "I used it every night for three weeks before interviews. Best money I spent in the whole application cycle.",
+    audience: "applicant",
+    avatarLabel: "JO",
+    avatarShape: "circle",
+    accent: "amber",
+  },
+];

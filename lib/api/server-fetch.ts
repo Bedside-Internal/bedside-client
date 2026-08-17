@@ -13,6 +13,16 @@ export class ApiError extends Error {
   }
 }
 
+interface ServerApiFetchOptions extends RequestInit {
+  /**
+   * Skip the Clerk auth() lookup and send the request with no Bearer
+   * token. ONLY for routes with no requireAuth on the API side (currently
+   * just marketingRouter) — never set this for anything that reads
+   * user-specific data.
+   */
+  skipAuth?: boolean;
+}
+
 /**
  * lib/api/server-fetch.ts
  *
@@ -28,19 +38,25 @@ export class ApiError extends Error {
  * enforces this everywhere except this file and lib/api/use-api-fetch.ts
  * (the client-component equivalent).
  */
-export async function serverApiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const { getToken } = await auth();
-  const token = await getToken();
-  const isFormData = init?.body instanceof FormData;
+export async function serverApiFetch<T>(path: string, init?: ServerApiFetchOptions): Promise<T> {
+  const { skipAuth, ...requestInit } = init ?? {};
+
+  let token: string | null = null;
+  if (!skipAuth) {
+    const { getToken } = await auth();
+    token = await getToken();
+  }
+
+  const isFormData = requestInit.body instanceof FormData;
 
   const res = await fetch(`${BASE_URL}${path}`, {
-    ...init,
+    ...requestInit,
     headers: {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...init?.headers,
+      ...requestInit.headers,
     },
-    cache: init?.cache ?? "no-store",
+    ...(skipAuth ? {} : { cache: requestInit.cache ?? "no-store" }),
   });
 
   if (!res.ok) {

@@ -1,6 +1,5 @@
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import type { User } from "@clerk/nextjs/server";
 import { createElement } from "react";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -78,6 +77,17 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     return <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">{children}</p>;
 }
 
+function EmptyActivityState() {
+    return (
+        <div className="rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 px-5 py-8 text-center">
+            <p className="text-sm font-medium text-[var(--color-ink)]">No sessions yet</p>
+            <p className="mt-1 text-sm text-slate-400">
+                Finish your first practice session to see it show up here.
+            </p>
+        </div>
+    );
+}
+
 export default async function Dashboard() {
     const progress = await getOnboardingProgress();
 
@@ -85,18 +95,14 @@ export default async function Dashboard() {
         redirect("/onboarding");
     }
 
-    let data: DashboardApiResponse;
-    let user: User | null;
+    // Let this throw on failure — the nearest error.tsx boundary handles it.
+    // A failed /api/dashboard call says nothing about onboarding status, so it
+    // must never be treated as "user isn't onboarded."
+    const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
 
-    try {
-        [user, data] = await Promise.all([currentUser(), getDashboardData()]);
-    } catch {
-        redirect(`/onboarding/${progress.track}/${progress.format}`);
-    }
-
-    if (data.recentActivity.items.length === 0) {
-        redirect(`/onboarding/${progress.track}/${progress.format}`);
-    }
+    // NOTE: an empty recentActivity list is a normal state for a freshly
+    // onboarded user with no attempts yet — it is NOT a signal that
+    // onboarding is incomplete. Render an empty state instead of redirecting.
 
     const firstName = user?.firstName ?? "there";
     const weakestAreaIcon = data.weakestArea
@@ -156,14 +162,18 @@ export default async function Dashboard() {
                         </div>
                         <div>
                             <SectionLabel>Recent activity</SectionLabel>
-                            <div className="divide-y divide-[var(--color-sand)] rounded-2xl border border-[var(--color-sand)] bg-white px-5 shadow-sm">
-                                {data.recentActivity.items.map((activity, i) => (
-                                    <ActivityRow key={`${activity.title}-${i}`} {...activity} />
-                                ))}
-                                {data.recentActivity.lockedCount > 0 && (
-                                    <LockedActivityRow count={data.recentActivity.lockedCount} />
-                                )}
-                            </div>
+                            {data.recentActivity.items.length === 0 && data.recentActivity.lockedCount === 0 ? (
+                                <EmptyActivityState />
+                            ) : (
+                                <div className="divide-y divide-[var(--color-sand)] rounded-2xl border border-[var(--color-sand)] bg-white px-5 shadow-sm">
+                                    {data.recentActivity.items.map((activity, i) => (
+                                        <ActivityRow key={`${activity.title}-${i}`} {...activity} />
+                                    ))}
+                                    {data.recentActivity.lockedCount > 0 && (
+                                        <LockedActivityRow count={data.recentActivity.lockedCount} />
+                                    )}
+                                </div>
+                            )}
                         </div>
                         <StreakCard
                             streakDays={data.streak.streakDays}

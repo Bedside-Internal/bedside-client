@@ -1,5 +1,6 @@
 import { Grid2X2, FileText, Video, GraduationCap, School } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import type { User } from "@clerk/nextjs/server";
 import { createElement } from "react";
 import { currentUser } from "@clerk/nextjs/server";
 
@@ -15,7 +16,7 @@ import { StreakCard } from "@/components/dashboard/Streakcard";
 import { getOnboardingProgress } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { LockedActivityRow } from "@/components/dashboard/LockedActivityRow";
-import { serverApiFetch } from "@/lib/api/server-fetch";
+import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -69,8 +70,8 @@ interface DashboardApiResponse {
     };
 }
 
-async function getDashboardData(): Promise<DashboardApiResponse> {
-    return serverApiFetch<DashboardApiResponse>("/api/dashboard");
+async function getDashboardData(trackSlug: string): Promise<DashboardApiResponse> {
+    return serverApiFetch<DashboardApiResponse>(`/api/dashboard?track=${encodeURIComponent(trackSlug)}`);
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -88,6 +89,17 @@ function EmptyActivityState() {
     );
 }
 
+function AccountSyncingState() {
+    return (
+        <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-[var(--color-cream)] px-6 text-center">
+            <p className="text-lg font-semibold text-[var(--color-ink)]">Setting up your account</p>
+            <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
+                This usually takes just a few seconds. Refresh in a moment to pick up where you left off.
+            </p>
+        </div>
+    );
+}
+
 export default async function Dashboard() {
     const progress = await getOnboardingProgress();
 
@@ -95,10 +107,21 @@ export default async function Dashboard() {
         redirect("/onboarding");
     }
 
-    // Let this throw on failure — the nearest error.tsx boundary handles it.
-    // A failed /api/dashboard call says nothing about onboarding status, so it
-    // must never be treated as "user isn't onboarded."
-    const [user, data] = await Promise.all([currentUser(), getDashboardData()]);
+    // A failed /api/dashboard call says nothing about onboarding status, so
+    // it must never be treated as "user isn't onboarded." The one exception
+    // we distinguish is the Clerk->Postgres sync-pending 404, which is a
+    // transient, expected state right after sign-up — everything else falls
+    // through to the nearest error.tsx boundary.
+    let user: User | null;
+    let data: DashboardApiResponse;
+    try {
+        [user, data] = await Promise.all([currentUser(), getDashboardData(progress.track)]);
+    } catch (err) {
+        if (err instanceof ApiError && err.status === 404) {
+            return <AccountSyncingState />;
+        }
+        throw err;
+    }
 
     // NOTE: an empty recentActivity list is a normal state for a freshly
     // onboarded user with no attempts yet — it is NOT a signal that

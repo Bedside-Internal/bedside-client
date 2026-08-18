@@ -9,7 +9,7 @@ import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
 import { getTestimonials } from "@/lib/api/marketing";
-import type { TestimonialDTO } from "@/types/testimonials";
+import type { TestimonialDTO } from "@/types/marketing";
 
 export const revalidate = 300;
 

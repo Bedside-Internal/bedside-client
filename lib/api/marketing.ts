@@ -1,5 +1,5 @@
 import { serverApiFetch } from "@/lib/api/server-fetch";
-import type { TestimonialDTO } from "@/types/testimonials";
+import type { TestimonialDTO } from "@/types/marketing";
 
 /**
  * Backs the logged-out landing page. skipAuth: true means this never calls

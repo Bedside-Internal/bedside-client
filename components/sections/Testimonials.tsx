@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import clsx from "clsx";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
-import type { TestimonialDTO, TestimonialAudience } from "@/types/testimonials";
+import type { TestimonialDTO, TestimonialAudience } from "@/types/marketing";
 
 type Filter = "all" | "students" | "institutions";
 

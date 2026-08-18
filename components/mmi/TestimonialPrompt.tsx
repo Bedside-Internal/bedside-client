@@ -25,6 +25,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
     const [state, setState] = useState<PromptState>("checking");
     const [rating, setRating] = useState(0);
     const [quote, setQuote] = useState("");
+    const [subtitle, setSubtitle] = useState("");
     const [nameDisplay, setNameDisplay] = useState<TestimonialNameDisplay>("first_name_only");
     const [consent, setConsent] = useState(false);
     const [submitting, setSubmitting] = useState(false);
@@ -62,6 +63,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                 body: JSON.stringify({
                     rating,
                     quote: quote.trim(),
+                    subtitle: subtitle.trim() || undefined,
                     audience: "applicant",
                     nameDisplay,
                     consentToPublish: true,
@@ -142,6 +144,20 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
             </div>
 
             <div className="mb-5">
+                <label className="mb-2 block text-[13px] font-medium text-ink/50">
+                    School <span className="text-ink/30">(optional)</span>
+                </label>
+                <input
+                    type="text"
+                    value={subtitle}
+                    onChange={(e) => setSubtitle(e.target.value)}
+                    placeholder="e.g. Harvard Medical School, MS2"
+                    maxLength={120}
+                    className="w-full rounded-lg border border-ink/15 bg-white px-3.5 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink/40"
+                />
+            </div>
+
+            <div className="mb-5">
                 <label className="mb-2 block text-[13px] font-medium text-ink/50">Show my name as</label>
                 <div className="flex gap-2">
                     {NAME_DISPLAY_OPTIONS.map((opt) => (
@@ -150,8 +166,8 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                             type="button"
                             onClick={() => setNameDisplay(opt.value)}
                             className={`flex-1 rounded-lg px-3 py-2.5 text-[13px] font-semibold transition-colors ${nameDisplay === opt.value
-                                    ? "bg-ink text-white"
-                                    : "border border-ink/15 bg-white text-ink hover:bg-sand"
+                                ? "bg-ink text-white"
+                                : "border border-ink/15 bg-white text-ink hover:bg-sand"
                                 }`}
                         >
                             {opt.label}

@@ -21,3 +21,32 @@ export interface FormatCardDTO {
     description: string;
     accent: FormatCardAccent;
 }
+
+export interface PricingFeatureDTO {
+    id: string;
+    label: string;
+    included: boolean;
+}
+
+export interface PricingBillingCycleDTO {
+    id: string;
+    months: number;
+    price: number;
+    perMonth: number;
+    savingsPct: number | null;
+    badge: string | null;
+}
+
+export interface PricingTierDTO {
+    id: string;
+    title: string;
+    featured: boolean;
+    price: number;
+    periodLabel: string;
+    priceNote: string;
+    badge: string | null;
+    buttonLabel: string;
+    defaultCycleMonths: number | null;
+    features: PricingFeatureDTO[];
+    billingCycles: PricingBillingCycleDTO[];
+}

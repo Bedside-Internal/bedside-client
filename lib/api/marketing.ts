@@ -1,6 +1,5 @@
 import { serverApiFetch } from "@/lib/api/server-fetch";
-import type { FormatCardDTO, TestimonialDTO } from "@/types/marketing";
-
+import type { FormatCardDTO, TestimonialDTO, PricingTierDTO } from "@/types/marketing";
 /**
  * Backs the logged-out landing page. skipAuth: true means this never calls
  * Clerk's auth() (a "dynamic function") — matches marketingRouter having no
@@ -18,6 +17,13 @@ export async function getTestimonials(): Promise<TestimonialDTO[]> {
 export async function getFormatCards(): Promise<FormatCardDTO[]> {
   return serverApiFetch<FormatCardDTO[]>("/api/marketing/formats", {
     skipAuth: true,
-    next: { revalidate: 300 }, 
+    next: { revalidate: 300 },
+  });
+}
+
+export async function getPricingTiers(): Promise<PricingTierDTO[]> {
+  return serverApiFetch<PricingTierDTO[]>("/api/marketing/pricing", {
+    skipAuth: true,
+    next: { revalidate: 300 },
   });
 }

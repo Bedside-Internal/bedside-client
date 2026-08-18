@@ -50,3 +50,9 @@ export interface PricingTierDTO {
     features: PricingFeatureDTO[];
     billingCycles: PricingBillingCycleDTO[];
 }
+
+export interface FaqEntryDTO {
+    id: string;
+    question: string;
+    answer: string;
+}

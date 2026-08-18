@@ -1,5 +1,5 @@
 import { serverApiFetch } from "@/lib/api/server-fetch";
-import type { TestimonialDTO } from "@/types/marketing";
+import type { FormatCardDTO, TestimonialDTO } from "@/types/marketing";
 
 /**
  * Backs the logged-out landing page. skipAuth: true means this never calls
@@ -11,6 +11,13 @@ import type { TestimonialDTO } from "@/types/marketing";
 export async function getTestimonials(): Promise<TestimonialDTO[]> {
   return serverApiFetch<TestimonialDTO[]>("/api/marketing/testimonials", {
     skipAuth: true,
-    next: { revalidate: 300 }, // 5 minutes
+    next: { revalidate: 300 },
+  });
+}
+
+export async function getFormatCards(): Promise<FormatCardDTO[]> {
+  return serverApiFetch<FormatCardDTO[]>("/api/marketing/formats", {
+    skipAuth: true,
+    next: { revalidate: 300 }, 
   });
 }

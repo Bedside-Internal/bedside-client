@@ -4,34 +4,149 @@ import { useState } from "react";
 import clsx from "clsx";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
 import MagneticButton from "@/components/ui/MagneticButton";
+import type { PricingTierDTO } from "@/types/marketing";
 
-const PLANS = [
-  { id: "3mo", months: 3, price: 29.99, perMonth: 10.0 },
-  { id: "6mo", months: 6, price: 49.99, perMonth: 8.33, savingsPct: 17 },
-  {
-    id: "12mo",
-    months: 12,
-    price: 79.99,
-    perMonth: 6.67,
-    savingsPct: 33,
-    badge: "Best value",
-  },
-] as const;
-
-export default function Pricing() {
-  const [selected, setSelected] = useState<(typeof PLANS)[number]["id"]>(
-    "12mo",
+function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }) {
+  const cycles = tier.billingCycles;
+  const [selectedMonths, setSelectedMonths] = useState<number | null>(
+    tier.defaultCycleMonths ?? cycles[0]?.months ?? null,
   );
-  const active = PLANS.find((p) => p.id === selected)!;
+  const active = cycles.find((c) => c.months === selectedMonths) ?? cycles[0];
+
+  const displayPrice = active ? active.price : tier.price;
+  const displayPeriod = active ? `/ ${active.months} mo` : tier.periodLabel;
+  const displayNote = active
+    ? `$${active.perMonth.toFixed(2)}/mo billed once${active.savingsPct ? ` — save ${active.savingsPct}%` : ""}`
+    : tier.priceNote;
+  const buttonLabel = active
+    ? tier.buttonLabel.replace(/\d+-month/, `${active.months}-month`)
+    : tier.buttonLabel;
+
+  return (
+    <RevealOnScroll delay={delay} className="flex-1 min-w-[280px]">
+      <div
+        className={clsx(
+          "relative h-full rounded-[10px] border-[2.5px] border-ink p-11 px-9 shadow-hard transition-transform duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]",
+          tier.featured ? "bg-mint" : "bg-white",
+        )}
+      >
+        {tier.badge && (
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-coral px-3.5 py-1 text-xs font-bold text-white">
+            {tier.badge}
+          </div>
+        )}
+        <div
+          className={clsx(
+            "mb-5 text-[13px] font-bold uppercase tracking-wider",
+            tier.featured ? "text-ink/60" : "text-neutral-400",
+          )}
+        >
+          {tier.title}
+        </div>
+
+        <div className="mb-1 flex items-baseline gap-1">
+          <span className="font-display text-[64px] leading-none tracking-tighter text-ink">
+            ${displayPrice.toFixed(active ? 2 : 0)}
+          </span>
+          {displayPeriod && (
+            <span className={clsx("text-lg font-semibold", tier.featured ? "text-ink/60" : "text-neutral-400")}>
+              {displayPeriod}
+            </span>
+          )}
+        </div>
+        <div className={clsx("mb-7 text-sm", tier.featured ? "text-ink/60" : "text-neutral-400")}>
+          {displayNote}
+        </div>
+
+        {cycles.length > 1 && (
+          <div className="mb-9 grid grid-cols-3 gap-1.5 rounded-xl border-2 border-ink/15 bg-white/40 p-1.5">
+            {cycles.map((cycle) => (
+              <button
+                key={cycle.id}
+                type="button"
+                onClick={() => setSelectedMonths(cycle.months)}
+                className={clsx(
+                  "relative flex flex-col items-center gap-0.5 rounded-lg py-2.5 text-center transition-colors",
+                  cycle.months === selectedMonths
+                    ? "bg-ink text-cream"
+                    : "text-ink/60 hover:bg-white/60 hover:text-ink",
+                )}
+              >
+                {cycle.badge && (
+                  <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-amber px-2 py-[1px] text-[9px] font-bold text-ink">
+                    {cycle.badge}
+                  </span>
+                )}
+                <span className="text-[13px] font-bold">{cycle.months} mo</span>
+                <span
+                  className={clsx(
+                    "text-[11px] font-medium",
+                    cycle.months === selectedMonths ? "text-cream/70" : "text-ink/50",
+                  )}
+                >
+                  ${cycle.perMonth.toFixed(2)}/mo
+                </span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div
+          className={clsx(
+            "mb-9 flex flex-col gap-3.5 border-t-2 pt-7",
+            tier.featured ? "border-ink/20" : "border-[#f0ede6]",
+          )}
+        >
+          {tier.features.map((f) => (
+            <div
+              key={f.id}
+              className={clsx(
+                "flex items-center gap-2.5 text-[15px]",
+                tier.featured
+                  ? "font-medium text-ink"
+                  : f.included
+                    ? "text-neutral-600"
+                    : "text-neutral-300",
+              )}
+            >
+              <span
+                className={clsx(
+                  "font-bold",
+                  tier.featured ? "" : f.included ? "text-mint" : "text-neutral-200",
+                )}
+              >
+                {f.included ? "✓" : "✗"}
+              </span>
+              {f.label}
+            </div>
+          ))}
+        </div>
+
+        <MagneticButton
+          href="#"
+          className={clsx(
+            "block w-full rounded-md border-[2.5px] border-ink py-4 text-center text-base font-semibold shadow-hard transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:translate-x-[3px] hover:translate-y-[3px]",
+            tier.featured
+              ? "bg-ink font-bold text-cream shadow-hard-mint hover:shadow-[2px_2px_0_#3BBA9C]"
+              : "text-ink hover:shadow-[2px_2px_0_#1a1a1a]",
+          )}
+        >
+          {buttonLabel}
+        </MagneticButton>
+      </div>
+    </RevealOnScroll>
+  );
+}
+
+export default function Pricing({ tiers }: { tiers: PricingTierDTO[] }) {
+  if (tiers.length === 0) return null;
 
   return (
     <section id="pricing" className="bg-cream px-[5vw] py-[120px]">
       <div className="mx-auto max-w-[1000px]">
         <RevealOnScroll className="mb-[72px] text-center">
           <div className="mb-[18px] inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-[5px]">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-mint">
-              Pricing
-            </span>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-mint">Pricing</span>
           </div>
           <h2 className="font-display text-[clamp(38px,5vw,64px)] leading-none tracking-tighter text-ink">
             Simple. No tricks.
@@ -39,129 +154,9 @@ export default function Pricing() {
         </RevealOnScroll>
 
         <div className="flex flex-wrap items-stretch gap-6">
-          {/* Free */}
-          <RevealOnScroll className="flex-1 min-w-[280px]">
-            <div className="h-full rounded-[10px] border-[2.5px] border-ink bg-white p-11 px-9 shadow-hard transition-transform duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]">
-              <div className="mb-5 text-[13px] font-bold uppercase tracking-wider text-neutral-400">
-                Free
-              </div>
-              <div className="mb-2 flex items-baseline gap-1">
-                <span className="font-display text-[64px] leading-none tracking-tighter text-ink">
-                  $0
-                </span>
-              </div>
-              <div className="mb-9 text-sm text-neutral-400">
-                no card required
-              </div>
-              <div className="mb-9 flex flex-col gap-3.5 border-t-2 border-[#f0ede6] pt-7">
-                <div className="flex items-center gap-2.5 text-[15px] text-neutral-600">
-                  <span className="font-bold text-mint">✓</span> 5 attempts
-                  total — no monthly reset
-                </div>
-                <div className="flex items-center gap-2.5 text-[15px] text-neutral-600">
-                  <span className="font-bold text-mint">✓</span> MMI +
-                  Traditional formats
-                </div>
-                <div className="flex items-center gap-2.5 text-[15px] text-neutral-600">
-                  <span className="font-bold text-mint">✓</span> Basic
-                  feedback only
-                </div>
-                <div className="flex items-center gap-2.5 text-[15px] text-neutral-300">
-                  <span className="font-bold text-neutral-200">✗</span> No
-                  session history
-                </div>
-              </div>
-              <MagneticButton
-                href="#"
-                className="block w-full rounded-md border-[2.5px] border-ink py-4 text-center text-base font-semibold text-ink shadow-hard transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:shadow-[2px_2px_0_#1a1a1a] hover:translate-x-[3px] hover:translate-y-[3px]"
-              >
-                Start free →
-              </MagneticButton>
-            </div>
-          </RevealOnScroll>
-
-          {/* Pro */}
-          <RevealOnScroll delay="d1" className="flex-1 min-w-[280px]">
-            <div className="relative h-full rounded-[10px] border-[2.5px] border-ink bg-mint p-11 px-9 shadow-hard transition-transform duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]">
-              <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-coral px-3.5 py-1 text-xs font-bold text-white">
-                Most popular
-              </div>
-              <div className="mb-5 text-[13px] font-bold uppercase tracking-wider text-ink/60">
-                Pro
-              </div>
-
-              <div className="mb-1 flex items-baseline gap-1">
-                <span className="font-display text-[64px] leading-none tracking-tighter text-ink">
-                  ${active.price.toFixed(2)}
-                </span>
-                <span className="text-lg font-semibold text-ink/60">
-                  / {active.months} mo
-                </span>
-              </div>
-              <div className="mb-7 text-sm text-ink/60">
-                ${active.perMonth.toFixed(2)}/mo billed once
-                {"savingsPct" in active && active.savingsPct
-                  ? ` — save ${active.savingsPct}%`
-                  : ""}
-              </div>
-
-              {/* Duration selector */}
-              <div className="mb-9 grid grid-cols-3 gap-1.5 rounded-xl border-2 border-ink/15 bg-white/40 p-1.5">
-                {PLANS.map((plan) => (
-                  <button
-                    key={plan.id}
-                    type="button"
-                    onClick={() => setSelected(plan.id)}
-                    className={clsx(
-                      "relative flex flex-col items-center gap-0.5 rounded-lg py-2.5 text-center transition-colors",
-                      selected === plan.id
-                        ? "bg-ink text-cream"
-                        : "text-ink/60 hover:bg-white/60 hover:text-ink",
-                    )}
-                  >
-                    {"badge" in plan && plan.badge && (
-                      <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-amber px-2 py-[1px] text-[9px] font-bold text-ink">
-                        {plan.badge}
-                      </span>
-                    )}
-                    <span className="text-[13px] font-bold">
-                      {plan.months} mo
-                    </span>
-                    <span
-                      className={clsx(
-                        "text-[11px] font-medium",
-                        selected === plan.id ? "text-cream/70" : "text-ink/50",
-                      )}
-                    >
-                      ${plan.perMonth.toFixed(2)}/mo
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="mb-9 flex flex-col gap-3.5 border-t-2 border-ink/20 pt-7">
-                {[
-                  "Unlimited sessions",
-                  "All 6 interview formats",
-                  "Detailed feedback + scoring",
-                  "Session history & progress",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="flex items-center gap-2.5 text-[15px] font-medium text-ink"
-                  >
-                    <span className="font-bold">✓</span> {item}
-                  </div>
-                ))}
-              </div>
-              <MagneticButton
-                href="#"
-                className="block w-full rounded-md border-[2.5px] border-ink bg-ink py-4 text-center text-base font-bold text-cream shadow-hard-mint transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:shadow-[2px_2px_0_#3BBA9C] hover:translate-x-[3px] hover:translate-y-[3px]"
-              >
-                Get {active.months}-month access →
-              </MagneticButton>
-            </div>
-          </RevealOnScroll>
+          {tiers.map((tier, i) => (
+            <TierCard key={tier.id} tier={tier} delay={i === 0 ? undefined : i === 1 ? "d1" : "d2"} />
+          ))}
         </div>
       </div>
     </section>

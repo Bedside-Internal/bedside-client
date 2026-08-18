@@ -11,6 +11,28 @@ export interface TestimonialDTO {
     avatarLabel: string;
     avatarShape: TestimonialAvatarShape;
     accent: TestimonialAccent;
+    rating: number | null;
+}
+
+export type TestimonialNameDisplay = "full_name" | "first_name_only" | "anonymous";
+
+export interface TestimonialEligibilityDTO {
+    eligible: boolean;
+    reason?:
+    | "collection_off"
+    | "not_in_rollout"
+    | "already_submitted"
+    | "already_dismissed"
+    | "not_enough_attempts";
+}
+
+export interface CreateTestimonialSubmissionInput {
+    rating: number;
+    quote: string;
+    audience: "applicant" | "partner";
+    nameDisplay: TestimonialNameDisplay;
+    consentToPublish: true;
+    attemptId?: string;
 }
 
 export type FormatCardAccent = "mint" | "coral" | "amber" | "violet";

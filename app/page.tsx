@@ -8,19 +8,20 @@ import Testimonials from "@/components/sections/Testimonials";
 import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
-import { getTestimonials, getFormatCards } from "@/lib/api/marketing";
-import type { TestimonialDTO } from "@/types/marketing";
-import type { FormatCardDTO } from "@/types/marketing";
+import { getTestimonials, getFormatCards, getPricingTiers } from "@/lib/api/marketing";
+import type { TestimonialDTO, FormatCardDTO, PricingTierDTO } from "@/types/marketing";
 
 export const revalidate = 300;
 
 export default async function Home() {
   let testimonials: TestimonialDTO[] = [];
   let formatCards: FormatCardDTO[] = [];
+  let pricingTiers: PricingTierDTO[] = [];
   try {
-    [testimonials, formatCards] = await Promise.all([
+    [testimonials, formatCards, pricingTiers] = await Promise.all([
       getTestimonials(),
       getFormatCards(),
+      getPricingTiers(),
     ]);
   } catch {
   }
@@ -34,7 +35,7 @@ export default async function Home() {
       <Features formatCards={formatCards} />
       <Testimonials testimonials={testimonials} />
       <DarkCTA />
-      <Pricing />
+      <Pricing tiers={pricingTiers} />
       <FAQ />
       <Footer />
     </>

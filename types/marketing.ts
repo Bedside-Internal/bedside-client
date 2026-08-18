@@ -12,3 +12,12 @@ export interface TestimonialDTO {
     avatarShape: TestimonialAvatarShape;
     accent: TestimonialAccent;
 }
+
+export type FormatCardAccent = "mint" | "coral" | "amber" | "violet";
+
+export interface FormatCardDTO {
+    id: string;
+    title: string;
+    description: string;
+    accent: FormatCardAccent;
+}

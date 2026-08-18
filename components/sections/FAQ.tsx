@@ -44,16 +44,18 @@ export default function FAQ({ entries }: { entries: FaqEntryDTO[] }) {
                   </div>
                 </button>
                 <div
-                  className="overflow-hidden transition-[max-height,opacity,padding-bottom] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  className="grid transition-[grid-template-rows,opacity,padding-bottom] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
                   style={{
-                    maxHeight: isOpen ? 240 : 0,
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
                     opacity: isOpen ? 1 : 0,
                     paddingBottom: isOpen ? 24 : 0,
                   }}
                 >
-                  <p className="text-base leading-relaxed text-neutral-600">
-                    {faq.answer}
-                  </p>
+                  <div className="overflow-hidden min-h-0">
+                    <p className="text-base leading-relaxed text-neutral-600">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </RevealOnScroll>
             );

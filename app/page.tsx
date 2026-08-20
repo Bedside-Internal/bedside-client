@@ -2,6 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
 import Marquee from "@/components/sections/Marquee";
+import DemoVideo from "@/components/sections/Demovideo";
 import HowItWorks from "@/components/sections/HowItWorks";
 import Features from "@/components/sections/Features";
 import Testimonials from "@/components/sections/Testimonials";
@@ -33,6 +34,7 @@ export default async function Home() {
       <Navbar />
       <Hero />
       <Marquee />
+      <DemoVideo youtubeId="" />
       <HowItWorks />
       <Features formatCards={formatCards} />
       <Testimonials testimonials={testimonials} />

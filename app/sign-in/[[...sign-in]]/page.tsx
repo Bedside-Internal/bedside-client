@@ -32,11 +32,6 @@ export default function SignInPage() {
             where you left off.
           </p>
         </div>
-
-        <p className="relative z-10 text-xs text-neutral-500">
-          Over <span className="font-semibold text-emerald-400">4,200 applicants</span>{" "}
-          used PrepPath to ace their interviews last cycle.
-        </p>
       </div>
 
       <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-white">

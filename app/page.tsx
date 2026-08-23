@@ -11,8 +11,10 @@ import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
 import { getTestimonials, getFormatCards, getPricingTiers, getFaqEntries } from "@/lib/api/marketing";
 import type { TestimonialDTO, FormatCardDTO, PricingTierDTO, FaqEntryDTO } from "@/types/marketing";
+import Clarity from '@microsoft/clarity';
 
 export const revalidate = 300;
+const projectId = "y72uf0awoh"
 
 export default async function Home() {
   let testimonials: TestimonialDTO[] = [];
@@ -29,6 +31,8 @@ export default async function Home() {
   } catch {
   }
 
+  Clarity.init(projectId);
+  
   return (
     <>
       <Navbar />

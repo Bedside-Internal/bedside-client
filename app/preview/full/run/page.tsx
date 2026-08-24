@@ -62,7 +62,6 @@ export default async function PreviewFullMockRunPage({ searchParams }: PreviewFu
             currentIndex={index}
             initialQuestion={question}
             basePath="/preview/full"
-            resultsPath={(id) => `/preview/full/${id}/results`}
             breadcrumbLabel="PREview Mock"
             exitHref="/onboarding/medical-school/format-preview"
             dashboardReady={dashboardReady}

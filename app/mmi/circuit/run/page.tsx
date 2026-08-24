@@ -57,7 +57,6 @@ export default async function CircuitRunPage({ searchParams }: CircuitRunPagePro
       currentIndex={index}
       initialQuestion={question}
       basePath="/mmi/circuit"
-      resultsPath={(id) => `/mmi/circuit/${id}/results`}
       breadcrumbLabel="MMI Circuit"
       exitHref="/onboarding/medical-school/format-mmi"
       dashboardReady={dashboardReady}

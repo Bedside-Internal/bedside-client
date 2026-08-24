@@ -14,7 +14,6 @@ interface CircuitStationRunnerProps {
   currentIndex: number;
   initialQuestion: QuestionDetail;
   basePath: string;
-  resultsPath: (attemptId: string) => string;
   breadcrumbLabel: string;
   exitHref: string;
   dashboardReady: boolean;
@@ -26,7 +25,6 @@ export function CircuitStationRunner({
   currentIndex,
   initialQuestion,
   basePath,
-  resultsPath,
   breadcrumbLabel,
   exitHref,
   dashboardReady,
@@ -71,7 +69,7 @@ export function CircuitStationRunner({
 
   function handleContinue() {
     if (isLastStation) {
-      router.push(resultsPath(attemptId));
+      router.push(`${basePath}/${attemptId}/results`);
     } else {
       router.push(`${basePath}/run?attempt=${attemptId}&station=${currentIndex + 1}&phase=transition`);
     }

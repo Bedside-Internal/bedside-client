@@ -30,6 +30,10 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
     const [consent, setConsent] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [photoData, setPhotoData] = useState<string | null>(null);
+    const [photoContentType, setPhotoContentType] = useState<string | null>(null);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
     useEffect(() => {
         let cancelled = false;
@@ -52,7 +56,39 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
         setState("hidden");
         apiFetch("/api/marketing/testimonials/dismiss", { method: "POST" }).catch(() => { }); // fire-and-forget
     };
+    const handlePhotoChange = async (file: File | null) => {
+        if (!file) return;
 
+        setUploadingPhoto(true);
+        setError(null);
+
+        try {
+            const formData = new FormData();
+            formData.append("photo", file);
+
+            const result = await apiFetch<{
+                photoData: string;
+                photoContentType: string;
+            }>("/api/marketing/testimonials/photo", {
+                method: "POST",
+                body: formData,
+            });
+
+            setPhotoData(result.photoData);
+            setPhotoContentType(result.photoContentType);
+            setPhotoPreview(
+                `data:${result.photoContentType};base64,${result.photoData}`,
+            );
+        } catch {
+            setPhotoData(null);
+            setPhotoContentType(null);
+            setPhotoPreview(null);
+            setError("Couldn't upload that photo. Please use a JPEG, PNG, or WebP image under 5 MB.");
+        } finally {
+            setUploadingPhoto(false);
+        }
+    };
+    
     const handleSubmit = async () => {
         if (!rating || quote.trim().length < 10 || !consent) return;
         setSubmitting(true);
@@ -68,6 +104,8 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                     nameDisplay,
                     consentToPublish: true,
                     attemptId,
+                    photoData: photoData ?? undefined,
+                    photoContentType: photoContentType ?? undefined,
                 }),
             });
             setState("submitted");
@@ -192,10 +230,14 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
             <div className="flex justify-end">
                 <button
                     onClick={handleSubmit}
-                    disabled={submitting || !rating || quote.trim().length < 10 || !consent}
+                    disabled={submitting || uploadingPhoto || !rating || quote.trim().length < 10 || !consent}
                     className="rounded-full bg-sand px-6 py-2.5 text-[14px] font-semibold text-ink/40 transition-colors enabled:bg-amber enabled:text-ink enabled:hover:bg-amber/90 disabled:cursor-not-allowed"
                 >
-                    {submitting ? "Sending…" : "Submit feedback"}
+                    {uploadingPhoto
+                        ? "Processing photo…"
+                        : submitting
+                            ? "Sending…"
+                            : "Submit feedback"}
                 </button>
             </div>
         </div>

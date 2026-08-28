@@ -63,6 +63,7 @@ export interface PricingRequirementsDTO {
     referralsRequired: number;
     ownTestimonialRequired: boolean;
     referredTestimonialRequired: boolean;
+    requireAll: boolean;
 }
 
 export interface PricingTierDTO {

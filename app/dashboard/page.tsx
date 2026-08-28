@@ -17,6 +17,10 @@ import { getOnboardingProgress } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { LockedActivityRow } from "@/components/dashboard/LockedActivityRow";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
+import { getReferralSummary, getUnlockProgress } from "@/lib/api/referrals";
+import { getPricingTiers } from "@/lib/api/marketing";
+import { computeTierUnlockStatus } from "@/lib/referrals/tierUnlockStatus";
+import { ReferralCard } from "@/components/dashboard/ReferralCard";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -123,6 +127,25 @@ export default async function Dashboard() {
         throw err;
     }
 
+    // Supplementary — soft-fail so a referral API hiccup never breaks the
+    // whole dashboard the way a failed `data` fetch does above.
+    const referralData = await Promise.all([
+        getReferralSummary(),
+        getUnlockProgress(),
+        getPricingTiers(),
+    ]).catch(() => null);
+
+    const referralCardProps = referralData
+        ? {
+            shareUrl: referralData[0].shareUrl,
+            activatedCount: referralData[0].activatedCount,
+            tiers: computeTierUnlockStatus(
+                referralData[2].map((t) => ({ id: t.id, title: t.title, requirements: t.requirements })),
+                referralData[1],
+            ),
+        }
+        : null;
+
     // NOTE: an empty recentActivity list is a normal state for a freshly
     // onboarded user with no attempts yet — it is NOT a signal that
     // onboarding is incomplete. Render an empty state instead of redirecting.
@@ -203,6 +226,7 @@ export default async function Dashboard() {
                             message={data.streak.message}
                             days={data.streak.days}
                         />
+                        {referralCardProps && <ReferralCard {...referralCardProps} />}
                     </section>
                 </div>
             </div>

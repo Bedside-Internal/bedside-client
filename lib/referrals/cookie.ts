@@ -1,0 +1,1 @@
+export const REFERRAL_COOKIE_NAME = "bedside_ref";

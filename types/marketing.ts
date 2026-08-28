@@ -59,6 +59,12 @@ export interface PricingBillingCycleDTO {
     badge: string | null;
 }
 
+export interface PricingRequirementsDTO {
+    referralsRequired: number;
+    ownTestimonialRequired: boolean;
+    referredTestimonialRequired: boolean;
+}
+
 export interface PricingTierDTO {
     id: string;
     title: string;
@@ -71,6 +77,7 @@ export interface PricingTierDTO {
     defaultCycleMonths: number | null;
     features: PricingFeatureDTO[];
     billingCycles: PricingBillingCycleDTO[];
+    requirements: PricingRequirementsDTO;
 }
 
 export interface FaqEntryDTO {

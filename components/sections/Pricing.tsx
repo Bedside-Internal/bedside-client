@@ -13,14 +13,29 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
   );
   const active = cycles.find((c) => c.months === selectedMonths) ?? cycles[0];
 
+  const req = tier.requirements;
+  const isEarned =
+    req.referralsRequired > 0 || req.ownTestimonialRequired || req.referredTestimonialRequired;
+
+  const requirementLabels: string[] = [];
+  if (req.referralsRequired > 0) {
+    requirementLabels.push(`${req.referralsRequired} referral${req.referralsRequired === 1 ? "" : "s"}`);
+  }
+  if (req.ownTestimonialRequired) requirementLabels.push("your testimonial");
+  if (req.referredTestimonialRequired) requirementLabels.push("a friend's testimonial");
+  const requirementJoiner = req.requireAll ? " AND " : " OR ";
+  const requirementText = requirementLabels.join(requirementJoiner);
+
   const displayPrice = active ? active.price : tier.price;
   const displayPeriod = active ? `/ ${active.months} mo` : tier.periodLabel;
   const displayNote = active
     ? `$${active.perMonth.toFixed(2)}/mo billed once${active.savingsPct ? ` — save ${active.savingsPct}%` : ""}`
     : tier.priceNote;
-  const buttonLabel = active
-    ? tier.buttonLabel.replace(/\d+-month/, `${active.months}-month`)
-    : tier.buttonLabel;
+  const buttonLabel = isEarned
+    ? "Start referring →"
+    : active
+      ? tier.buttonLabel.replace(/\d+-month/, `${active.months}-month`)
+      : tier.buttonLabel;
 
   return (
     <RevealOnScroll delay={delay} className="flex-1 min-w-[280px]">
@@ -44,21 +59,36 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
           {tier.title}
         </div>
 
-        <div className="mb-1 flex items-baseline gap-1">
-          <span className="font-display text-[64px] leading-none tracking-tighter text-ink">
-            ${displayPrice.toFixed(active ? 2 : 0)}
-          </span>
-          {displayPeriod && (
-            <span className={clsx("text-lg font-semibold", tier.featured ? "text-ink/60" : "text-neutral-400")}>
-              {displayPeriod}
-            </span>
-          )}
-        </div>
-        <div className={clsx("mb-7 text-sm", tier.featured ? "text-ink/60" : "text-neutral-400")}>
-          {displayNote}
-        </div>
+        {isEarned ? (
+          <>
+            <div className="mb-1 flex items-baseline gap-1">
+              <span className="font-display text-[64px] leading-none tracking-tighter text-ink">
+                Free
+              </span>
+            </div>
+            <div className={clsx("mb-7 text-sm", tier.featured ? "text-ink/60" : "text-neutral-400")}>
+              Unlock with {requirementText}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mb-1 flex items-baseline gap-1">
+              <span className="font-display text-[64px] leading-none tracking-tighter text-ink">
+                ${displayPrice.toFixed(active ? 2 : 0)}
+              </span>
+              {displayPeriod && (
+                <span className={clsx("text-lg font-semibold", tier.featured ? "text-ink/60" : "text-neutral-400")}>
+                  {displayPeriod}
+                </span>
+              )}
+            </div>
+            <div className={clsx("mb-7 text-sm", tier.featured ? "text-ink/60" : "text-neutral-400")}>
+              {displayNote}
+            </div>
+          </>
+        )}
 
-        {cycles.length > 1 && (
+        {!isEarned && cycles.length > 1 && (
           <div className="mb-9 grid grid-cols-3 gap-1.5 rounded-xl border-2 border-ink/15 bg-white/40 p-1.5">
             {cycles.map((cycle) => (
               <button
@@ -123,7 +153,7 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
         </div>
 
         <MagneticButton
-          href="#"
+          href={isEarned ? "/sign-in" : "#"}
           className={clsx(
             "block w-full rounded-md border-[2.5px] border-ink py-4 text-center text-base font-semibold shadow-hard transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:translate-x-[3px] hover:translate-y-[3px]",
             tier.featured

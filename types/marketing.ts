@@ -86,3 +86,33 @@ export interface FaqEntryDTO {
     question: string;
     answer: string;
 }
+
+export type SocialPlatform =
+    | "instagram"
+    | "x"
+    | "discord"
+    | "tiktok"
+    | "youtube"
+    | "linkedin"
+    | "facebook"
+    | "mail"
+    | "custom";
+
+export interface SocialLinkDTO {
+    id: string;
+    platform: SocialPlatform;
+    url: string;
+    label: string | null;
+}
+
+export interface AdminSocialLink extends SocialLinkDTO {
+    enabled: boolean;
+    sortOrder: number;
+}
+
+export interface CreateSocialLinkInput {
+    platform: SocialPlatform;
+    url: string;
+    label?: string | null;
+    enabled: boolean;
+}

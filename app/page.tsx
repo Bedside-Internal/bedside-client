@@ -9,8 +9,8 @@ import Testimonials from "@/components/sections/Testimonials";
 import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
-import { getTestimonials, getFormatCards, getPricingTiers, getFaqEntries } from "@/lib/api/marketing";
-import type { TestimonialDTO, FormatCardDTO, PricingTierDTO, FaqEntryDTO } from "@/types/marketing";
+import { getTestimonials, getFormatCards, getPricingTiers, getFaqEntries, getSocialLinks } from "@/lib/api/marketing";
+import type { TestimonialDTO, FormatCardDTO, PricingTierDTO, FaqEntryDTO, SocialLinkDTO } from "@/types/marketing";
 import Clarity from '@microsoft/clarity';
 
 export const revalidate = 300;
@@ -21,12 +21,15 @@ export default async function Home() {
   let formatCards: FormatCardDTO[] = [];
   let pricingTiers: PricingTierDTO[] = [];
   let faqEntries: FaqEntryDTO[] = [];
+  let socialLinks: SocialLinkDTO[] = [];
+
   try {
-    [testimonials, formatCards, pricingTiers, faqEntries] = await Promise.all([
+    [testimonials, formatCards, pricingTiers, faqEntries, socialLinks] = await Promise.all([
       getTestimonials(),
       getFormatCards(),
       getPricingTiers(),
       getFaqEntries(),
+      getSocialLinks(),
     ]);
   } catch {
   }
@@ -45,7 +48,7 @@ export default async function Home() {
       <DarkCTA />
       <Pricing tiers={pricingTiers} />
       <FAQ entries={faqEntries} />
-      <Footer />
+      <Footer socialLinks={socialLinks} />
     </>
   );
 }

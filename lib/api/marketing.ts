@@ -1,5 +1,5 @@
 import { serverApiFetch } from "@/lib/api/server-fetch";
-import type { FormatCardDTO, TestimonialDTO, PricingTierDTO, FaqEntryDTO } from "@/types/marketing";
+import type { FormatCardDTO, TestimonialDTO, PricingTierDTO, FaqEntryDTO, SocialLinkDTO } from "@/types/marketing";
 /**
  * Backs the logged-out landing page. skipAuth: true means this never calls
  * Clerk's auth() (a "dynamic function") — matches marketingRouter having no
@@ -30,6 +30,13 @@ export async function getPricingTiers(): Promise<PricingTierDTO[]> {
 
 export async function getFaqEntries(): Promise<FaqEntryDTO[]> {
   return serverApiFetch<FaqEntryDTO[]>("/api/marketing/faq", {
+    skipAuth: true,
+    next: { revalidate: 300 },
+  });
+}
+
+export async function getSocialLinks(): Promise<SocialLinkDTO[]> {
+  return serverApiFetch<SocialLinkDTO[]>("/api/marketing/social-links", {
     skipAuth: true,
     next: { revalidate: 300 },
   });

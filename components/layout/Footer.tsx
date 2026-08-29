@@ -1,3 +1,7 @@
+import Link from "next/link";
+import { SocialIcon, PLATFORM_LABELS } from "./SocialIcon";
+import type { SocialLinkDTO } from "@/types/marketing";
+
 const productLinks = [
   { href: "#features", label: "Formats" },
   { href: "#how", label: "How it works" },
@@ -10,7 +14,11 @@ const companyLinks = [
   { href: "#", label: "Terms" },
 ];
 
-export default function Footer() {
+interface FooterProps {
+  socialLinks?: SocialLinkDTO[];
+}
+
+export default function Footer({ socialLinks = [] }: FooterProps) {
   return (
     <footer className="border-t-2 border-neutral-800 bg-ink px-[5vw] pb-10 pt-16">
       <div className="mx-auto max-w-[1160px]">
@@ -31,8 +39,23 @@ export default function Footer() {
               AI-powered mock interviews for med school applicants. Every
               format. No excuses.
             </p>
+            {socialLinks.length > 0 && (
+              <div className="mt-5 flex flex-wrap items-center gap-2.5">
+                {socialLinks.map((link) => (
+                  <Link
+                    key={link.id}
+                    href={link.url}
+                    target={link.platform === "mail" ? undefined : "_blank"}
+                    rel="noopener noreferrer"
+                    aria-label={link.label ?? PLATFORM_LABELS[link.platform]}
+                    className="hoverable flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-cream/60 transition-colors hover:border-mint/40 hover:bg-mint/10 hover:text-mint"
+                  >
+                    <SocialIcon platform={link.platform} />
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
-
           <div className="flex flex-wrap gap-16">
             <div>
               <div className="mb-4 text-xs font-bold uppercase tracking-wider text-cream/40">
@@ -68,7 +91,6 @@ export default function Footer() {
             </div>
           </div>
         </div>
-
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6">
           <span className="text-[13px] text-cream/30">
             © {new Date().getFullYear()} Bedside. All rights reserved.

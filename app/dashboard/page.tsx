@@ -21,6 +21,7 @@ import { getReferralSummary, getUnlockProgress } from "@/lib/api/referrals";
 import { getPricingTiers } from "@/lib/api/marketing";
 import { computeTierUnlockStatus } from "@/lib/referrals/tierUnlockStatus";
 import { ReferralCard } from "@/components/dashboard/ReferralCard";
+import { FileText } from "lucide-react";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -197,6 +198,12 @@ export default async function Dashboard() {
                                 {data.quickActions.map((action) => (
                                     <QuickActionRow key={action.title} {...action} icon={getIcon(action.iconKey)} />
                                 ))}
+                                <QuickActionRow
+                                    icon={FileText}
+                                    title="My Questions"
+                                    subtitle="Submit practice questions for review"
+                                    href="/dashboard/my-questions"
+                                />
                             </div>
                         </div>
                     </section>

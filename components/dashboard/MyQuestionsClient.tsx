@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useMyQuestions } from "@/hooks/useMyQuestions";
 import { FileText, Share2, AlertCircle } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { Switch } from "@/components/ui/Switch";
 
 interface UserSubmittedQuestion {
     id: string;
@@ -47,6 +48,7 @@ export function MyQuestionsClient({
     // Use initial questions from server, then switch to hook state after mount
     const [questions, setQuestions] = useState<UserSubmittedQuestion[]>(initialQuestions);
     const [useHookData, setUseHookData] = useState(false);
+    const [shareWithApplicants, setShareWithApplicants] = useState(false);
 
     // Sync hook data after initial render
     useEffect(() => {
@@ -61,12 +63,13 @@ export function MyQuestionsClient({
             formatId: formData.get("formatId") as string || null,
             categoryText: formData.get("categoryText") as string,
             questionText: formData.get("questionText") as string,
-            shareWithApplicants: formData.get("shareWithApplicants") === "true",
+            shareWithApplicants,
         };
 
         try {
             await create(input);
             e.currentTarget.reset();
+            setShareWithApplicants(false);
         } catch {
             // Error handled by hook
         }
@@ -150,14 +153,13 @@ export function MyQuestionsClient({
                         />
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-2 cursor-pointer">
-                            <input
-                                name="shareWithApplicants"
-                                type="checkbox"
-                                value="true"
+                    <div className="flex items-center justify-between gap-3">
+                        <label className="flex items-center gap-3 cursor-pointer">
+                            <Switch
+                                checked={shareWithApplicants}
+                                onChange={() => setShareWithApplicants(!shareWithApplicants)}
+                                label="Share with other applicants"
                                 disabled={userTier === "free" || submitting}
-                                className="h-4 w-4 rounded border-[var(--color-sand)] text-mint focus:ring-mint disabled:bg-sand/40"
                             />
                             <span className="text-sm text-[var(--color-ink)]">
                                 Share with other applicants (visible after admin approval)
@@ -165,7 +167,7 @@ export function MyQuestionsClient({
                         </label>
                         {userTier === "free" && (
                             <span className="ml-2 text-[11px] font-medium uppercase tracking-wide text-coral">
-                                PAID FEATURE
+                                Paid feature
                             </span>
                         )}
                     </div>

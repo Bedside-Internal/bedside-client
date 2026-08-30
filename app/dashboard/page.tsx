@@ -21,7 +21,6 @@ import { getReferralSummary, getUnlockProgress } from "@/lib/api/referrals";
 import { getPricingTiers } from "@/lib/api/marketing";
 import { computeTierUnlockStatus } from "@/lib/referrals/tierUnlockStatus";
 import { ReferralCard } from "@/components/dashboard/ReferralCard";
-import { FileText } from "lucide-react";
 
 // TODO: Track switcher is static for now — the API only returns the *active* track, not the full list. Will need to swap this for a real endpoint once one exists.
 const tracks = [
@@ -78,6 +77,8 @@ interface DashboardApiResponse {
 async function getDashboardData(trackSlug: string): Promise<DashboardApiResponse> {
     return serverApiFetch<DashboardApiResponse>(`/api/dashboard?track=${encodeURIComponent(trackSlug)}`);
 }
+
+export { getDashboardData };
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
     return <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">{children}</p>;

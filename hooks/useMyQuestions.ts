@@ -33,7 +33,7 @@ export function useMyQuestions() {
             setSubmitting(true);
             setError(null);
             try {
-                const newItem = await apiFetch<CreateUserQuestionInput, UserSubmittedQuestion>("/api/questions/mine", {
+                const newItem = await apiFetch<UserSubmittedQuestion>("/api/questions/mine", {
                     method: "POST",
                     body: JSON.stringify(input),
                 });

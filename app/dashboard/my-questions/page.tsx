@@ -1,5 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { GraduationCap, School } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
 import { getMyQuestions } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
@@ -55,8 +56,8 @@ export default async function MyQuestionsPage() {
         <div className="min-h-screen bg-[var(--color-cream)]">
             <TopBar
                 tracks={[
-                    { id: "med-school", label: "Medical School" },
-                    { id: "college-admissions", label: "College Admissions" },
+                    { id: "med-school", label: "Medical School", icon: <GraduationCap /> },
+                    { id: "college-admissions", label: "College Admissions", icon: <School /> },
                 ]}
                 activeTrackId={trackData.track.slug}
             />

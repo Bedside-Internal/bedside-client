@@ -1,22 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMyQuestions } from "@/hooks/useMyQuestions";
 import { FileText, Share2, AlertCircle } from "lucide-react";
-
-const VISIBILITY_STYLES: Record<UserSubmittedQuestion["visibility"], string> = {
-    private: "text-sand bg-sand/20",
-    pending: "text-amber bg-amber/20",
-    approved: "text-mint bg-mint/20",
-    rejected: "text-coral bg-coral/20",
-};
-
-const VISIBILITY_LABELS: Record<UserSubmittedQuestion["visibility"], string> = {
-    private: "Private",
-    pending: "Pending Review",
-    approved: "Approved",
-    rejected: "Rejected",
-};
+import { StatusBadge } from "@/components/ui/StatusBadge";
 
 interface UserSubmittedQuestion {
     id: string;
@@ -44,14 +31,6 @@ interface Format {
     metrics: Array<{ label: string; value: number; tone?: "mint" | "amber" | "coral" | "slate" }>;
     progressLabel: string;
     continueHref: string;
-}
-
-function StatusBadge({ visibility }: { visibility: UserSubmittedQuestion["visibility"] }) {
-    return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase ${VISIBILITY_STYLES[visibility]}`}>
-            {VISIBILITY_LABELS[visibility]}
-        </span>
-    );
 }
 
 export function MyQuestionsClient({
@@ -236,7 +215,7 @@ export function MyQuestionsClient({
                                             )}
                                             <span className="text-sand">·</span>
                                             <span className="font-medium text-[var(--color-ink)]">{q.categoryText}</span>
-                                            <StatusBadge visibility={q.visibility} />
+                                            <StatusBadge status={q.visibility} />
                                         </div>
                                         <p className="mt-2 text-[var(--color-ink)]">{q.questionText}</p>
                                         <p className="mt-2 text-xs text-slate-400">

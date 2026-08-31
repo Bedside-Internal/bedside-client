@@ -94,9 +94,6 @@ export function MyQuestionsClient({
                     <h2 className="font-poppins text-lg font-semibold text-[var(--color-ink)]">
                         Share a practice question
                     </h2>
-                    <span className="text-[11px] font-medium uppercase tracking-wide text-mint">
-                        Paid feature: share with others
-                    </span>
                 </div>
 
                 <div className="space-y-4">
@@ -166,7 +163,7 @@ export function MyQuestionsClient({
                             </span>
                         </label>
                         {userTier === "free" && (
-                            <span className="ml-2 text-[11px] font-medium uppercase tracking-wide text-coral">
+                            <span className="ml-2 rounded-full bg-[var(--color-ink)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-coral brightness-125">
                                 Paid feature
                             </span>
                         )}

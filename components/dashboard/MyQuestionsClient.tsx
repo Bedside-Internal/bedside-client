@@ -5,6 +5,7 @@ import { useMyQuestions } from "@/hooks/useMyQuestions";
 import { FileText, Share2, AlertCircle } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Switch } from "@/components/ui/Switch";
+import { clientValidateQuestion } from "@/lib/content-safety";
 
 interface UserSubmittedQuestion {
     id: string;
@@ -49,6 +50,7 @@ export function MyQuestionsClient({
     const [questions, setQuestions] = useState<UserSubmittedQuestion[]>(initialQuestions);
     const [useHookData, setUseHookData] = useState(false);
     const [shareWithApplicants, setShareWithApplicants] = useState(false);
+    const [clientError, setClientError] = useState<string | null>(null);
 
     // Sync hook data after initial render
     useEffect(() => {
@@ -59,10 +61,21 @@ export function MyQuestionsClient({
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
+        const questionText = formData.get("questionText") as string;
+        const categoryText = formData.get("categoryText") as string;
+
+        // Client-side validation for immediate UX feedback
+        const validation = clientValidateQuestion(questionText, categoryText);
+        if (!validation.valid) {
+            setClientError(validation.reason ?? "Invalid submission");
+            return;
+        }
+        setClientError(null);
+
         const input: CreateUserQuestionInput = {
             formatId: formData.get("formatId") as string || null,
-            categoryText: formData.get("categoryText") as string,
-            questionText: formData.get("questionText") as string,
+            categoryText,
+            questionText,
             shareWithApplicants,
         };
 
@@ -83,6 +96,12 @@ export function MyQuestionsClient({
                 <div className="mb-4 flex items-center justify-between rounded-md bg-coral/10 px-4 py-2.5 text-sm text-coral">
                     <span>{error}</span>
                     <button onClick={clearError} className="text-coral/60 hover:text-coral">×</button>
+                </div>
+            )}
+            {clientError && (
+                <div className="mb-4 flex items-center justify-between rounded-md bg-coral/10 px-4 py-2.5 text-sm text-coral">
+                    <span>{clientError}</span>
+                    <button onClick={() => setClientError(null)} className="text-coral/60 hover:text-coral">×</button>
                 </div>
             )}
 

@@ -78,6 +78,8 @@ async function getDashboardData(trackSlug: string): Promise<DashboardApiResponse
     return serverApiFetch<DashboardApiResponse>(`/api/dashboard?track=${encodeURIComponent(trackSlug)}`);
 }
 
+export { getDashboardData };
+
 function SectionLabel({ children }: { children: React.ReactNode }) {
     return <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-slate-400">{children}</p>;
 }
@@ -197,6 +199,12 @@ export default async function Dashboard() {
                                 {data.quickActions.map((action) => (
                                     <QuickActionRow key={action.title} {...action} icon={getIcon(action.iconKey)} />
                                 ))}
+                                <QuickActionRow
+                                    icon={FileText}
+                                    title="My Questions"
+                                    subtitle="Submit practice questions for review"
+                                    href="/dashboard/my-questions"
+                                />
                             </div>
                         </div>
                     </section>

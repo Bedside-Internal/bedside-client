@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { GraduationCap, School } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
 import { getMyQuestions } from "@/lib/api/userQuestions";
@@ -30,6 +30,10 @@ async function getTrackData(): Promise<DashboardData> {
 }
 
 export default async function MyQuestionsPage() {
+    if (process.env.NEXT_PUBLIC_DISABLE_PAGE === "1") {
+        notFound();
+    }
+    
     const progress = await getOnboardingProgress();
     if (!progress?.track || !progress?.format) {
         redirect("/onboarding");

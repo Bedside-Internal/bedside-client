@@ -199,12 +199,15 @@ export default async function Dashboard() {
                                 {data.quickActions.map((action) => (
                                     <QuickActionRow key={action.title} {...action} icon={getIcon(action.iconKey)} />
                                 ))}
+                                
                                 <QuickActionRow
                                     icon={FileText}
                                     title="My Questions"
                                     subtitle="Submit practice questions for review"
-                                    href="/dashboard/my-questions"
+                                    //href="/dashboard/my-questions"
+                                    href=""
                                 />
+                                
                             </div>
                         </div>
                     </section>

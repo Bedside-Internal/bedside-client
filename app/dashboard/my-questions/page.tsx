@@ -5,8 +5,10 @@ import { TopBar } from "@/components/dashboard/Topbar";
 import { getMyQuestions } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getDashboardData } from "@/app/dashboard/page";
-import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
+import { ApiError } from "@/lib/api/server-fetch";
 import { MyQuestionsClient } from "@/components/dashboard/MyQuestionsClient";
+import { getUsageSummary } from "@/lib/api/userQuestions";
+import { UsageMeter } from "@/components/dashboard/UsageMeter";
 
 interface DashboardData {
     track: { id: string; slug: string; label: string };
@@ -41,10 +43,12 @@ export default async function MyQuestionsPage() {
 
     let user;
     let questions;
+    let usage;
     try {
-        [user, questions] = await Promise.all([
+        [user, questions, usage] = await Promise.all([
             currentUser(),
             getMyQuestions(),
+            getUsageSummary()
         ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
@@ -73,6 +77,9 @@ export default async function MyQuestionsPage() {
                         Submit practice questions for admin review. Approved questions become available to other applicants.
                     </p>
                 </div>
+
+                <UsageMeter usage={usage} userTier={userTier} />
+                <br /> 
 
                 <MyQuestionsClient
                     initialQuestions={questions}

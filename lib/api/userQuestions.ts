@@ -21,3 +21,19 @@ export async function createUserQuestion(
         body: JSON.stringify(input),
     });
 }
+
+export interface QuotaStatus {
+    used: number;
+    limit: number;
+    periodEnd: string; // ISO date string
+}
+
+export interface UsageSummary {
+    submission: QuotaStatus;
+    generation: QuotaStatus;
+}
+
+/** Server-Component-only — this month's submission/generation usage. */
+export async function getUsageSummary(): Promise<UsageSummary> {
+    return serverApiFetch<UsageSummary>("/api/questions/usage");
+}

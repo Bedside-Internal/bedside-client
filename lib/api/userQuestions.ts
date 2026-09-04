@@ -37,3 +37,46 @@ export interface UsageSummary {
 export async function getUsageSummary(): Promise<UsageSummary> {
     return serverApiFetch<UsageSummary>("/api/questions/usage");
 }
+
+export interface SectionOption {
+    id: string;
+    slug: string;
+    title: string;
+}
+
+export async function getQuestionSections(formatSlug = "mmi"): Promise<SectionOption[]> {
+    return serverApiFetch<SectionOption[]>(`/api/questions/sections?format=${encodeURIComponent(formatSlug)}`);
+}
+
+export interface ScoringDimension {
+    label: string;
+    weight: number;
+}
+
+export interface QuestionDraftResponse {
+    sectionId: string;
+    difficulty: "easy" | "medium" | "hard";
+    model: string;
+    draft: {
+        scenario_text: string;
+        guidance_note: string;
+        model_answer: string;
+        scoring_rubric: { dimensions: ScoringDimension[] };
+    };
+}
+
+export interface ConfirmPrivateQuestionInput {
+    sectionId: string;
+    difficulty: "easy" | "medium" | "hard";
+    scenarioText: string;
+    guidanceNote: string;
+    modelAnswer: string;
+    scoringRubric: { dimensions: ScoringDimension[] };
+}
+
+export interface PrivateQuestionResult {
+    id: string;
+    sectionId: string;
+    scope: "private";
+    isActive: boolean;
+}

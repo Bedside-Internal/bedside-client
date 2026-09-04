@@ -9,6 +9,7 @@ import { clientValidateQuestion } from "@/lib/content-safety";
 import { GenerateQuestionFlow } from "@/components/dashboard/GenerateQuestionFlow";
 import { UsageMeter } from "@/components/dashboard/UsageMeter";
 import type { UsageSummary, MyPrivateQuestion } from "@/lib/api/userQuestions";
+import { useQuestionScope } from "@/hooks/useQuestionScope";
 
 interface UserSubmittedQuestion {
     id: string;
@@ -56,6 +57,7 @@ export function MyQuestionsClient({
     const [shareWithApplicants, setShareWithApplicants] = useState(false);
     const [clientError, setClientError] = useState<string | null>(null);
     const [tab, setTab] = useState<ComposerTab>("submit");
+    const { pendingId: scopePendingId, error: scopeError, clearError: clearScopeError, requestShare, cancelShare, makePrivate } = useQuestionScope();
 
     useEffect(() => {
         setUseHookData(true);
@@ -106,6 +108,13 @@ export function MyQuestionsClient({
                 <div className="mb-4 flex items-center justify-between rounded-md bg-coral/10 px-4 py-2.5 text-sm text-coral">
                     <span>{clientError}</span>
                     <button onClick={() => setClientError(null)} className="text-coral/60 hover:text-coral">×</button>
+                </div>
+            )}
+
+            {scopeError && (
+                <div className="mb-4 flex items-center justify-between rounded-md bg-coral/10 px-4 py-2.5 text-sm text-coral">
+                    <span>{scopeError}</span>
+                    <button onClick={clearScopeError} className="text-coral/60 hover:text-coral">×</button>
                 </div>
             )}
 
@@ -262,6 +271,16 @@ export function MyQuestionsClient({
                                                 <span className="font-medium text-[var(--color-ink)]">{q.sectionTitle}</span>
                                                 <span className="text-sand">·</span>
                                                 <span className="capitalize text-[var(--color-ink)]/60">{q.difficulty}</span>
+                                                {q.scope === "pending_public" && (
+                                                    <span className="rounded-full bg-[var(--color-amber)]/20 px-2 py-0.5 text-[10px] font-semibold uppercase text-[var(--color-amber)]">
+                                                        Pending review
+                                                    </span>
+                                                )}
+                                                {q.scope === "public" && (
+                                                    <span className="rounded-full bg-[var(--color-mint)]/20 px-2 py-0.5 text-[10px] font-semibold uppercase text-[var(--color-mint-hover)]">
+                                                        Public
+                                                    </span>
+                                                )}
                                             </div>
                                             <p className="mt-2 text-xs text-slate-400">
                                                 Generated {new Date(q.createdAt).toLocaleDateString("en-US", {
@@ -270,6 +289,38 @@ export function MyQuestionsClient({
                                                     year: "numeric",
                                                 })}
                                             </p>
+                                            <div className="mt-2 flex items-center gap-3">
+                                                {q.scope === "private" && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => requestShare(q.id)}
+                                                        disabled={scopePendingId === q.id}
+                                                        className="text-xs font-semibold text-[var(--color-mint-hover)] hover:underline disabled:opacity-50"
+                                                    >
+                                                        {scopePendingId === q.id ? "Requesting…" : "Request to share publicly"}
+                                                    </button>
+                                                )}
+                                                {q.scope === "pending_public" && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => cancelShare(q.id)}
+                                                        disabled={scopePendingId === q.id}
+                                                        className="text-xs font-semibold text-[var(--color-coral)] hover:underline disabled:opacity-50"
+                                                    >
+                                                        {scopePendingId === q.id ? "Cancelling…" : "Cancel request"}
+                                                    </button>
+                                                )}
+                                                {q.scope === "public" && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => makePrivate(q.id)}
+                                                        disabled={scopePendingId === q.id}
+                                                        className="text-xs font-semibold text-[var(--color-ink)]/50 hover:underline disabled:opacity-50"
+                                                    >
+                                                        {scopePendingId === q.id ? "Updating…" : "Make private"}
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                         {q.isActive ? (
                                             <a
@@ -315,6 +366,6 @@ export function MyQuestionsClient({
                     )}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

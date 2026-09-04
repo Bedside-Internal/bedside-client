@@ -88,6 +88,7 @@ export interface MyPrivateQuestion {
     sectionTitle: string;
     difficulty: "easy" | "medium" | "hard";
     isActive: boolean;
+    scope: "private" | "pending_public" | "public";
     createdAt: string;
 }
 

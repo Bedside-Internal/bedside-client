@@ -2,7 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { GraduationCap, School } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
-import { getMyQuestions, getUsageSummary } from "@/lib/api/userQuestions";
+import { getMyQuestions, getUsageSummary, getMyPrivateQuestions } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getDashboardData } from "@/app/dashboard/page";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
@@ -42,11 +42,13 @@ export default async function MyQuestionsPage() {
     let user;
     let questions;
     let usage;
+    let privateQuestions;
     try {
-        [user, questions, usage] = await Promise.all([
+        [user, questions, usage, privateQuestions] = await Promise.all([
             currentUser(),
             getMyQuestions(),
             getUsageSummary(),
+            getMyPrivateQuestions(),
         ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
@@ -68,7 +70,7 @@ export default async function MyQuestionsPage() {
                 activeTrackId={trackData.track.slug}
             />
 
-            <div className="max-w-none px-8 py-8">
+            <div className="max-w-7xl px-8 py-8">
                 <div className="mb-6">
                     <h1 className="font-poppins text-xl font-bold text-[var(--color-ink)]">My Questions</h1>
                     <p className="mt-1 text-sm text-slate-400">
@@ -81,6 +83,7 @@ export default async function MyQuestionsPage() {
                     formats={trackData.formats}
                     userTier={userTier}
                     usage={usage}
+                    privateQuestions={privateQuestions}
                 />
             </div>
         </div>

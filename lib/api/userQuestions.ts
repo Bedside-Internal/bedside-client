@@ -80,3 +80,17 @@ export interface PrivateQuestionResult {
     scope: "private";
     isActive: boolean;
 }
+
+export interface MyPrivateQuestion {
+    id: string;
+    sectionId: string;
+    sectionSlug: string;
+    sectionTitle: string;
+    difficulty: "easy" | "medium" | "hard";
+    isActive: boolean;
+    createdAt: string;
+}
+
+export async function getMyPrivateQuestions(): Promise<MyPrivateQuestion[]> {
+    return serverApiFetch<MyPrivateQuestion[]>("/api/questions/mine/private");
+}

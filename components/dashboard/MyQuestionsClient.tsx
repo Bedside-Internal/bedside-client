@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { useMyQuestions } from "@/hooks/useMyQuestions";
-import { FileText, Lock } from "lucide-react";
+import { FileText, Lock, Sparkles } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Switch } from "@/components/ui/Switch";
 import { clientValidateQuestion } from "@/lib/content-safety";
 import { GenerateQuestionFlow } from "@/components/dashboard/GenerateQuestionFlow";
 import { UsageMeter } from "@/components/dashboard/UsageMeter";
-import type { UsageSummary } from "@/lib/api/userQuestions";
+import type { UsageSummary, MyPrivateQuestion } from "@/lib/api/userQuestions";
 
 interface UserSubmittedQuestion {
     id: string;
@@ -45,11 +45,13 @@ export function MyQuestionsClient({
     formats,
     userTier,
     usage,
+    privateQuestions,
 }: {
     initialQuestions: UserSubmittedQuestion[];
     formats: Format[];
     userTier: "free" | "paid" | "admin";
     usage: UsageSummary;
+    privateQuestions: MyPrivateQuestion[];
 }) {
     const { items, loading, error, submitting, clearError, create, refetch } = useMyQuestions();
 
@@ -94,6 +96,7 @@ export function MyQuestionsClient({
     };
 
     const displayQuestions = useHookData ? questions : initialQuestions;
+    const hasAnyQuestions = privateQuestions.length > 0 || displayQuestions.length > 0;
 
     return (
         <div>
@@ -111,7 +114,6 @@ export function MyQuestionsClient({
             )}
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,540px)_1fr] lg:items-start">
-                {/* Left column — usage + composer, sticky on large screens so it stays visible while the right list scrolls */}
                 <div className="flex flex-col gap-6">
                     <UsageMeter usage={usage} userTier={userTier} />
 
@@ -242,19 +244,53 @@ export function MyQuestionsClient({
                     </div>
                 </div>
 
-                {/* Right column — submissions list, scrolls independently on large screens */}
                 <div className="lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:self-start lg:overflow-y-auto">
                     <h2 className="mb-4 font-poppins text-lg font-semibold text-[var(--color-ink)]">Your Questions</h2>
-                    {displayQuestions.length === 0 ? (
+
+                    {!hasAnyQuestions ? (
                         <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 px-6 py-8 text-center">
                             <FileText className="mx-auto h-8 w-8 text-slate-300" />
-                            <p className="mt-3 text-base font-medium text-[var(--color-ink)]">No questions submitted yet</p>
+                            <p className="mt-3 text-base font-medium text-[var(--color-ink)]">No questions yet</p>
                             <p className="mt-1 text-sm text-slate-400">
-                                Submit your first practice question to see it here.
+                                Submit a question for review, or generate one instantly.
                             </p>
                         </div>
                     ) : (
                         <div className="space-y-3">
+                            {privateQuestions.map((q) => (
+                                <div key={q.id} className="rounded-xl border border-[var(--color-violet)]/30 bg-[var(--color-violet)]/5 p-4 shadow-sm">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                                <Sparkles className="h-3.5 w-3.5 text-[var(--color-violet)]" />
+                                                <span className="font-medium text-[var(--color-ink)]">{q.sectionTitle}</span>
+                                                <span className="text-sand">·</span>
+                                                <span className="capitalize text-[var(--color-ink)]/60">{q.difficulty}</span>
+                                            </div>
+                                            <p className="mt-2 text-xs text-slate-400">
+                                                Generated {new Date(q.createdAt).toLocaleDateString("en-US", {
+                                                    month: "short",
+                                                    day: "numeric",
+                                                    year: "numeric",
+                                                })}
+                                            </p>
+                                        </div>
+                                        {q.isActive ? (
+                                            <a
+                                                href={`/mmi/${q.sectionSlug}?qid=${q.id}`}
+                                                className="shrink-0 rounded-lg bg-[var(--color-violet)] px-3 py-1.5 text-xs font-semibold text-white transition hover:opacity-90"
+                                            >
+                                                Practice Now
+                                            </a>
+                                        ) : (
+                                            <span className="shrink-0 rounded-full bg-[var(--color-sand)] px-3 py-1 text-xs text-[var(--color-ink)]/50">
+                                                Inactive
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+
                             {displayQuestions.map((q) => (
                                 <div key={q.id} className="rounded-xl border border-[var(--color-sand)] bg-white p-4 shadow-sm">
                                     <div className="flex items-start justify-between gap-4">

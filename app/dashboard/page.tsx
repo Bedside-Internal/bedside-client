@@ -204,8 +204,7 @@ export default async function Dashboard() {
                                     icon={FileText}
                                     title="My Questions"
                                     subtitle="Submit practice questions for review"
-                                    //href="/dashboard/my-questions"
-                                    href=""
+                                    href="/dashboard/my-questions"
                                 />
                                 
                             </div>

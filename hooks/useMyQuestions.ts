@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "@clerk/nextjs";
-import { useApiFetch, ApiError } from "@/lib/api/use-api-fetch";
+import { useApiFetch } from "@/lib/api/use-api-fetch";
 import type { UserSubmittedQuestion, CreateUserQuestionInput } from "@/types/userQuestions";
 
 export function useMyQuestions() {

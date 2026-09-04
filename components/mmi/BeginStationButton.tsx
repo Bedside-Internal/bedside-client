@@ -9,9 +9,10 @@ interface BeginStationButtonProps {
   basePath: string;   // "mmi" | "preview"
   slug: string;
   label?: string;
+  qid?: string;
 }
 
-export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin →" }: BeginStationButtonProps) {
+export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin →", qid }: BeginStationButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [blocked, setBlocked] = useState(false);
@@ -20,7 +21,8 @@ export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin 
     startTransition(async () => {
       const result = await startAttemptAction(formatSlug);
       if (result.ok) {
-        router.push(`/${basePath}/${slug}?attempt=${result.attemptId}&q=0`);
+        const qidParam = qid ? `&qid=${encodeURIComponent(qid)}` : "&q=0";
+        router.push(`/${basePath}/${slug}?attempt=${result.attemptId}${qidParam}`);
       } else if (result.reason === "paywall") {
         setBlocked(true);
       }
@@ -30,7 +32,7 @@ export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin 
   if (blocked) {
     return (
       <p className="rounded-xl bg-[var(--color-coral)]/10 px-4 py-2 text-sm font-semibold text-[var(--color-coral)]">
-        You&apos;ve used all your free attempts — upgrade coming soon.
+        You&apos;ve used all your free attempts, check out the pricing tab in the home screen for more information.
       </p>
     );
   }

@@ -5,12 +5,12 @@ import { getOnboardingProgress } from "@/lib/actions";
 
 interface StationPageProps {
     params: Promise<{ slug: string }>;
-    searchParams: Promise<{ attempt?: string; q?: string }>;
+    searchParams: Promise<{ attempt?: string; q?: string; qid?: string }>;
 }
 
 export default async function StationPage({ params, searchParams }: StationPageProps) {
     const { slug } = await params;
-    const { attempt: attemptParam, q: qParam } = await searchParams;
+    const { attempt: attemptParam, q: qParam, qid: qidParam } = await searchParams;
 
     const [{ sectionTitle, questions }, progress] = await Promise.all([
         getStationQuestions(slug, "mmi"),
@@ -18,7 +18,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
     ]);
 
     const dashboardReady = Boolean(progress?.track && progress?.format);
-    
+
     if (questions.length === 0) {
         return (
             <div className="flex min-h-screen items-center justify-center bg-[var(--color-cream)] px-6 text-center">
@@ -40,12 +40,13 @@ export default async function StationPage({ params, searchParams }: StationPageP
                 <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
                     Ready when you are — starting counts as one practice attempt.
                 </p>
-                <BeginStationButton formatSlug="mmi" basePath="mmi" slug={slug} />
+                <BeginStationButton formatSlug="mmi" basePath="mmi" slug={slug} qid={qidParam} />
             </div>
         );
     }
 
-    const requestedIndex = qParam ? parseInt(qParam, 10) : 0;
+    const qidIndex = qidParam ? questions.findIndex((q) => q.id === qidParam) : -1;
+    const requestedIndex = qidIndex >= 0 ? qidIndex : (qParam ? parseInt(qParam, 10) : 0);
     const index = Number.isFinite(requestedIndex)
         ? Math.max(0, Math.min(questions.length - 1, requestedIndex))
         : 0;

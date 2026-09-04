@@ -2,7 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { GraduationCap, School } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
-import { getMyQuestions } from "@/lib/api/userQuestions";
+import { getMyQuestions, getUsageSummary, getMyPrivateQuestions, getQuestionFormats } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getDashboardData } from "@/app/dashboard/page";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
@@ -33,7 +33,7 @@ export default async function MyQuestionsPage() {
     if (process.env.NEXT_PUBLIC_DISABLE_PAGE === "1") {
         notFound();
     }
-    
+
     const progress = await getOnboardingProgress();
     if (!progress?.track || !progress?.format) {
         redirect("/onboarding");
@@ -41,10 +41,16 @@ export default async function MyQuestionsPage() {
 
     let user;
     let questions;
+    let usage;
+    let privateQuestions;
+    let formatOptions;
     try {
-        [user, questions] = await Promise.all([
+        [user, questions, usage, privateQuestions, formatOptions] = await Promise.all([
             currentUser(),
             getMyQuestions(),
+            getUsageSummary(),
+            getMyPrivateQuestions(),
+            getQuestionFormats(),
         ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
@@ -66,9 +72,9 @@ export default async function MyQuestionsPage() {
                 activeTrackId={trackData.track.slug}
             />
 
-            <div className="mx-auto max-w-3xl px-6 py-8">
-                <div className="mb-8">
-                    <h1 className="font-poppins text-2xl font-bold text-[var(--color-ink)]">My Questions</h1>
+            <div className="max-w-7xl px-8 py-8">
+                <div className="mb-6">
+                    <h1 className="font-poppins text-xl font-bold text-[var(--color-ink)]">My Questions</h1>
                     <p className="mt-1 text-sm text-slate-400">
                         Submit practice questions for admin review. Approved questions become available to other applicants.
                     </p>
@@ -76,8 +82,10 @@ export default async function MyQuestionsPage() {
 
                 <MyQuestionsClient
                     initialQuestions={questions}
-                    formats={trackData.formats}
+                    formats={formatOptions}
                     userTier={userTier}
+                    usage={usage}
+                    privateQuestions={privateQuestions}
                 />
             </div>
         </div>

@@ -5,12 +5,12 @@ import { getOnboardingProgress } from "@/lib/actions";
 
 interface PreviewStationPageProps {
     params: Promise<{ slug: string }>;
-    searchParams: Promise<{ attempt?: string; q?: string }>;
+    searchParams: Promise<{ attempt?: string; q?: string; qid?: string }>;
 }
 
 export default async function PreviewStationPage({ params, searchParams }: PreviewStationPageProps) {
     const { slug } = await params;
-    const { attempt: attemptParam, q: qParam } = await searchParams;
+    const { attempt: attemptParam, q: qParam, qid: qidParam } = await searchParams;
 
     const [{ sectionTitle, questions }, progress] = await Promise.all([
         getStationQuestions(slug, "preview"),
@@ -39,7 +39,7 @@ export default async function PreviewStationPage({ params, searchParams }: Previ
                 <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
                     Ready when you are — starting counts as one practice attempt.
                 </p>
-                <BeginStationButton formatSlug="preview" basePath="preview" slug={slug} />
+                <BeginStationButton formatSlug="preview" basePath="preview" slug={slug} qid={qidParam}/>
             </div>
         );
     }

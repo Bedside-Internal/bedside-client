@@ -68,7 +68,7 @@ export default async function MyQuestionsPage() {
                 activeTrackId={trackData.track.slug}
             />
 
-            <div className="mx-auto max-w-6xl px-6 py-8">
+            <div className="max-w-none px-8 py-8">
                 <div className="mb-6">
                     <h1 className="font-poppins text-xl font-bold text-[var(--color-ink)]">My Questions</h1>
                     <p className="mt-1 text-sm text-slate-400">

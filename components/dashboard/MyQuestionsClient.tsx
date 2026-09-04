@@ -110,9 +110,9 @@ export function MyQuestionsClient({
                 </div>
             )}
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,420px)_1fr] lg:items-start">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,540px)_1fr] lg:items-start">
                 {/* Left column — usage + composer, sticky on large screens so it stays visible while the right list scrolls */}
-                <div className="flex flex-col gap-6 lg:sticky lg:top-8">
+                <div className="flex flex-col gap-6">
                     <UsageMeter usage={usage} userTier={userTier} />
 
                     <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm">
@@ -176,22 +176,6 @@ export function MyQuestionsClient({
                                                 </option>
                                             ))}
                                         </select>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="categoryText" className="mb-1.5 block text-sm font-medium text-[var(--color-ink)]">
-                                            Category
-                                        </label>
-                                        <input
-                                            id="categoryText"
-                                            name="categoryText"
-                                            type="text"
-                                            required
-                                            maxLength={120}
-                                            disabled={submitting}
-                                            className="w-full rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-sm text-[var(--color-ink)] outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
-                                            placeholder="e.g., Ethics"
-                                        />
                                     </div>
                                 </div>
 
@@ -259,10 +243,10 @@ export function MyQuestionsClient({
                 </div>
 
                 {/* Right column — submissions list, scrolls independently on large screens */}
-                <div>
-                    <h2 className="mb-4 font-poppins text-lg font-semibold text-[var(--color-ink)]">Your Submissions</h2>
+                <div className="lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:self-start lg:overflow-y-auto">
+                    <h2 className="mb-4 font-poppins text-lg font-semibold text-[var(--color-ink)]">Your Questions</h2>
                     {displayQuestions.length === 0 ? (
-                        <div className="rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 px-6 py-8 text-center">
+                        <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 px-6 py-8 text-center">
                             <FileText className="mx-auto h-8 w-8 text-slate-300" />
                             <p className="mt-3 text-base font-medium text-[var(--color-ink)]">No questions submitted yet</p>
                             <p className="mt-1 text-sm text-slate-400">

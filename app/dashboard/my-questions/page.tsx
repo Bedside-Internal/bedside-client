@@ -2,7 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import { GraduationCap, School } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
-import { getMyQuestions, getUsageSummary, getMyPrivateQuestions } from "@/lib/api/userQuestions";
+import { getMyQuestions, getUsageSummary, getMyPrivateQuestions, getQuestionFormats } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getDashboardData } from "@/app/dashboard/page";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
@@ -43,12 +43,14 @@ export default async function MyQuestionsPage() {
     let questions;
     let usage;
     let privateQuestions;
+    let formatOptions;
     try {
-        [user, questions, usage, privateQuestions] = await Promise.all([
+        [user, questions, usage, privateQuestions, formatOptions] = await Promise.all([
             currentUser(),
             getMyQuestions(),
             getUsageSummary(),
             getMyPrivateQuestions(),
+            getQuestionFormats(),
         ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
@@ -80,7 +82,7 @@ export default async function MyQuestionsPage() {
 
                 <MyQuestionsClient
                     initialQuestions={questions}
-                    formats={trackData.formats}
+                    formats={formatOptions}
                     userTier={userTier}
                     usage={usage}
                     privateQuestions={privateQuestions}

@@ -94,3 +94,13 @@ export interface MyPrivateQuestion {
 export async function getMyPrivateQuestions(): Promise<MyPrivateQuestion[]> {
     return serverApiFetch<MyPrivateQuestion[]>("/api/questions/mine/private");
 }
+
+export interface FormatOption {
+    id: string;
+    slug: string;
+    title: string;
+}
+
+export async function getQuestionFormats(): Promise<FormatOption[]> {
+    return serverApiFetch<FormatOption[]>("/api/questions/formats");
+}

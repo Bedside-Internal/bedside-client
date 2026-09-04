@@ -29,13 +29,9 @@ interface CreateUserQuestionInput {
 }
 
 interface Format {
-    iconKey: string;
+    id: string;
+    slug: string;
     title: string;
-    subtitle: string;
-    score: number;
-    metrics: Array<{ label: string; value: number; tone?: "mint" | "amber" | "coral" | "slate" }>;
-    progressLabel: string;
-    continueHref: string;
 }
 
 type ComposerTab = "submit" | "generate";
@@ -173,7 +169,7 @@ export function MyQuestionsClient({
                                         >
                                             <option value="">Optional</option>
                                             {formats.map((f) => (
-                                                <option key={f.title} value={f.iconKey}>
+                                                <option key={f.id} value={f.id}>
                                                     {f.title}
                                                 </option>
                                             ))}

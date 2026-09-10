@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import clsx from "clsx";
+import { Star } from "lucide-react";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
 import type { TestimonialDTO, TestimonialAudience } from "@/types/marketing";
 
@@ -29,6 +30,58 @@ const delays = ["", "d1", "d2"] as const;
 
 interface TestimonialsProps {
     testimonials: TestimonialDTO[];
+}
+
+function Avatar({ t }: { t: TestimonialDTO }) {
+    if (t.avatarImage) {
+        return (
+            // eslint-disable-next-line @next/next/no-img-element -- base64 data URI, not a static/remote asset
+            <img
+                src={`data:${t.avatarImage.contentType};base64,${t.avatarImage.data}`}
+                alt={t.name}
+                className={clsx(
+                    "h-11 w-11 shrink-0 border-2 border-ink object-cover",
+                    t.avatarShape === "circle" ? "rounded-full" : "rounded-xl",
+                )}
+            />
+        );
+    }
+
+    return (
+        <div
+            aria-hidden
+            className={clsx(
+                "flex h-11 w-11 shrink-0 items-center justify-center border-2 border-ink text-sm font-bold text-ink",
+                accentClasses[t.accent],
+                t.avatarShape === "circle" ? "rounded-full" : "rounded-xl",
+            )}
+        >
+            {t.avatarLabel}
+        </div>
+    );
+}
+
+function StarRating({ rating }: { rating: number }) {
+    const rounded = Math.round(rating);
+    return (
+        <div
+            className="flex shrink-0 items-center gap-0.5"
+            aria-label={`${rating} out of 5 stars`}
+        >
+            {Array.from({ length: 5 }).map((_, i) => (
+                <Star
+                    key={i}
+                    size={14}
+                    strokeWidth={2}
+                    className={
+                        i < rounded
+                            ? "fill-amber text-amber"
+                            : "fill-transparent text-black/15"
+                    }
+                />
+            ))}
+        </div>
+    );
 }
 
 export default function Testimonials({ testimonials }: TestimonialsProps) {
@@ -88,25 +141,20 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
                     {visible.map((t, i) => (
                         <RevealOnScroll key={t.id} delay={delays[i % 3]}>
                             <div className="h-full rounded-[20px] border border-black/5 bg-white p-7 shadow-[0_2px_14px_rgba(26,26,26,0.06)]">
-                                <div className="mb-4 flex items-center gap-3">
-                                    <div
-                                        aria-hidden
-                                        className={clsx(
-                                            "flex h-11 w-11 shrink-0 items-center justify-center border-2 border-ink text-sm font-bold text-ink",
-                                            accentClasses[t.accent],
-                                            t.avatarShape === "circle" ? "rounded-full" : "rounded-xl",
-                                        )}
-                                    >
-                                        {t.avatarLabel}
-                                    </div>
-                                    <div>
-                                        <div className="text-[15px] font-bold leading-tight text-ink">
-                                            {t.name}
-                                        </div>
-                                        <div className="text-[13px] leading-tight text-neutral-500">
-                                            {t.subtitle}
+                                <div className="mb-4 flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar t={t} />
+                                        <div>
+                                            <div className="text-[15px] font-bold leading-tight text-ink">
+                                                {t.name}
+                                            </div>
+                                            <div className="text-[13px] leading-tight text-neutral-500">
+                                                {t.subtitle}
+                                            </div>
                                         </div>
                                     </div>
+
+                                    {t.rating != null && <StarRating rating={t.rating} />}
                                 </div>
 
                                 <p className="mb-5 text-[15px] leading-relaxed text-neutral-600">

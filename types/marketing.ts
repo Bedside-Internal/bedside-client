@@ -9,6 +9,10 @@ export interface TestimonialDTO {
     quote: string;
     audience: TestimonialAudience;
     avatarLabel: string;
+    avatarImage?: {
+        data: string;
+        contentType: "image/jpeg" | "image/png" | "image/webp";
+    };
     avatarShape: TestimonialAvatarShape;
     accent: TestimonialAccent;
     rating: number | null;

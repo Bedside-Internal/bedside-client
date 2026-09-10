@@ -2,6 +2,7 @@ import MagneticButton from "@/components/ui/MagneticButton";
 
 const links = [
   { href: "#features", label: "Formats" },
+  { href: "#testimonials", label: "Testimonials" },
   { href: "#how", label: "How it works" },
   { href: "#pricing", label: "Pricing" },
   { href: "#faq", label: "FAQ" },

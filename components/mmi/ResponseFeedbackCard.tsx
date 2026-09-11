@@ -18,6 +18,17 @@ export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
                 </span>
             </div>
 
+            {feedback.promptScores.length > 1 && (
+                <div className="flex items-center gap-3">
+                    {feedback.promptScores.map((p, i) => (
+                        <div key={p.promptId} className="flex-1 rounded-xl bg-[var(--color-sand)] px-3 py-2 text-center">
+                            <p className="text-xs font-semibold text-[var(--color-ink)]/50">Q{i + 1}</p>
+                            <p className="text-sm font-bold text-[var(--color-ink)]">{p.score}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
+
             <p className="text-sm leading-relaxed text-[var(--color-ink)]/70">{feedback.summary}</p>
 
             {isFull ? (

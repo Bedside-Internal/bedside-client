@@ -2,6 +2,15 @@ export type ResponseMode = "written" | "audio" | "video" | "rated_items";
 export type Difficulty = "easy" | "medium" | "hard";
 export type RatingLabel = "very_ineffective" | "ineffective" | "effective" | "very_effective";
 
+export interface FormatOverviewItem {
+    icon: string;
+    title: string;
+    description: string;
+    href: string;
+    totalQuestions: number;
+    completedQuestions: number;
+}
+
 export interface QuestionListItem {
     id: string;
     difficulty: Difficulty;
@@ -16,13 +25,15 @@ export interface QuestionDetail {
     id: string;
     scenario: {
         text: string;
+        video_url: string | null;
         reading_time_seconds: number;
         response_mode: ResponseMode;
-        response_time_seconds: number | null; // null for rated_items — no single response timer
+        response_time_seconds: number | null;
     };
+    prompts: ScenarioPrompt[]; // length 1 for MMI/PREview, 2 for CASPer
     guidance_note: string;
     difficulty: Difficulty;
-    response_items?: ResponseItemDetail[]; // present only when response_mode === "rated_items"
+    response_items?: ResponseItemDetail[];
 }
 
 export interface Attempt {
@@ -116,11 +127,28 @@ export interface CompetencyDTO {
     completedScenarios: number;
 }
 
-export interface FormatOverviewItem {
-    icon: string;
-    title: string;
-    description: string;
-    href: string;
-    totalQuestions: number;
-    completedQuestions: number;
+export interface ScenarioPrompt {
+    id: string;
+    text: string;
+}
+
+export interface SubmitResponsePayload {
+    attemptId: string;
+    questionId: string;
+    responses: { promptId: string; text: string }[];
+}
+
+export interface PromptScore {
+    promptId: string;
+    score: number;
+}
+
+export interface ResponseFeedback {
+    overallScore: number;
+    dimensionScores: DimensionScore[];
+    promptScores: PromptScore[]; // always populated, length 1 for single-prompt formats
+    strengths: string[];
+    areasToImprove: string[];
+    summary: string;
+    tier: "basic" | "full";
 }

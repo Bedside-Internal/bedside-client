@@ -65,7 +65,12 @@ export function StationRunner({
             setError(null);
             try {
                 if (payload.mode === "written") {
-                    const result = await submitResponse({ attemptId, questionId: question.id, text: payload.text });
+                    const result = await submitResponse({
+                        attemptId,
+                        questionId: question.id,
+                        promptId: question.prompts[0].id,
+                        text: payload.text, 
+                   });
                     setFeedback(result.feedback);
                 } else if (payload.mode === "rated_items") {
                     const result = await submitRatings({ attemptId, questionId: question.id, ratings: payload.ratings });

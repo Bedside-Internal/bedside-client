@@ -50,7 +50,7 @@ export type ComposePayload =
 export interface SubmitResponsePayload {
     attemptId: string;
     questionId: string;
-    text: string;
+    responses: { promptId: string; text: string }[];
 }
 
 export interface SubmitResponseResult {
@@ -81,6 +81,7 @@ export interface DimensionScore {
 export interface ResponseFeedback {
     overallScore: number;
     dimensionScores: DimensionScore[];
+    promptScores: PromptScore[];
     strengths: string[];
     areasToImprove: string[];
     summary: string;
@@ -132,23 +133,7 @@ export interface ScenarioPrompt {
     text: string;
 }
 
-export interface SubmitResponsePayload {
-    attemptId: string;
-    questionId: string;
-    responses: { promptId: string; text: string }[];
-}
-
 export interface PromptScore {
     promptId: string;
     score: number;
-}
-
-export interface ResponseFeedback {
-    overallScore: number;
-    dimensionScores: DimensionScore[];
-    promptScores: PromptScore[]; // always populated, length 1 for single-prompt formats
-    strengths: string[];
-    areasToImprove: string[];
-    summary: string;
-    tier: "basic" | "full";
 }

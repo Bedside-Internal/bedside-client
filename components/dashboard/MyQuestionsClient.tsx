@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMyQuestions } from "@/hooks/useMyQuestions";
 import { FileText, Lock, Sparkles } from "lucide-react";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -50,7 +50,7 @@ export function MyQuestionsClient({
     usage: UsageSummary;
     privateQuestions: MyPrivateQuestion[];
 }) {
-    const { items: questions, loading, error, submitting, clearError, create, refetch } = useMyQuestions(initialQuestions);
+    const { items: questions, error, submitting, clearError, create } = useMyQuestions(initialQuestions);
     const [shareWithApplicants, setShareWithApplicants] = useState(false);
     const [clientError, setClientError] = useState<string | null>(null);
     const [tab, setTab] = useState<ComposerTab>("submit");

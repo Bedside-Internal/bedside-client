@@ -5,7 +5,7 @@ import { TopBar } from "@/components/dashboard/Topbar";
 import { getMyQuestions, getUsageSummary, getMyPrivateQuestions, getQuestionFormats } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getDashboardData } from "@/app/dashboard/page";
-import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
+import { ApiError } from "@/lib/api/server-fetch";
 import { MyQuestionsClient } from "@/components/dashboard/MyQuestionsClient";
 
 interface DashboardData {

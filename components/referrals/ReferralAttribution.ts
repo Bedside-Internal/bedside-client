@@ -36,7 +36,7 @@ export function ReferralAttribution() {
             .finally(() => {
                 clearCookie(REFERRAL_COOKIE_NAME);
             });
-    }, [isSignedIn, getToken]);
+    }, [isSignedIn, getToken, apiFetch]);
 
     return null;
 }

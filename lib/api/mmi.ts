@@ -8,7 +8,7 @@ import type {
     SubmitRatingsPayload,
     SubmitResponsePayload,
     SubmitResponseResult,
-} from "@/types/mmi";
+} from "@/types/formats";
 
 // Kept as an alias so existing `instanceof MmiApiError` checks elsewhere
 // (if any) keep working without a repo-wide rename.

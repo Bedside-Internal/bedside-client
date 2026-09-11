@@ -7,7 +7,7 @@ import type {
     SubmitRatingsPayload,
     SubmitResponsePayload,
     SubmitResponseResult,
-} from "@/types/mmi";
+} from "@/types/formats";
 import { startAttempt as startAttemptServer } from "./mmi";
 
 export type StartAttemptResult =

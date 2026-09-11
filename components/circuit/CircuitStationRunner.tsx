@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
 import { CircuitStepTracker } from "./CircuitStepTracker";
 import { submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
-import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/mmi";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/formats";
 import type { CircuitStationState } from "@/types/circuit";
 
 interface CircuitStationRunnerProps {

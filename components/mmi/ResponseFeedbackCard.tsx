@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Lock } from "lucide-react";
-import type { ResponseFeedback } from "@/types/mmi";
+import type { ResponseFeedback } from "@/types/formats";
 
 interface ResponseFeedbackCardProps {
     feedback: ResponseFeedback;

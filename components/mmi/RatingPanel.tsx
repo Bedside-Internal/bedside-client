@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { RatingItemRow } from "./RatingItemRow";
-import type { RatingLabel, ResponseItemDetail } from "@/types/mmi";
+import type { RatingLabel, ResponseItemDetail } from "@/types/formats";
 
 interface RatingPanelProps {
     items: ResponseItemDetail[];

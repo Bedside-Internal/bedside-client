@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight, User, Home } from "lucide-react";
 import { Timer } from "../mmi/Timer";
 import { ScenarioPanel } from "../mmi/ScenarioPanel";
 import { ResponseComposer } from "../mmi/ResponseComposer";
-import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/mmi";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/formats";
 import { RatingTaskAndLegend } from "../mmi/RatingTaskAndLegend";
 import { RatingFeedback } from "../mmi/RatingFeedback";
 import { RatingPanel } from "../mmi/RatingPanel";

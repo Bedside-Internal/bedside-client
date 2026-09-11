@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowRight, ChevronDown, Mic, PenLine, Video } from "lucide-react";
 import { AudioRecorder } from "./AudioRecorder";
 import { VideoRecorder } from "./VideoRecorder";
-import { ComposePayload } from "@/types/mmi";
+import { ComposePayload } from "@/types/formats";
 
 export type ComposerMode = "written" | "audio" | "video";
 

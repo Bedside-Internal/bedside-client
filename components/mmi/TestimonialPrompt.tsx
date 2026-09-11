@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useApiFetch } from "@/lib/api/use-api-fetch";
@@ -221,7 +222,14 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                 </label>
                 {photoPreview ? (
                     <div className="flex items-center gap-3">
-                        <img src={photoPreview} alt="" className="h-14 w-14 rounded-full object-cover" />
+                        <Image
+                            src={photoPreview}
+                            alt=""
+                            width={56}
+                            height={56}
+                            unoptimized
+                            className="h-14 w-14 rounded-full object-cover"
+                        />
                         <button
                             type="button"
                             onClick={() => {

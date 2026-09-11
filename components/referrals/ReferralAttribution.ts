@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { redeemReferralCode } from "@/lib/api/referrals-client";
 import { REFERRAL_COOKIE_NAME } from "@/lib/referrals/cookie";
+import { useApiFetch } from "@/lib/api/use-api-fetch";
 
 /**
  * Mount once, high up the authenticated tree (e.g. the dashboard/onboarding
@@ -19,6 +20,8 @@ export function ReferralAttribution() {
     const { isSignedIn, getToken } = useAuth();
     const attempted = useRef(false);
 
+    const apiFetch = useApiFetch();
+    
     useEffect(() => {
         if (!isSignedIn || attempted.current) return;
 
@@ -26,7 +29,7 @@ export function ReferralAttribution() {
         if (!code) return;
 
         attempted.current = true;
-        redeemReferralCode(code, getToken)
+        redeemReferralCode(code, apiFetch)
             .catch(() => {
                 // Best-effort — see comment above.
             })

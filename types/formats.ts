@@ -106,3 +106,21 @@ export interface SectionQuestions {
     sectionTitle: string;
     questions: QuestionListItem[];
 }
+
+export interface CompetencyDTO {
+    icon: string;
+    title: string;
+    description: string;
+    href: string;
+    totalScenarios: number;
+    completedScenarios: number;
+}
+
+export interface FormatOverviewItem {
+    icon: string;
+    title: string;
+    description: string;
+    href: string;
+    totalQuestions: number;
+    completedQuestions: number;
+}

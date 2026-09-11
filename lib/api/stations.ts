@@ -1,6 +1,6 @@
 import { serverApiFetch } from "@/lib/api/server-fetch";
-import type { StationDTO } from "@/types/stations";
+import type { FormatOverviewItem } from "@/types/formats";
 
-export async function getMmiStations(): Promise<StationDTO[]> {
-  return serverApiFetch<StationDTO[]>("/api/mmi/stations");
+export async function getMmiStations(): Promise<FormatOverviewItem[]> {
+  return serverApiFetch<FormatOverviewItem[]>("/api/mmi/stations");
 }

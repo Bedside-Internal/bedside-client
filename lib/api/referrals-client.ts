@@ -21,15 +21,13 @@ export class ReferralClientApiError extends Error {
 
 /** Called from ReferralAttribution with a code read out of the browser's
  * cookie jar and a Clerk client-side getToken. */
-export async function redeemReferralCode(code: string, getToken: () => Promise<string | null>): Promise<void> {
-    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-    const token = await getToken();
-    const res = await fetch(`${API_BASE_URL}/api/referrals/redeem`, {
+export async function redeemReferralCode(
+    code: string,
+    apiFetch: (url: string, init?: RequestInit) => Promise<Response>
+): Promise<void> {
+    const res = await apiFetch(`/api/referrals/redeem`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
     });
     if (!res.ok && res.status !== 204) {

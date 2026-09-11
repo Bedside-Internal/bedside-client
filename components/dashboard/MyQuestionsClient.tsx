@@ -50,19 +50,11 @@ export function MyQuestionsClient({
     usage: UsageSummary;
     privateQuestions: MyPrivateQuestion[];
 }) {
-    const { items, loading, error, submitting, clearError, create, refetch } = useMyQuestions();
-
-    const [questions, setQuestions] = useState<UserSubmittedQuestion[]>(initialQuestions);
-    const [useHookData, setUseHookData] = useState(false);
+    const { items: questions, loading, error, submitting, clearError, create, refetch } = useMyQuestions(initialQuestions);
     const [shareWithApplicants, setShareWithApplicants] = useState(false);
     const [clientError, setClientError] = useState<string | null>(null);
     const [tab, setTab] = useState<ComposerTab>("submit");
     const { pendingId: scopePendingId, error: scopeError, clearError: clearScopeError, requestShare, cancelShare, makePrivate } = useQuestionScope();
-
-    useEffect(() => {
-        setUseHookData(true);
-        setQuestions(items);
-    }, [items]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -93,7 +85,7 @@ export function MyQuestionsClient({
         }
     };
 
-    const displayQuestions = useHookData ? questions : initialQuestions;
+    const displayQuestions = questions;
     const hasAnyQuestions = privateQuestions.length > 0 || displayQuestions.length > 0;
 
     return (

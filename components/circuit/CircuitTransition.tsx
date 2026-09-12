@@ -82,7 +82,7 @@ export function CircuitTransition({
 
         <div className="mb-8 w-full rounded-xl bg-[var(--color-sand)] px-5 py-4 text-left text-sm text-[var(--color-ink)]/65">
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[var(--color-ink)]/40">While you wait</p>
-          <p>{nextStation.transitionTip ?? FALLBACK_TIP}</p>
+          <p>{nextStation.transitionTip ?? defaultTip}</p>
         </div>
 
         <button

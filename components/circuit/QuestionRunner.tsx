@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ArrowLeft, ArrowRight, User, Home } from "lucide-react";
 import { Timer } from "../mmi/Timer";
 import { ScenarioPanel } from "../mmi/ScenarioPanel";
-import { ResponseComposer } from "../mmi/ResponseComposer";
+import { ComposerMode, ResponseComposer } from "../mmi/ResponseComposer";
 import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/formats";
 import { RatingTaskAndLegend } from "../mmi/RatingTaskAndLegend";
 import { RatingFeedback } from "../mmi/RatingFeedback";
@@ -32,6 +32,7 @@ interface QuestionRunnerProps {
     hasNext?: boolean;
     dashboardReady?: boolean;
     onDashboard?: () => void;
+    composerProps?: { allowedModes?: ComposerMode[] };
 }
 
 export function QuestionRunner({
@@ -48,6 +49,7 @@ export function QuestionRunner({
     hasNext = false,
     dashboardReady = false,
     onDashboard,
+    composerProps,
 }: QuestionRunnerProps) {
     const [phase, setPhase] = useState<Phase>("reading");
     const [prevQuestionId, setPrevQuestionId] = useState(question.id);
@@ -201,6 +203,7 @@ export function QuestionRunner({
                                         guidanceNote={question.guidance_note}
                                         submitting={submitting}
                                         onSubmit={handleSubmit}
+                                        allowedModes={composerProps?.allowedModes}
                                     />
                                 )}
                             </div>

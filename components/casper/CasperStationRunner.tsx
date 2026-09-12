@@ -2,9 +2,10 @@
 
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { QuestionRunner } from "../circuit/QuestionRunner";
 import { CasperQuestionRunner } from "./CasperQuestionRunner";
-import { getQuestion, submitResponse } from "@/lib/api/mmi-actions";
-import type { QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/formats";
+import { getQuestion, submitResponse, submitMediaResponse } from "@/lib/api/mmi-actions";
+import type { ComposePayload, QuestionDetail, QuestionListItem, ResponseFeedback } from "@/types/formats";
 
 interface CasperStationRunnerProps {
     slug: string;
@@ -27,6 +28,12 @@ export function CasperStationRunner({
     const [feedback, setFeedback] = useState<ResponseFeedback | null>(null);
     const [isPending, startTransition] = useTransition();
 
+    const breadcrumb = [
+        { label: "CASPer", href: "/onboarding/medical-school/format-casper" },
+        { label: stationTitle, href: `/casper/${slug}` },
+        { label: `Question ${index + 1}` },
+    ];
+
     const goToIndex = useCallback((nextIndex: number) => {
         const clamped = Math.max(0, Math.min(questionIds.length - 1, nextIndex));
         if (clamped === index) return;
@@ -44,7 +51,9 @@ export function CasperStationRunner({
         });
     }, [index, questionIds, slug, attemptId, router]);
 
-    const handleSubmit = useCallback(async (responses: { promptId: string; text: string }[]) => {
+    // Typed, multi-prompt path — CasperQuestionRunner already collects all
+    // prompt answers itself and hands them back as one array.
+    const handleWrittenSubmit = useCallback(async (responses: { promptId: string; text: string }[]) => {
         setSubmitting(true);
         setError(null);
         try {
@@ -58,6 +67,30 @@ export function CasperStationRunner({
         }
     }, [attemptId, question.id]);
 
+    // Video-response path — CASPer's video-response section, response_mode
+    // is always "video" here so ComposePayload is always the video branch,
+    // but this stays generic the same way StationRunner's does.
+    const handleVideoSubmit = useCallback(async (payload: ComposePayload) => {
+        setSubmitting(true);
+        setError(null);
+        try {
+            if (payload.mode === "video" || payload.mode === "audio") {
+                const formData = new FormData();
+                formData.set("attemptId", attemptId);
+                formData.set("questionId", question.id);
+                formData.set("mediaType", payload.mode);
+                formData.set("media", payload.blob);
+                const result = await submitMediaResponse(formData);
+                setFeedback(result.feedback);
+            }
+        } catch {
+            setError("Couldn't submit that response — try recording again.");
+            throw new Error("submit-failed");
+        } finally {
+            setSubmitting(false);
+        }
+    }, [attemptId, question.id]);
+
     return (
         <>
             {error && (
@@ -65,25 +98,40 @@ export function CasperStationRunner({
                     {error}
                 </div>
             )}
-            <CasperQuestionRunner
-                question={question}
-                breadcrumb={[
-                    { label: "CASPer", href: "/onboarding/medical-school/format-casper" },
-                    { label: stationTitle, href: `/casper/${slug}` },
-                    { label: `Question ${index + 1}` },
-                ]}
-                onExit={() => router.push("/onboarding/medical-school/format-casper")}
-                dashboardReady={dashboardReady}
-                onDashboard={() => router.push("/dashboard")}
-                onSubmit={handleSubmit}
-                submitting={submitting}
-                feedback={feedback}
-                navPending={isPending}
-                onPrev={() => goToIndex(index - 1)}
-                onNext={() => goToIndex(index + 1)}
-                hasPrev={index > 0}
-                hasNext={index < questionIds.length - 1}
-            />
+            {question.scenario.response_mode === "video" ? (
+                <QuestionRunner
+                    question={question}
+                    breadcrumb={breadcrumb}
+                    onExit={() => router.push("/onboarding/medical-school/format-casper")}
+                    dashboardReady={dashboardReady}
+                    onDashboard={() => router.push("/dashboard")}
+                    onSubmit={handleVideoSubmit}
+                    submitting={submitting}
+                    feedback={feedback}
+                    navPending={isPending}
+                    onPrev={() => goToIndex(index - 1)}
+                    onNext={() => goToIndex(index + 1)}
+                    hasPrev={index > 0}
+                    hasNext={index < questionIds.length - 1}
+                    composerProps={{ allowedModes: ["video"] }}
+                />
+            ) : (
+                <CasperQuestionRunner
+                    question={question}
+                    breadcrumb={breadcrumb}
+                    onExit={() => router.push("/onboarding/medical-school/format-casper")}
+                    dashboardReady={dashboardReady}
+                    onDashboard={() => router.push("/dashboard")}
+                    onSubmit={handleWrittenSubmit}
+                    submitting={submitting}
+                    feedback={feedback}
+                    navPending={isPending}
+                    onPrev={() => goToIndex(index - 1)}
+                    onNext={() => goToIndex(index + 1)}
+                    hasPrev={index > 0}
+                    hasNext={index < questionIds.length - 1}
+                />
+            )}
         </>
     );
 }

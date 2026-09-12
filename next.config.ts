@@ -4,9 +4,18 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     serverActions: {
-        bodySizeLimit: "20mb", // match the multer limit on the Express side
+      bodySizeLimit: "20mb", // match the multer limit on the Express side
     },
-},
+  },
+  async redirects() {
+    return [
+      {
+        source: "/mmi/circuit",
+        destination: "/mmi/full",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {

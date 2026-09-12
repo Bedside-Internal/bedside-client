@@ -24,6 +24,7 @@ interface ResponseComposerProps {
     guidanceNote?: string;
     minWords?: number;
     submitting?: boolean;
+    allowedModes?: ComposerMode[];
     onSubmit: (payload: ComposePayload) => void;
 }
 
@@ -31,9 +32,11 @@ export function ResponseComposer({
     guidanceNote,
     minWords = 30,
     submitting = false,
+    allowedModes = ["written", "audio", "video"],
     onSubmit,
 }: ResponseComposerProps) {
-    const [mode, setMode] = useState<ComposerMode>("written");
+    const visibleModes = MODES.filter((m) => allowedModes.includes(m.id));
+    const [mode, setMode] = useState<ComposerMode>(visibleModes[0]?.id ?? "written");
     const [text, setText] = useState("");
     const [hintsOpen, setHintsOpen] = useState(false);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);

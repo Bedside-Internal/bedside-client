@@ -16,7 +16,7 @@ export default async function CircuitResultsPage({ params }: ResultsPageProps) {
       breakdownLabel="Station breakdown"
       backHref="/onboarding/medical-school/format-mmi"
       formatSlug="mmi"
-      basePath="/mmi/circuit"
+      basePath="/mmi/full"
       runAnotherLabel="Run another circuit →"
     />
   );

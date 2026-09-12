@@ -5,17 +5,6 @@ import { CircuitTransition } from "@/components/circuit/CircuitTransition";
 import { CircuitStationRunner } from "@/components/circuit/CircuitStationRunner";
 import { getOnboardingProgress } from "@/lib/actions";
 
-const SCENARIO_TIPS: Record<string, string> = {
-    empathy: "Name the other person's feeling before you move to a solution — skipping straight to fixing it reads as dismissive.",
-    "preview-collaboration": "Show how you'd bring others in, not just what you'd decide alone.",
-    professionalism: "Boundaries and accountability read better than blanket positivity — it's fine to say what you won't do.",
-    "conflict-management": "De-escalate first, then problem-solve. Jumping straight to 'who's right' usually backfires.",
-    "self-awareness": "Specific personal examples land better than general statements about your values.",
-    "preview-communication": "Clarity over cleverness — check that the other person actually understood, don't just deliver your point.",
-    resilience: "Show that you stay solution-focused under pressure — don't dwell on what went wrong, show what you do next.",
-    "problem-solving": "Think out loud — show your reasoning process, not just your final answer.",
-};
-
 interface CasperFullMockRunPageProps {
     searchParams: Promise<{ attempt?: string; station?: string; phase?: string }>;
 }
@@ -42,7 +31,6 @@ export default async function CasperFullMockRunPage({ searchParams }: CasperFull
                 currentIndex={index}
                 basePath="/casper/full"
                 unitLabel="Scenario"
-                tips={SCENARIO_TIPS}
                 defaultTip="Take a breath. Read the next scenario carefully before you start responding."
                 exitHref="/onboarding/medical-school/format-casper"
                 dashboardReady={dashboardReady}

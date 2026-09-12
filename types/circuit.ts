@@ -1,6 +1,7 @@
 export interface CircuitStationPreview {
     sectionSlug: string;
     title: string;
+    transitionTip: string | null;
     iconKey: string | null;
     order: number;
   }
@@ -15,6 +16,7 @@ export interface CircuitStationPreview {
   export interface CircuitStationState {
     sectionSlug: string;
     title: string;
+    transitionTip: string | null;
     iconKey: string | null;
     order: number;
     questionId: string;

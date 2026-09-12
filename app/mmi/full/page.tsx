@@ -32,7 +32,7 @@ export default async function CircuitIntroPage() {
         <CircuitIntro
           preview={preview}
           formatSlug="mmi"
-          basePath="/mmi/circuit"
+          basePath="/mmi/full"
           copy={{ titleAccent: "MMI Circuit", unitLabel: "stations", backHref: "/dashboard" }}
         />
       </main>

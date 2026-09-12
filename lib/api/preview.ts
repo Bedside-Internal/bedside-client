@@ -1,4 +1,4 @@
-import type { CompetencyDTO } from "@/types/preview";
+import type { CompetencyDTO } from "@/types/formats";
 import { serverApiFetch } from "./server-fetch";
 
 export async function getPreviewCompetencies(): Promise<CompetencyDTO[]> {

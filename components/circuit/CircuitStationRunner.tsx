@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { QuestionRunner } from "./QuestionRunner";
 import { CircuitStepTracker } from "./CircuitStepTracker";
 import { submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
-import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/mmi";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail } from "@/types/formats";
 import type { CircuitStationState } from "@/types/circuit";
 
 interface CircuitStationRunnerProps {
@@ -44,7 +44,11 @@ export function CircuitStationRunner({
       setError(null);
       try {
         if (payload.mode === "written") {
-          const result = await submitResponse({ attemptId, questionId: question.id, text: payload.text });
+          const result = await submitResponse({
+            attemptId,
+            questionId: question.id,
+            responses: [{ promptId: question.prompts[0].id, text: payload.text }],
+          });
           setFeedback(result.feedback);
         } else if (payload.mode === "rated_items") {
           const result = await submitRatings({ attemptId, questionId: question.id, ratings: payload.ratings });

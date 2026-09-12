@@ -1,4 +1,4 @@
-import type { RatingResponseFeedback } from "@/types/mmi";
+import type { RatingResponseFeedback } from "@/types/formats";
 
 const LABELS: Record<string, string> = {
     very_ineffective: "Very Ineffective",

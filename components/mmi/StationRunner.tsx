@@ -4,7 +4,7 @@ import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { QuestionRunner } from "../circuit/QuestionRunner";
 import { getQuestion, submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
-import type { AnyResponseFeedback, ComposePayload, QuestionDetail, QuestionListItem } from "@/types/mmi";
+import type { AnyResponseFeedback, ComposePayload, QuestionDetail, QuestionListItem } from "@/types/formats";
 
 interface StationRunnerProps {
     basePath: string;
@@ -65,7 +65,11 @@ export function StationRunner({
             setError(null);
             try {
                 if (payload.mode === "written") {
-                    const result = await submitResponse({ attemptId, questionId: question.id, text: payload.text });
+                    const result = await submitResponse({
+                        attemptId,
+                        questionId: question.id,
+                        responses: [{ promptId: question.prompts[0].id, text: payload.text }],
+                    });
                     setFeedback(result.feedback);
                 } else if (payload.mode === "rated_items") {
                     const result = await submitRatings({ attemptId, questionId: question.id, ratings: payload.ratings });

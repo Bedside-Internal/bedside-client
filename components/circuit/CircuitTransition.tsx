@@ -23,7 +23,6 @@ interface CircuitTransitionProps {
   currentIndex: number;
   basePath: string;
   unitLabel?: string; // "Station" | "Scenario"
-  tips?: Record<string, string>;
   defaultTip?: string;
   exitHref: string;
   dashboardReady: boolean;
@@ -35,7 +34,6 @@ export function CircuitTransition({
   currentIndex,
   basePath,
   unitLabel = "Station",
-  tips = {},
   defaultTip = FALLBACK_TIP,
   exitHref,
   dashboardReady,
@@ -84,7 +82,7 @@ export function CircuitTransition({
 
         <div className="mb-8 w-full rounded-xl bg-[var(--color-sand)] px-5 py-4 text-left text-sm text-[var(--color-ink)]/65">
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[var(--color-ink)]/40">While you wait</p>
-          <p>{tips[nextStation.sectionSlug] ?? defaultTip}</p>
+          <p>{nextStation.transitionTip ?? FALLBACK_TIP}</p>
         </div>
 
         <button

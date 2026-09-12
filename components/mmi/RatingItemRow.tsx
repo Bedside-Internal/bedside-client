@@ -1,7 +1,7 @@
 "use client";
 
 import { RatingScale } from "./RatingScale";
-import type { RatingLabel, ResponseItemDetail } from "@/types/mmi";
+import type { RatingLabel, ResponseItemDetail } from "@/types/formats";
 
 interface RatingItemRowProps {
     item: ResponseItemDetail;

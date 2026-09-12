@@ -2,6 +2,15 @@ export type ResponseMode = "written" | "audio" | "video" | "rated_items";
 export type Difficulty = "easy" | "medium" | "hard";
 export type RatingLabel = "very_ineffective" | "ineffective" | "effective" | "very_effective";
 
+export interface FormatOverviewItem {
+    icon: string;
+    title: string;
+    description: string;
+    href: string;
+    totalQuestions: number;
+    completedQuestions: number;
+}
+
 export interface QuestionListItem {
     id: string;
     difficulty: Difficulty;
@@ -16,13 +25,15 @@ export interface QuestionDetail {
     id: string;
     scenario: {
         text: string;
+        video_url: string | null;
         reading_time_seconds: number;
         response_mode: ResponseMode;
-        response_time_seconds: number | null; // null for rated_items — no single response timer
+        response_time_seconds: number | null;
     };
+    prompts: ScenarioPrompt[]; // length 1 for MMI/PREview, 2 for CASPer
     guidance_note: string;
     difficulty: Difficulty;
-    response_items?: ResponseItemDetail[]; // present only when response_mode === "rated_items"
+    response_items?: ResponseItemDetail[];
 }
 
 export interface Attempt {
@@ -39,7 +50,7 @@ export type ComposePayload =
 export interface SubmitResponsePayload {
     attemptId: string;
     questionId: string;
-    text: string;
+    responses: { promptId: string; text: string }[];
 }
 
 export interface SubmitResponseResult {
@@ -70,6 +81,7 @@ export interface DimensionScore {
 export interface ResponseFeedback {
     overallScore: number;
     dimensionScores: DimensionScore[];
+    promptScores: PromptScore[];
     strengths: string[];
     areasToImprove: string[];
     summary: string;
@@ -105,4 +117,23 @@ export interface ApiErrorPayload {
 export interface SectionQuestions {
     sectionTitle: string;
     questions: QuestionListItem[];
+}
+
+export interface CompetencyDTO {
+    icon: string;
+    title: string;
+    description: string;
+    href: string;
+    totalScenarios: number;
+    completedScenarios: number;
+}
+
+export interface ScenarioPrompt {
+    id: string;
+    text: string;
+}
+
+export interface PromptScore {
+    promptId: string;
+    score: number;
 }

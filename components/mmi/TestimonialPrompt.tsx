@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 import { useApiFetch } from "@/lib/api/use-api-fetch";
@@ -56,6 +57,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
         setState("hidden");
         apiFetch("/api/marketing/testimonials/dismiss", { method: "POST" }).catch(() => { }); // fire-and-forget
     };
+
     const handlePhotoChange = async (file: File | null) => {
         if (!file) return;
 
@@ -88,7 +90,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
             setUploadingPhoto(false);
         }
     };
-    
+
     const handleSubmit = async () => {
         if (!rating || quote.trim().length < 10 || !consent) return;
         setSubmitting(true);
@@ -212,6 +214,43 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                         </button>
                     ))}
                 </div>
+            </div>
+
+            <div className="mb-5">
+                <label className="mb-2 block text-[13px] font-medium text-ink/50">
+                    Photo <span className="text-ink/30">(optional)</span>
+                </label>
+                {photoPreview ? (
+                    <div className="flex items-center gap-3">
+                        <Image
+                            src={photoPreview}
+                            alt=""
+                            width={56}
+                            height={56}
+                            unoptimized
+                            className="h-14 w-14 rounded-full object-cover"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setPhotoData(null);
+                                setPhotoContentType(null);
+                                setPhotoPreview(null);
+                            }}
+                            className="text-[13px] font-semibold text-ink/50 hover:underline"
+                        >
+                            Remove
+                        </button>
+                    </div>
+                ) : (
+                    <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        disabled={uploadingPhoto}
+                        onChange={(e) => handlePhotoChange(e.target.files?.[0] ?? null)}
+                        className="block w-full text-[13px] text-ink/60 file:mr-3 file:rounded-full file:border-0 file:bg-sand file:px-4 file:py-2 file:text-[13px] file:font-semibold file:text-ink hover:file:bg-sand/80"
+                    />
+                )}
             </div>
 
             <label className="mb-6 flex items-start gap-2.5 text-[13px] leading-snug text-ink/60">

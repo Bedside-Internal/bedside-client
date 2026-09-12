@@ -20,7 +20,7 @@ interface CircuitIntroCopy {
 interface CircuitIntroProps {
   preview: CircuitPreview;
   formatSlug: string;
-  basePath: string; // "/mmi/circuit" | "/preview/full"
+  basePath: string;
   copy: CircuitIntroCopy;
 }
 

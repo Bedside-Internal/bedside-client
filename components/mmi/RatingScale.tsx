@@ -1,6 +1,6 @@
 "use client";
 
-import type { RatingLabel } from "@/types/mmi";
+import type { RatingLabel } from "@/types/formats";
 
 const RATING_OPTIONS: { value: RatingLabel; label: string }[] = [
     { value: "very_ineffective", label: "Very Ineffective" },

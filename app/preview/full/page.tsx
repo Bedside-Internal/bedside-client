@@ -11,7 +11,7 @@ export default async function PreviewFullMockIntroPage() {
     <div className="min-h-screen relative">
       <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
       <Image
-        src="/images/mmi.png"
+        src="/images/preview.jpg"
         alt=""
         fill
         priority={false}

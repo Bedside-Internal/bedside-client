@@ -68,7 +68,7 @@ export function CircuitStationRunner({
         setSubmitting(false);
       }
     },
-    [attemptId, question.id],
+    [attemptId, question.id, question.prompts],
   );
 
   function handleContinue() {

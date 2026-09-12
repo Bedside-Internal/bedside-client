@@ -90,7 +90,7 @@ export function StationRunner({
                 setSubmitting(false);
             }
         },
-        [attemptId, question.id]
+        [attemptId, question.id, question.prompts]
     );
 
     return (

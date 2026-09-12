@@ -16,23 +16,23 @@ const SCENARIO_TIPS: Record<string, string> = {
     "problem-solving": "Think out loud — show your reasoning process, not just your final answer.",
 };
 
-interface PreviewFullMockRunPageProps {
+interface CasperFullMockRunPageProps {
     searchParams: Promise<{ attempt?: string; station?: string; phase?: string }>;
 }
 
-export default async function PreviewFullMockRunPage({ searchParams }: PreviewFullMockRunPageProps) {
+export default async function CasperFullMockRunPage({ searchParams }: CasperFullMockRunPageProps) {
     const { attempt: attemptId, station: stationParam, phase } = await searchParams;
-    if (!attemptId) redirect("/preview/full");
+    if (!attemptId) redirect("/casper/full");
 
     const [state, progress] = await Promise.all([
-        getCircuitAttempt("preview", attemptId),
+        getCircuitAttempt("casper", attemptId),
         getOnboardingProgress(),
       ]);
       const dashboardReady = Boolean(progress?.track && progress?.format);
     const stationIndex = stationParam ? parseInt(stationParam, 10) : 0;
     const index = Number.isFinite(stationIndex) ? Math.max(0, Math.min(state.stations.length - 1, stationIndex)) : 0;
     const currentStation = state.stations[index];
-    if (!currentStation) redirect("/preview/full");
+    if (!currentStation) redirect("/casper/full");
 
     if (phase === "transition" && index > 0) {
         return (
@@ -40,11 +40,11 @@ export default async function PreviewFullMockRunPage({ searchParams }: PreviewFu
                 attemptId={attemptId}
                 stations={state.stations}
                 currentIndex={index}
-                basePath="/preview/full"
+                basePath="/casper/full"
                 unitLabel="Scenario"
                 tips={SCENARIO_TIPS}
                 defaultTip="Take a breath. Read the next scenario carefully before you start responding."
-                exitHref="/onboarding/medical-school/format-preview"
+                exitHref="/onboarding/medical-school/format-casper"
                 dashboardReady={dashboardReady}
             />
         );
@@ -58,9 +58,9 @@ export default async function PreviewFullMockRunPage({ searchParams }: PreviewFu
             stations={state.stations}
             currentIndex={index}
             initialQuestion={question}
-            basePath="/preview/full"
-            breadcrumbLabel="PREview Mock"
-            exitHref="/onboarding/medical-school/format-preview"
+            basePath="/casper/full"
+            breadcrumbLabel="CASPer Mock"
+            exitHref="/onboarding/medical-school/format-casper"
             dashboardReady={dashboardReady}
         />
     );

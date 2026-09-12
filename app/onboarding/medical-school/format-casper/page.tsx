@@ -14,7 +14,7 @@ export default async function CasperPage() {
     return (
         <div className="min-h-screen relative">
             <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
-            <Image src="/images/mmi.png" alt="" fill priority={false} className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20" />
+            <Image src="/images/casper.jpg" alt="" fill priority={false} className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20" />
             <div className="flex items-center justify-between px-6 py-5">
                 <BreadcrumbNav items={[{ label: "Medical School Interview", href: "/onboarding/medical-school" }, { label: "CASPer" }]} />
                 <SessionBar />

@@ -4,6 +4,11 @@ import type { CircuitPreview, CircuitAttemptState, CircuitResults } from "@/type
 
 export { ApiError };
 
+export interface MyRandomStationPick {
+  sectionSlug: string;
+  questionId: string;
+}
+
 export async function getCircuitPreview(formatSlug: string): Promise<CircuitPreview> {
   return serverApiFetch<CircuitPreview>(`/api/${formatSlug}/circuit/preview`);
 }
@@ -18,4 +23,12 @@ export async function getCircuitAttempt(formatSlug: string, attemptId: string): 
 
 export async function getCircuitResults(formatSlug: string, attemptId: string): Promise<CircuitResults> {
   return serverApiFetch<CircuitResults>(`/api/${formatSlug}/circuit/attempts/${encodeURIComponent(attemptId)}/results`);
+}
+
+export async function startMyQuestionsCircuitAttempt(formatSlug: string): Promise<CircuitAttemptState> {
+  return serverApiFetch<CircuitAttemptState>(`/api/${formatSlug}/circuit/mine/start`, { method: "POST" });
+}
+
+export async function getMyRandomStation(formatSlug: string): Promise<MyRandomStationPick> {
+  return serverApiFetch<MyRandomStationPick>(`/api/${formatSlug}/circuit/mine/random`);
 }

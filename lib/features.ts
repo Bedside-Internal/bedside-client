@@ -42,7 +42,10 @@ export interface PublicFeature {
 export async function getFeatures(type: FeatureType, parent?: string): Promise<PublicFeature[]> {
   const params = new URLSearchParams({ type });
   if (parent) params.set("parent", parent);
-  return serverApiFetch<PublicFeature[]>(`/api/features?${params.toString()}`);
+  return serverApiFetch<PublicFeature[]>(`/api/features?${params.toString()}`, {
+    skipAuth: false,
+    next: { revalidate: 3600 }, // tracks basically never change — 1hr is plenty
+  });
 }
 
 /** GET /api/features/:key — single lookup. */

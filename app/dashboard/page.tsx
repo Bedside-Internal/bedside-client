@@ -9,7 +9,6 @@ import { GreetingHeader } from "@/components/dashboard/Greetingheader";
 import { CountdownCard } from "@/components/dashboard/Countdowncard";
 import { FormatCard } from "@/components/dashboard/Formatcard";
 import { WeakestAreaCard } from "@/components/dashboard/Weakestareacard";
-import { QuickActionRow } from "@/components/dashboard/Quickactionrow";
 import { ReadinessSummary } from "@/components/dashboard/Readinesssummary";
 import { ActivityStreakCard } from "@/components/dashboard/ActivityStreakCard";
 import { QuickActionTile } from "@/components/dashboard/QuickActionTile";
@@ -17,11 +16,8 @@ import { getOnboardingProgress } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
 import { getReferralSummary } from "@/lib/api/referrals";
-
-const tracks = [
-    { id: "med-school", label: "Medical School", icon: <GraduationCap /> },
-    { id: "college-admissions", label: "College Admissions", icon: <School /> },
-];
+import { getFeatures } from "@/lib/features";
+import { resolveIcon } from "@/lib/iconRegistry";
 
 const iconMap: Record<string, LucideIcon> = {
     grid: Grid2X2,
@@ -98,8 +94,13 @@ export default async function Dashboard() {
 
     let user: User | null;
     let data: DashboardApiResponse;
+    let trackFeatures;
     try {
-        [user, data] = await Promise.all([currentUser(), getDashboardData(progress.track)]);
+        [user, data, trackFeatures] = await Promise.all([
+            currentUser(),
+            getDashboardData(progress.track),
+            getFeatures("track"),
+        ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
             return <AccountSyncingState />;
@@ -107,8 +108,12 @@ export default async function Dashboard() {
         throw err;
     }
 
-    // Soft-fail: referral summary is just powering a teaser row now, never worth
-    // breaking the dashboard over.
+    const tracks = trackFeatures.map((t) => ({
+        id: t.key,
+        label: t.title,
+        icon: createElement(resolveIcon(t.icon)),
+    }));
+
     const referralSummary = await getReferralSummary().catch(() => null);
     const referralSubtitle =
         referralSummary && referralSummary.activatedCount > 0

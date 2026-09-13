@@ -44,7 +44,6 @@ export async function getFeatures(type: FeatureType, parent?: string): Promise<P
   if (parent) params.set("parent", parent);
   return serverApiFetch<PublicFeature[]>(`/api/features?${params.toString()}`, {
     skipAuth: false,
-    next: { revalidate: 3600 }, // tracks basically never change — 1hr is plenty
   });
 }
 

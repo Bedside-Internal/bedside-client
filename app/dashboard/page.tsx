@@ -131,7 +131,7 @@ export default async function Dashboard() {
 
             <div className="mx-auto max-w-[1600px] px-10">
                 <div className="mb-8 flex flex-col items-start justify-between gap-6 border-b border-[var(--color-sand)] pb-8 sm:flex-row">
-                    <GreetingHeader name={firstName} streakDays={data.streak.streakDays} timeOfDay="morning" />
+                    <GreetingHeader name={firstName} streakDays={data.streak.streakDays} />
                     <CountdownCard
                         daysRemaining={data.countdown.daysRemaining}
                         prepTimeUsedPercent={data.countdown.prepTimeUsedPercent}

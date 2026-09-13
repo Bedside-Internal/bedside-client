@@ -9,16 +9,18 @@ import { RandomStationButton } from "@/components/mmi/RandomStationButton";
 import Link from "next/link";
 import { getTierStatus } from "@/lib/api/tier";
 import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
+import { getOnboardingProgress } from "@/lib/actions";
 
 export default async function CasperPage() {
-    const [competencies, tierStatus] = await Promise.all([getCasperCompetencies(), getTierStatus()]);
+    const [competencies, tierStatus, progress] = await Promise.all([getCasperCompetencies(), getTierStatus(), getOnboardingProgress()]);
+    const dashboardReady = Boolean(progress?.track && progress?.format);
 
     return (
         <div className="min-h-screen relative">
             <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
             <Image src="/images/casper.jpg" alt="" fill priority={false} className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20" />
             <div className="flex items-center justify-between px-6 py-5">
-                <BreadcrumbNav items={[{ label: "Medical School Interview", href: "/onboarding/medical-school" }, { label: "CASPer" }]} />
+                <BreadcrumbNav items={[...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []), { label: "Medical School Interview", href: "/onboarding/medical-school" }, { label: "CASPer" }]} />
                 <SessionBar />
             </div>
             <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">

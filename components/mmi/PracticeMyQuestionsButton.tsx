@@ -82,10 +82,10 @@ export function PracticeMyQuestionsButton({
             {open && (
                 <div className="absolute bottom-full right-0 mb-2 w-60 overflow-hidden rounded-xl border border-[var(--color-sand)] bg-white shadow-lg z-10">
                     <button type="button" onClick={runFullCircuit} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
-                        Full circuit — my questions
+                        Full circuit (my questions)
                     </button>
                     <button type="button" onClick={runRandomStation} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
-                        Random station — my questions
+                        Random station (my questions)
                     </button>
                 </div>
             )}

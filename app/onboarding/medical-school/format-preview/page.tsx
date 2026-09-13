@@ -10,9 +10,11 @@ import { RandomStationButton } from "@/components/mmi/RandomStationButton";
 import Link from "next/link";
 import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
 import { getTierStatus } from "@/lib/api/tier";
+import { getOnboardingProgress } from "@/lib/actions";
 
 export default async function PreviewPage() {
-    const [competencies, tierStatus] = await Promise.all([getPreviewCompetencies(), getTierStatus()]);
+    const [competencies, tierStatus, progress] = await Promise.all([getPreviewCompetencies(), getTierStatus(), getOnboardingProgress()]);
+    const dashboardReady = Boolean(progress?.track && progress?.format);
 
     return (
         <div className="min-h-screen relative">
@@ -27,6 +29,7 @@ export default async function PreviewPage() {
             <div className="flex items-center justify-between px-6 py-5">
                 <BreadcrumbNav
                     items={[
+                        ...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []),
                         { label: "Medical School Interview", href: "/onboarding/medical-school" },
                         { label: "PREview" },
                     ]}

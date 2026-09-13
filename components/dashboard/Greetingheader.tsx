@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 type TimeOfDay = "morning" | "afternoon" | "evening";
 
 interface GreetingHeaderProps {
@@ -17,16 +15,10 @@ function getTimeOfDay(): TimeOfDay {
 }
 
 export function GreetingHeader({ name, streakDays }: GreetingHeaderProps) {
-  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay | null>(null);
-
-  useEffect(() => {
-    setTimeOfDay(getTimeOfDay());
-  }, []);
-
   return (
     <div className="pt-4">
       <h1 className="font-display text-[44px] leading-[0.95] tracking-tight text-[var(--color-ink)] sm:text-[56px]">
-        Good {timeOfDay ?? "day"}, {name}
+        Good <span suppressHydrationWarning>{getTimeOfDay()}</span>, {name}
       </h1>
       <p className="mt-3 text-slate-400">
         {streakDays > 0 ? (

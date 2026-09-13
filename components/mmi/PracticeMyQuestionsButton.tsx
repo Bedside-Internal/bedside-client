@@ -99,7 +99,7 @@ export function PracticeMyQuestionsButton({
                         <Link
                             href={`/dashboard/my-questions?format=${formatSlug}`}
                             onClick={() => setOpen(false)}
-                            className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-violet)] hover:bg-[var(--color-sand)]"
+                            className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-mint)] hover:bg-[var(--color-sand)]"
                         >
                             + Add my own {formatLabel} question
                         </Link>

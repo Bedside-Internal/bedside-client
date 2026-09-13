@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuestionGeneration } from "@/hooks/useQuestionGeneration";
 import type { ScoringDimension } from "@/lib/api/userQuestions";
@@ -37,14 +37,6 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
     const [guidanceNote, setGuidanceNote] = useState("");
     const [modelAnswer, setModelAnswer] = useState("");
     const [dimensions, setDimensions] = useState<ScoringDimension[]>([]);
-
-    useEffect(() => {
-        clearDraft();
-        clearError();
-        setStep("topic");
-        setSectionId("");
-        setTopic("");
-    }, [formatSlug]);
 
     const handleGenerate = async (e: React.FormEvent) => {
         e.preventDefault();

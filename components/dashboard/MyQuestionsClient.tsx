@@ -136,7 +136,7 @@ export function MyQuestionsClient({
                                     ))}
                                 </div>
                             )}
-                            
+
                             {([
                                 { key: "submit" as const, label: "Submit for Review" },
                                 { key: "generate" as const, label: "Generate with AI" },
@@ -255,7 +255,7 @@ export function MyQuestionsClient({
                                 </p>
                             </div>
                         ) : (
-                            <GenerateQuestionFlow embedded formatSlug={generateFormatSlug} />
+                            <GenerateQuestionFlow key={generateFormatSlug} embedded formatSlug={generateFormatSlug} />
                         )
                         )}
                     </div>

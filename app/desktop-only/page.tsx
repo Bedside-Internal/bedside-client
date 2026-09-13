@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Best on desktop — Bedside",
+  title: "Best on desktop for Bedside",
 };
 
 export default function DesktopOnlyPage() {
@@ -28,7 +28,7 @@ export default function DesktopOnlyPage() {
       </h1>
       <p className="max-w-[320px] text-[15px] leading-relaxed text-neutral-500">
         We&apos;re still tuning the mobile experience. Open this on a laptop or
-        desktop for now — full support is coming soon.
+        desktop for now. Full support is coming soon.
       </p>
     </div>
   );

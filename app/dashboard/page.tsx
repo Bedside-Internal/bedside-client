@@ -12,6 +12,7 @@ import { WeakestAreaCard } from "@/components/dashboard/Weakestareacard";
 import { QuickActionRow } from "@/components/dashboard/Quickactionrow";
 import { ReadinessSummary } from "@/components/dashboard/Readinesssummary";
 import { ActivityStreakCard } from "@/components/dashboard/ActivityStreakCard";
+import { QuickActionTile } from "@/components/dashboard/QuickActionTile";
 import { getOnboardingProgress } from "@/lib/actions";
 import { redirect } from "next/navigation";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
@@ -111,7 +112,7 @@ export default async function Dashboard() {
     const referralSummary = await getReferralSummary().catch(() => null);
     const referralSubtitle =
         referralSummary && referralSummary.activatedCount > 0
-            ? `${referralSummary.activatedCount} friend${referralSummary.activatedCount === 1 ? "" : "s"} joined — unlock more access`
+            ? `${referralSummary.activatedCount} friend${referralSummary.activatedCount === 1 ? "" : "s"} joined; unlock more access`
             : "Unlock Pro access through referrals";
 
     const firstName = user?.firstName ?? "there";
@@ -169,17 +170,17 @@ export default async function Dashboard() {
                         )}
                         <div>
                             <SectionLabel>Quick actions</SectionLabel>
-                            <div className="space-y-3">
+                            <div className="grid grid-cols-2 gap-3">
                                 {data.quickActions.map((action) => (
-                                    <QuickActionRow key={action.title} {...action} icon={getIcon(action.iconKey)} />
+                                    <QuickActionTile key={action.title} {...action} icon={getIcon(action.iconKey)} />
                                 ))}
-                                <QuickActionRow
+                                <QuickActionTile
                                     icon={FileText}
                                     title="My Questions"
-                                    subtitle="Submit practice questions for review"
+                                    subtitle="Submit for review"
                                     href="/dashboard/my-questions"
                                 />
-                                <QuickActionRow
+                                <QuickActionTile
                                     icon={Users}
                                     title="Invite friends"
                                     subtitle={referralSubtitle}

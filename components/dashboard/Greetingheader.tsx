@@ -17,10 +17,10 @@ export function GreetingHeader({ name, streakDays, timeOfDay }: GreetingHeaderPr
             <span className="font-semibold text-[var(--color-ink)]">
               {streakDays} day{streakDays === 1 ? "" : "s"} in a row.
             </span>{" "}
-            Keep the streak going — pick up where you left off.
+            Keep the streak going, pick up where you left off.
           </>
         ) : (
-          <>Ready when you are — pick a format below and start your first session.</>
+          <>Ready when you are, pick a format below and start your first session.</>
         )}
       </p>
     </div>

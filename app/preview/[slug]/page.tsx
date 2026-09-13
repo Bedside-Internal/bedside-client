@@ -28,10 +28,6 @@ export default async function PreviewStationPage({ params, searchParams }: Previ
             </div>
         );
     }
-
-    // No attempt started yet — show an explicit "Begin" step instead of
-    // eagerly creating an attempt row on every page load (same fix as the
-    // MMI station page).
     if (!attemptParam) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">

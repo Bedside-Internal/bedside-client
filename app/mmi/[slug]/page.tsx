@@ -29,10 +29,6 @@ export default async function StationPage({ params, searchParams }: StationPageP
         );
     }
 
-    // No attempt started yet — show an explicit "Begin" step instead of
-    // eagerly creating an attempt row on every page load. This is the fix:
-    // a stray page load, refresh, or back/forward navigation no longer
-    // burns a real practice attempt; only an actual click does.
     if (!attemptParam) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">

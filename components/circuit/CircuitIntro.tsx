@@ -26,7 +26,7 @@ interface CircuitIntroProps {
 
 const DEFAULT_HOW_IT_WORKS = [
   "2 minutes to read each scenario before your response window opens.",
-  "Once a station starts, you can't go back — just like the real thing.",
+  "Once a station starts, you can't go back, just like the real thing.",
   "Short breaks are built in between stations so you can reset.",
 ];
 
@@ -51,7 +51,7 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
       setMicGranted(true);
       setCameraGranted(true);
     } catch {
-      setPermissionError("Couldn't access your mic/camera — check your browser permissions and try again.");
+      setPermissionError("Couldn't access your mic/camera. Check your browser permissions and try again.");
     }
   }
 

@@ -42,7 +42,7 @@ export default async function PreviewFullMockIntroPage() {
             backHref: "/dashboard",
             howItWorks: [
               "30 seconds to read each prompt before recording starts.",
-              "One take per prompt, up to 3 minutes — this is a one-way video response, just like the real thing.",
+              "One take per prompt, up to 3 minutes; this is a one-way video response, just like the real thing.",
               "Once you submit a response you can't re-record it.",
             ],
           }}

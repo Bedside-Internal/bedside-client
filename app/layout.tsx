@@ -10,7 +10,7 @@ import DesktopOnlyGate from "@/components/layout/DesktopOnlyGate";
 import { ReferralAttribution } from "@/components/referrals/ReferralAttribution";
 
 export const metadata: Metadata = {
-  title: "BedSide — Stop guessing how you'd do. Find out.",
+  title: "Bedside: Stop guessing how you'd do. Find out.",
   description: "Unlimited mock interviews in every med school format: MMI, panel, traditional, CASPer, and more.",
   icons: {
     icon: [

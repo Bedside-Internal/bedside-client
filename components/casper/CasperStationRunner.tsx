@@ -51,8 +51,7 @@ export function CasperStationRunner({
         });
     }, [index, questionIds, slug, attemptId, router]);
 
-    // Typed, multi-prompt path — CasperQuestionRunner already collects all
-    // prompt answers itself and hands them back as one array.
+
     const handleWrittenSubmit = useCallback(async (responses: { promptId: string; text: string }[]) => {
         setSubmitting(true);
         setError(null);
@@ -60,16 +59,13 @@ export function CasperStationRunner({
             const result = await submitResponse({ attemptId, questionId: question.id, responses });
             setFeedback(result.feedback);
         } catch {
-            setError("Couldn't submit that response — your answers are still here, try again.");
+            setError("Couldn't submit that response; your answers are still here, try again.");
             throw new Error("submit-failed");
         } finally {
             setSubmitting(false);
         }
     }, [attemptId, question.id]);
 
-    // Video-response path — CASPer's video-response section, response_mode
-    // is always "video" here so ComposePayload is always the video branch,
-    // but this stays generic the same way StationRunner's does.
     const handleVideoSubmit = useCallback(async (payload: ComposePayload) => {
         setSubmitting(true);
         setError(null);
@@ -84,7 +80,7 @@ export function CasperStationRunner({
                 setFeedback(result.feedback);
             }
         } catch {
-            setError("Couldn't submit that response — try recording again.");
+            setError("Couldn't submit that response; try recording again.");
             throw new Error("submit-failed");
         } finally {
             setSubmitting(false);

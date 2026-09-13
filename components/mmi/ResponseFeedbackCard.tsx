@@ -1,12 +1,14 @@
 import Link from "next/link";
 import { Lock } from "lucide-react";
 import type { ResponseFeedback } from "@/types/formats";
+import { useState } from "react";
 
 interface ResponseFeedbackCardProps {
     feedback: ResponseFeedback;
 }
 
 export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
+    const [showIdeal, setShowIdeal] = useState(false);
     const isFull = feedback.tier === "full";
 
     return (
@@ -63,6 +65,23 @@ export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
                             </ul>
                         </div>
                     </div>
+
+                    {feedback.idealResponse && (
+                        showIdeal ? (
+                            <div className="mt-2 rounded-xl bg-[var(--color-sand)] p-4">
+                                <p className="text-xs font-semibold text-[var(--color-ink)]/50 mb-1">Ideal response</p>
+                                <p className="text-sm leading-relaxed text-[var(--color-ink)]/80">{feedback.idealResponse}</p>
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => setShowIdeal(true)}
+                                className="text-sm font-semibold text-[var(--color-violet)] hover:opacity-80"
+                            >
+                                Show ideal response
+                            </button>
+                        )
+                    )}
                 </>
             ) : (
                 <>
@@ -94,6 +113,26 @@ export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
                             Upgrade
                         </span>
                     </Link>
+
+                    {feedback.idealResponse && (
+                        <Link
+                            href="/#pricing"
+                            className="group flex items-center justify-between gap-3 rounded-xl border border-[var(--color-sand)]/60 px-4 py-3 transition hover:border-[var(--color-violet)]/50 hover:bg-[var(--color-violet)]/5"
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <Lock className="h-4 w-4 text-[var(--color-ink)]/40" strokeWidth={2} />
+                                <div>
+                                    <p className="text-sm font-semibold text-[var(--color-ink)]">See the ideal response</p>
+                                    <p className="text-xs italic text-[var(--color-ink)]/50 line-clamp-1">
+                                        "{feedback.idealResponse}"
+                                    </p>
+                                </div>
+                            </div>
+                            <span className="text-sm font-semibold text-[var(--color-amber)] group-hover:underline shrink-0">
+                                Upgrade
+                            </span>
+                        </Link>
+                    )}
                 </>
             )}
         </>

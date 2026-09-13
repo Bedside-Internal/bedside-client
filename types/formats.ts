@@ -85,6 +85,7 @@ export interface ResponseFeedback {
     strengths: string[];
     areasToImprove: string[];
     summary: string;
+    idealResponse?: string;
     tier: "basic" | "full";
 }
 

@@ -11,7 +11,7 @@ interface GreetingHeaderProps {
           Good {timeOfDay}, {name}
         </h1>
         <p className="mt-2 text-slate-400">
-          You&apos;ve practised <span className="font-semibold text-[var(--color-ink)]">{streakDays} days in a row.</span>{" "}
+          You&apos;ve practiced <span className="font-semibold text-[var(--color-ink)]">{streakDays} days in a row.</span>{" "}
           Keep the streak going — pick up where you left off.
         </p>
       </div>

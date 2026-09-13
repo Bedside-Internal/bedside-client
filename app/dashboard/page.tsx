@@ -137,7 +137,19 @@ export default async function Dashboard() {
                         <SectionLabel>Your formats</SectionLabel>
                         <div className="space-y-6">
                             {data.formats.map((format) => (
-                                <FormatCard key={format.title} {...format} icon={getIcon(format.iconKey)} />
+                                <FormatCard
+                                    key={format.title}
+                                    title={format.title}
+                                    subtitle={format.subtitle}
+                                    score={format.score}
+                                    metrics={format.metrics}
+                                    progressLabel={format.progressLabel}
+                                    continueHref={format.continueHref}
+                                    icon={createElement(getIcon(format.iconKey), {
+                                        className: "h-5 w-5 text-slate-500",
+                                        strokeWidth: 2,
+                                    })}
+                                />
                             ))}
                         </div>
                     </section>

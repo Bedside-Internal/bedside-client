@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
 import { ChevronDown } from "lucide-react";
 import { ProgressBar } from "@/components/dashboard/Progressbar";
 
@@ -13,7 +13,7 @@ export interface FormatMetric {
 }
 
 interface FormatCardProps {
-  icon: LucideIcon;
+  icon: ReactNode;
   title: string;
   subtitle: string;
   score: number;
@@ -23,7 +23,7 @@ interface FormatCardProps {
 }
 
 export function FormatCard({
-  icon: Icon,
+  icon,
   title,
   subtitle,
   score,
@@ -33,7 +33,6 @@ export function FormatCard({
 }: FormatCardProps) {
   const [expanded, setExpanded] = useState(false);
 
-
   if (metrics.length === 0) {
     return (
       <Link
@@ -41,7 +40,7 @@ export function FormatCard({
         className="group flex items-center gap-4 rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 p-5 transition hover:border-[var(--color-mint)]/40 hover:bg-white"
       >
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-sand)]">
-          <Icon className="h-5 w-5 text-slate-500" strokeWidth={2} />
+          {icon}
         </div>
         <div className="min-w-0 flex-1">
           <p className="font-semibold text-[var(--color-ink)]">{title}</p>
@@ -59,7 +58,7 @@ export function FormatCard({
       <div className="mb-1 flex items-start justify-between">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-sand)]">
-            <Icon className="h-5 w-5 text-slate-500" strokeWidth={2} />
+            {icon}
           </div>
           <div>
             <p className="font-semibold text-[var(--color-ink)]">{title}</p>

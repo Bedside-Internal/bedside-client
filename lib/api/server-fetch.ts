@@ -17,7 +17,7 @@ interface ServerApiFetchOptions extends RequestInit {
   /**
    * Skip the Clerk auth() lookup and send the request with no Bearer
    * token. ONLY for routes with no requireAuth on the API side (currently
-   * just marketingRouter) — never set this for anything that reads
+   * just marketingRouter), DO NOT set this for anything that reads
    * user-specific data.
    */
   skipAuth?: boolean;
@@ -27,16 +27,11 @@ interface ServerApiFetchOptions extends RequestInit {
  * lib/api/server-fetch.ts
  *
  * THE single way Server Components/Actions talk to the API service.
- * Always Bearer-token auth via Clerk's getToken() — NEVER cookie-forwarding.
+ * Always Bearer-token auth via Clerk's getToken(). NEVER cookie-forwarding.
  * Cookie-forwarding breaks the moment the API lives on a different
- * domain/subdomain than the frontend (cross-site cookie scoping) — which
+ * domain/subdomain than the frontend (cross-site cookie scoping), which
  * is exactly what took down /api/dashboard and /api/features before.
  * Bearer tokens don't care what domain the API is on.
- *
- * Don't write a raw fetch() to the API in a Server Component/Action —
- * import serverApiFetch instead. The no-restricted-syntax ESLint rule
- * enforces this everywhere except this file and lib/api/use-api-fetch.ts
- * (the client-component equivalent).
  */
 export async function serverApiFetch<T>(path: string, init?: ServerApiFetchOptions): Promise<T> {
   const { skipAuth, ...requestInit } = init ?? {};

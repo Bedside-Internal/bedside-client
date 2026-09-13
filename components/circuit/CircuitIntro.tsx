@@ -11,7 +11,7 @@ interface CircuitIntroCopy {
   eyebrow?: string;
   titlePrefix?: string;
   titleAccent: string;
-  accentColorVar?: string; // e.g. "--color-amber" — defaults to mint
+  accentColorVar?: string; // e.g. "--color-amber"
   unitLabel?: string; // "stations" | "prompts"
   howItWorks?: string[];
   backHref?: string;

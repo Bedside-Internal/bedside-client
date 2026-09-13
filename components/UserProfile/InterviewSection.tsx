@@ -262,7 +262,7 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
 
           <Row
             label="School or program"
-            description="Optional — helps tailor content to your school's format."
+            description="Optional; helps tailor content to your school's format."
           >
             <input
               type="text"

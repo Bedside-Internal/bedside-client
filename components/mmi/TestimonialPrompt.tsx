@@ -45,7 +45,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                 );
                 if (!cancelled) setState(eligible ? "asking" : "hidden");
             } catch {
-                if (!cancelled) setState("hidden"); // fail closed — never block the results page over this
+                if (!cancelled) setState("hidden"); // fail closed
             }
         })();
         return () => {
@@ -112,7 +112,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
             });
             setState("submitted");
         } catch {
-            setError("Couldn't submit that — mind trying again?");
+            setError("Couldn't submit that, mind trying again?");
         } finally {
             setSubmitting(false);
         }
@@ -123,7 +123,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
     if (state === "submitted") {
         return (
             <div className={`rounded-2xl bg-white px-6 py-5 ${STICKER_BORDER}`}>
-                <p className="text-sm font-medium text-ink">Thanks for the feedback — it means a lot. 🎉</p>
+                <p className="text-sm font-medium text-ink">Thanks for the feedback, it means a lot. 🎉</p>
             </div>
         );
     }

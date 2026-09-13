@@ -7,12 +7,10 @@ import type {
 
 export const UserQuestionsApiError = ApiError;
 
-/** Server-Component-only — call to get user's submitted questions. */
 export async function getMyQuestions(): Promise<UserSubmittedQuestion[]> {
     return serverApiFetch<UserSubmittedQuestion[]>("/api/questions/mine");
 }
 
-/** Server-Component-only — call to submit a new question. */
 export async function createUserQuestion(
     input: CreateUserQuestionInput,
 ): Promise<CreateUserQuestionResponse> {
@@ -33,7 +31,6 @@ export interface UsageSummary {
     generation: QuotaStatus;
 }
 
-/** Server-Component-only — this month's submission/generation usage. */
 export async function getUsageSummary(): Promise<UsageSummary> {
     return serverApiFetch<UsageSummary>("/api/questions/usage");
 }

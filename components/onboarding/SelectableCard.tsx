@@ -15,7 +15,7 @@ interface SelectableCardProps {
   iconStyle?: "plain" | "boxed";
   disabled?: boolean;
   selected?: boolean;
-  /** Direct navigation target. Ignored if onSelect is provided — an external Continue button governs instead. */
+  /** Direct navigation target. Ignored if onSelect is provided, an external Continue button governs instead. */
   href?: string;
   /** Presence of this prop puts the card in "select, then Continue navigates" mode. */
   onSelect?: () => void;

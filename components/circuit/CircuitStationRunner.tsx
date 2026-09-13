@@ -63,7 +63,7 @@ export function CircuitStationRunner({
           setFeedback(result.feedback);
         }
       } catch {
-        setError("Couldn't submit that response — your answer is still here, try again.");
+        setError("Couldn't submit that response, your answer is still here, try again.");
       } finally {
         setSubmitting(false);
       }

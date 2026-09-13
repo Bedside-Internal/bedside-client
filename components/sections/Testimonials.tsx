@@ -93,9 +93,6 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
         return testimonials.filter((t) => t.audience === audience);
     }, [testimonials, filter]);
 
-    // The API failing (or returning nothing yet) shouldn't take down the rest
-    // of the landing page — just skip the section rather than rendering an
-    // empty shell with a headline and no cards.
     if (testimonials.length === 0) return null;
 
     return (

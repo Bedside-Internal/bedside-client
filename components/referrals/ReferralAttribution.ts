@@ -8,13 +8,11 @@ import { useApiFetch } from "@/lib/api/use-api-fetch";
 
 /**
  * Mount once, high up the authenticated tree (e.g. the dashboard/onboarding
- * layout) — reads the `bedside_ref` cookie set by /r/[code], redeems it
+ * layout), which reads the `bedside_ref` cookie set by /r/[code], redeems it
  * against the now-signed-in user, then clears the cookie so it never fires
  * twice. Renders nothing.
  *
- * Deliberately silent on failure (stale code, self-referral, etc.) — this
- * is a background attribution step, not something that should interrupt
- * the user's first moments in the app with an error toast.
+ * Deliberately silent on failure (stale code, self-referral, etc.)
  */
 export function ReferralAttribution() {
     const { isSignedIn, getToken } = useAuth();
@@ -31,7 +29,7 @@ export function ReferralAttribution() {
         attempted.current = true;
         redeemReferralCode(code, apiFetch)
             .catch(() => {
-                // Best-effort — see comment above.
+                // best case scenario
             })
             .finally(() => {
                 clearCookie(REFERRAL_COOKIE_NAME);

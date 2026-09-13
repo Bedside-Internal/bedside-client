@@ -1,7 +1,7 @@
 import type { UnlockProgress } from "@/lib/api/referrals";
 
 /** Mirrors PricingTierDTO's shape closely enough without importing the
- * whole marketing types module here — keeps this helper dependency-light. */
+ * whole marketing types module here; keeps this helper dependency-light. */
 export interface TierRequirementsLike {
     id: string;
     title: string;

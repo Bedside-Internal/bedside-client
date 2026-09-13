@@ -187,7 +187,7 @@ export default function Hero() {
             AI Feedback
           </div>
           <div className="text-xs font-medium leading-snug text-ink">
-            &quot;Strong structure — add a concrete example to support your
+            &quot;Strong structure. Perhaps add a concrete example to support your
             ethical reasoning.&quot;
           </div>
         </div>

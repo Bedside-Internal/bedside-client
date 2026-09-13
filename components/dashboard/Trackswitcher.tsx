@@ -6,7 +6,6 @@ import { Plus } from "lucide-react";
 export interface Track {
     id: string;
     label: string;
-    /** Pass an already-rendered icon element (e.g. <GraduationCap />), not the component itself — this crosses a server/client boundary. */
     icon: ReactNode;
 }
 

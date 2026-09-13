@@ -5,7 +5,6 @@ import { Mic, RotateCcw, Square } from "lucide-react";
 import { formatDuration, useMediaRecorder } from "./useMediaRecorder";
 
 interface AudioRecorderProps {
-    /** Fires whenever the recorded blob changes — wire this to submit later. */
     onRecordingChange?: (blob: Blob | null) => void;
 }
 

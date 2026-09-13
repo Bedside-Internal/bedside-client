@@ -35,8 +35,6 @@ function MeterRow({
 }
 
 export function UsageMeter({ usage, userTier }: UsageMeterProps) {
-    // Both quotas share the same monthly period boundary, so one reset
-    // date covers both — no need to repeat it per row.
     const resetLabel = new Date(usage.submission.periodEnd).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",

@@ -1,22 +1,6 @@
 import "server-only";
 import { serverApiFetch } from "./api/server-fetch";
 
-/**
- * lib/features.ts
- *
- * Server-side fetch against the API service's /api/features endpoints.
- * Must run in a Server Component or Server Action — never client-side —
- * both because of the `server-only` guard below and because the request
- * needs to carry the Clerk session cookie to satisfy featuresRouter's
- * requireClerkAuth.
- *
- * Mirrors the exact pattern already used by getDashboardData() in the
- * dashboard page: NEXT_PUBLIC_API_URL as the base URL, session forwarded
- * by passing the incoming cookie header straight through (no Bearer
- * token — the API service's Clerk middleware reads the session cookie
- * itself).
- */
-
 export type FeatureType = "track" | "format";
 
 export interface PublicFeature {
@@ -35,7 +19,7 @@ export interface PublicFeature {
  * GET /api/features?type=track
  * GET /api/features?type=format&parent=track-medical-school
  *
- * Returns ALL matching features, including unavailable ones — callers
+ * Returns ALL matching features, including unavailable ones. Callers
  * render disabled "coming soon" cards rather than hiding them, so don't
  * filter this list; use `available` per-item at render time.
  */
@@ -47,7 +31,6 @@ export async function getFeatures(type: FeatureType, parent?: string): Promise<P
   });
 }
 
-/** GET /api/features/:key — single lookup. */
 export async function getFeature(key: string): Promise<PublicFeature | null> {
   try {
     return serverApiFetch<PublicFeature>(`/api/features/${encodeURIComponent(key)}`);

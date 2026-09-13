@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import MagneticButton from "@/components/ui/MagneticButton";
 
 const links = [
@@ -9,8 +12,43 @@ const links = [
 ];
 
 export default function Navbar() {
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
+    function handleScroll() {
+      const currentY = window.scrollY;
+      const delta = currentY - lastScrollY.current;
+
+      // Ignore tiny jitters (trackpads, momentum scroll) so it doesn't flicker
+      if (Math.abs(delta) < 4) return;
+
+      // Always show near the top of the page, regardless of direction
+      if (currentY < 80) {
+        setHidden(false);
+      } else if (delta > 0) {
+        // scrolling down
+        setHidden(true);
+      } else {
+        // scrolling up
+        setHidden(false);
+      }
+
+      lastScrollY.current = currentY;
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav className="sticky top-0 z-[100] flex h-16 items-center justify-between border-b-2 border-ink bg-cream px-[5vw]">
+    <nav
+      className={`sticky top-0 z-[100] flex h-16 items-center justify-between border-b-2 border-ink bg-cream px-[5vw] transition-transform duration-300 ease-in-out ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      }`}
+    >
       <a href="#" className="flex items-center gap-2 text-ink no-underline">
         <img src={"/bedside_logo.svg"} alt="Bedside" className="h-10 w-auto" />
         <span className="font-display text-[22px] tracking-tight">

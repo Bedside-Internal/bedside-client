@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { TrackSwitcher, type Track } from "@/components/dashboard/Trackswitcher";
 import { SessionBar } from "../onboarding/SessionBar";
 

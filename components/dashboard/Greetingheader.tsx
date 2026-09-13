@@ -24,7 +24,7 @@ export function GreetingHeader({ name, streakDays }: GreetingHeaderProps) {
   }, []);
 
   return (
-    <div>
+    <div className="pt-4">
       <h1 className="font-display text-[44px] leading-[0.95] tracking-tight text-[var(--color-ink)] sm:text-[56px]">
         Good {timeOfDay ?? "day"}, {name}
       </h1>

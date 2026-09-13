@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
@@ -7,14 +8,24 @@ import { SessionBar } from "@/components/onboarding/SessionBar";
 import { getPreviewCompetencies } from "@/lib/api/preview";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { RandomStationButton } from "@/components/mmi/RandomStationButton";
-import Link from "next/link";
 import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
 import { getTierStatus } from "@/lib/api/tier";
 import { getOnboardingProgress } from "@/lib/actions";
+import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
 
 export default async function PreviewPage() {
-    const [competencies, tierStatus, progress] = await Promise.all([getPreviewCompetencies(), getTierStatus(), getOnboardingProgress()]);
+    const [competencies, tierStatus, progress] = await Promise.all([
+        getPreviewCompetencies(),
+        getTierStatus(),
+        getOnboardingProgress(),
+    ]);
+
     const dashboardReady = Boolean(progress?.track && progress?.format);
+    const canUseOwnQuestions = tierStatus.tier !== "free";
+
+    const previewSectionSlugs = new Set(competencies.map((c) => c.href.split("/").filter(Boolean).pop()));
+    const privateQuestions = canUseOwnQuestions ? await getMyPrivateQuestions() : [];
+    const hasOwnPreviewQuestions = privateQuestions.some((q) => previewSectionSlugs.has(q.sectionSlug));
 
     return (
         <div className="min-h-screen relative">
@@ -65,9 +76,11 @@ export default async function PreviewPage() {
                     <RandomStationButton stations={competencies} />
                     <PracticeMyQuestionsButton
                         formatSlug="preview"
+                        formatLabel="PREview"
                         circuitBasePath="/preview/full"
                         stationBasePath="preview"
-                        canUseOwnQuestions={tierStatus.tier !== "free"}
+                        canUseOwnQuestions={canUseOwnQuestions}
+                        hasOwnQuestions={hasOwnPreviewQuestions}
                     />
                     <Link
                         href="/preview/full"

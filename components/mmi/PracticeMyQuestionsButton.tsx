@@ -2,21 +2,26 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ChevronDown, Lock } from "lucide-react";
 import { startMyQuestionsCircuit, fetchMyRandomStation } from "@/lib/api/circuit-actions";
 
 interface PracticeMyQuestionsButtonProps {
     formatSlug: string;
-    circuitBasePath: string;
-    stationBasePath: string;
+    formatLabel: string;       // e.g. "MMI", "CASPer", "PREview" — used in the empty-state copy
+    circuitBasePath: string;   // e.g. "/mmi/full"
+    stationBasePath: string;   // e.g. "mmi"
     canUseOwnQuestions: boolean;
+    hasOwnQuestions: boolean;
 }
 
 export function PracticeMyQuestionsButton({
     formatSlug,
+    formatLabel,
     circuitBasePath,
     stationBasePath,
     canUseOwnQuestions,
+    hasOwnQuestions,
 }: PracticeMyQuestionsButtonProps) {
     const router = useRouter();
     const [open, setOpen] = useState(false);
@@ -80,13 +85,25 @@ export function PracticeMyQuestionsButton({
             </button>
 
             {open && (
-                <div className="absolute bottom-full right-0 mb-2 w-60 overflow-hidden rounded-xl border border-[var(--color-sand)] bg-white shadow-lg z-10">
-                    <button type="button" onClick={runFullCircuit} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
-                        Full circuit (my questions)
-                    </button>
-                    <button type="button" onClick={runRandomStation} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
-                        Random station (my questions)
-                    </button>
+                <div className="absolute bottom-full right-0 mb-2 w-64 overflow-hidden rounded-xl border border-[var(--color-sand)] bg-white shadow-lg z-10">
+                    {hasOwnQuestions ? (
+                        <>
+                            <button type="button" onClick={runFullCircuit} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
+                                Full circuit — my questions
+                            </button>
+                            <button type="button" onClick={runRandomStation} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
+                                Random station — my questions
+                            </button>
+                        </>
+                    ) : (
+                        <Link
+                            href={`/dashboard/my-questions?format=${formatSlug}`}
+                            onClick={() => setOpen(false)}
+                            className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-violet)] hover:bg-[var(--color-sand)]"
+                        >
+                            + Add my own {formatLabel} question
+                        </Link>
+                    )}
                 </div>
             )}
 

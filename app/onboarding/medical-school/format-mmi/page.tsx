@@ -11,14 +11,21 @@ import { RandomStationButton } from "@/components/mmi/RandomStationButton";
 import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
 import { getTierStatus } from "@/lib/api/tier";
 import { getOnboardingProgress } from "@/lib/actions";
+import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
 
 export default async function MmiPage() {
     const [stations, tierStatus, progress] = await Promise.all([
         getMmiStations(),
         getTierStatus(),
         getOnboardingProgress(),
-      ]);
+    ]);
+
     const dashboardReady = Boolean(progress?.track && progress?.format);
+    const canUseOwnQuestions = tierStatus.tier !== "free";
+
+    const mmiSectionSlugs = new Set(stations.map((s) => s.href.split("/").filter(Boolean).pop()));
+    const privateQuestions = canUseOwnQuestions ? await getMyPrivateQuestions() : [];
+    const hasOwnMmiQuestions = privateQuestions.some((q) => mmiSectionSlugs.has(q.sectionSlug));
 
     return (
         <div className="min-h-screen relative">
@@ -60,9 +67,11 @@ export default async function MmiPage() {
                     <RandomStationButton stations={stations} />
                     <PracticeMyQuestionsButton
                         formatSlug="mmi"
+                        formatLabel="MMI"
                         circuitBasePath="/mmi/full"
                         stationBasePath="mmi"
-                        canUseOwnQuestions={tierStatus.tier !== "free"}
+                        canUseOwnQuestions={canUseOwnQuestions}
+                        hasOwnQuestions={hasOwnMmiQuestions}
                     />
                     <RunAnotherCircuitButton formatSlug="mmi" basePath="/mmi/full" label="Start a full circuit →" />
                 </div>

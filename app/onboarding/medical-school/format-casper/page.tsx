@@ -7,9 +7,11 @@ import { getCasperCompetencies } from "@/lib/api/casper";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { RandomStationButton } from "@/components/mmi/RandomStationButton";
 import Link from "next/link";
+import { getTierStatus } from "@/lib/api/tier";
+import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
 
 export default async function CasperPage() {
-    const competencies = await getCasperCompetencies();
+    const [competencies, tierStatus] = await Promise.all([getCasperCompetencies(), getTierStatus()]);
 
     return (
         <div className="min-h-screen relative">
@@ -30,6 +32,12 @@ export default async function CasperPage() {
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
                 <div className="flex items-center gap-3">
                     <RandomStationButton stations={competencies} />
+                    <PracticeMyQuestionsButton
+                        formatSlug="casper"
+                        circuitBasePath="/casper/full"
+                        stationBasePath="casper"
+                        canUseOwnQuestions={tierStatus.tier !== "free"}
+                    />
                     <Link href="/casper/full" className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]">
                         Start a full mock test →
                     </Link>

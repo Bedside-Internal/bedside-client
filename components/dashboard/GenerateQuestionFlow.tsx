@@ -9,9 +9,10 @@ type Step = "topic" | "review";
 
 interface GenerateQuestionFlowProps {
     embedded?: boolean;
+    formatSlug: string;
 }
 
-export function GenerateQuestionFlow({ embedded = false }: GenerateQuestionFlowProps) {
+export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQuestionFlowProps) {
     const router = useRouter();
     const {
         sections,
@@ -24,7 +25,7 @@ export function GenerateQuestionFlow({ embedded = false }: GenerateQuestionFlowP
         confirm,
         clearDraft,
         clearError,
-    } = useQuestionGeneration();
+    } = useQuestionGeneration(formatSlug);
 
     const [step, setStep] = useState<Step>("topic");
     const [sectionId, setSectionId] = useState("");

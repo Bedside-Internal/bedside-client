@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
 import { StationCard } from "@/components/onboarding/StationCard";
@@ -6,17 +8,37 @@ import { SessionBar } from "@/components/onboarding/SessionBar";
 import { getCasperCompetencies } from "@/lib/api/casper";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { RandomStationButton } from "@/components/mmi/RandomStationButton";
-import Link from "next/link";
+import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
+import { getTierStatus } from "@/lib/api/tier";
+import { getOnboardingProgress } from "@/lib/actions";
+import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
 
 export default async function CasperPage() {
-    const competencies = await getCasperCompetencies();
+    const [competencies, tierStatus, progress] = await Promise.all([
+        getCasperCompetencies(),
+        getTierStatus(),
+        getOnboardingProgress(),
+    ]);
+
+    const dashboardReady = Boolean(progress?.track && progress?.format);
+    const canUseOwnQuestions = tierStatus.tier !== "free";
+
+    const casperSectionSlugs = new Set(competencies.map((c) => c.href.split("/").filter(Boolean).pop()));
+    const privateQuestions = canUseOwnQuestions ? await getMyPrivateQuestions() : [];
+    const hasOwnCasperQuestions = privateQuestions.some((q) => casperSectionSlugs.has(q.sectionSlug));
 
     return (
         <div className="min-h-screen relative">
             <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
             <Image src="/images/casper.jpg" alt="" fill priority={false} className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20" />
             <div className="flex items-center justify-between px-6 py-5">
-                <BreadcrumbNav items={[{ label: "Medical School Interview", href: "/onboarding/medical-school" }, { label: "CASPer" }]} />
+                <BreadcrumbNav
+                    items={[
+                        ...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []),
+                        { label: "Medical School Interview", href: "/onboarding/medical-school" },
+                        { label: "CASPer" },
+                    ]}
+                />
                 <SessionBar />
             </div>
             <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">
@@ -30,6 +52,14 @@ export default async function CasperPage() {
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
                 <div className="flex items-center gap-3">
                     <RandomStationButton stations={competencies} />
+                    <PracticeMyQuestionsButton
+                        formatSlug="casper"
+                        formatLabel="CASPer"
+                        circuitBasePath="/casper/full"
+                        stationBasePath="casper"
+                        canUseOwnQuestions={canUseOwnQuestions}
+                        hasOwnQuestions={hasOwnCasperQuestions}
+                    />
                     <Link href="/casper/full" className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]">
                         Start a full mock test →
                     </Link>

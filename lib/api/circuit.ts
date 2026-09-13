@@ -1,6 +1,6 @@
 import "server-only";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
-import type { CircuitPreview, CircuitAttemptState, CircuitResults } from "@/types/circuit";
+import type { CircuitPreview, CircuitAttemptState, CircuitResults, MyRandomStationPick } from "@/types/circuit";
 
 export { ApiError };
 
@@ -18,4 +18,12 @@ export async function getCircuitAttempt(formatSlug: string, attemptId: string): 
 
 export async function getCircuitResults(formatSlug: string, attemptId: string): Promise<CircuitResults> {
   return serverApiFetch<CircuitResults>(`/api/${formatSlug}/circuit/attempts/${encodeURIComponent(attemptId)}/results`);
+}
+
+export async function startMyQuestionsCircuitAttempt(formatSlug: string): Promise<CircuitAttemptState> {
+  return serverApiFetch<CircuitAttemptState>(`/api/${formatSlug}/circuit/mine/start`, { method: "POST" });
+}
+
+export async function getMyRandomStation(formatSlug: string): Promise<MyRandomStationPick> {
+  return serverApiFetch<MyRandomStationPick>(`/api/${formatSlug}/circuit/mine/random`);
 }

@@ -8,9 +8,24 @@ import { getMmiStations } from "@/lib/api/stations";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { RunAnotherCircuitButton } from "@/components/circuit/RunAnotherCircuitButton";
 import { RandomStationButton } from "@/components/mmi/RandomStationButton";
+import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
+import { getTierStatus } from "@/lib/api/tier";
+import { getOnboardingProgress } from "@/lib/actions";
+import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
 
 export default async function MmiPage() {
-    const stations = await getMmiStations();
+    const [stations, tierStatus, progress] = await Promise.all([
+        getMmiStations(),
+        getTierStatus(),
+        getOnboardingProgress(),
+    ]);
+
+    const dashboardReady = Boolean(progress?.track && progress?.format);
+    const canUseOwnQuestions = tierStatus.tier !== "free";
+
+    const mmiSectionSlugs = new Set(stations.map((s) => s.href.split("/").filter(Boolean).pop()));
+    const privateQuestions = canUseOwnQuestions ? await getMyPrivateQuestions() : [];
+    const hasOwnMmiQuestions = privateQuestions.some((q) => mmiSectionSlugs.has(q.sectionSlug));
 
     return (
         <div className="min-h-screen relative">
@@ -25,6 +40,7 @@ export default async function MmiPage() {
             <div className="flex items-center justify-between px-6 py-5">
                 <BreadcrumbNav
                     items={[
+                        ...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []),
                         { label: "Medical School Interview", href: "/onboarding/medical-school" },
                         { label: "MMI" },
                     ]}
@@ -49,6 +65,14 @@ export default async function MmiPage() {
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
                 <div className="flex items-center gap-3">
                     <RandomStationButton stations={stations} />
+                    <PracticeMyQuestionsButton
+                        formatSlug="mmi"
+                        formatLabel="MMI"
+                        circuitBasePath="/mmi/full"
+                        stationBasePath="mmi"
+                        canUseOwnQuestions={canUseOwnQuestions}
+                        hasOwnQuestions={hasOwnMmiQuestions}
+                    />
                     <RunAnotherCircuitButton formatSlug="mmi" basePath="/mmi/full" label="Start a full circuit →" />
                 </div>
             </div>

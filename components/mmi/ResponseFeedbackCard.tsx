@@ -124,7 +124,7 @@ export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
                                 <div>
                                     <p className="text-sm font-semibold text-[var(--color-ink)]">See the ideal response</p>
                                     <p className="text-xs italic text-[var(--color-ink)]/50 line-clamp-1">
-                                        "{feedback.idealResponse}"
+                                        &ldquo;{feedback.idealResponse}&rdquo;
                                     </p>
                                 </div>
                             </div>

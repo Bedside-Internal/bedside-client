@@ -29,7 +29,7 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
   const displayPrice = active ? active.price : tier.price;
   const displayPeriod = active ? `/ ${active.months} mo` : tier.periodLabel;
   const displayNote = active
-    ? `$${active.perMonth.toFixed(2)}/mo billed once${active.savingsPct ? ` — save ${active.savingsPct}%` : ""}`
+    ? `$${active.perMonth.toFixed(2)}/mo billed once${active.savingsPct ? `. Save ${active.savingsPct}%`! : ""}`
     : tier.priceNote;
   const buttonLabel = isEarned
     ? "Start referring →"

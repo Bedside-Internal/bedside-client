@@ -19,14 +19,9 @@ export class ApiError extends Error {
  * lib/api/use-api-fetch.ts
  *
  * THE single way client components talk to the API service. Always Bearer
- * token via Clerk's useAuth().getToken() — never credentials: "include" /
+ * token via Clerk's useAuth().getToken(), never credentials: "include" /
  * cookie-forwarding. Cookie-forwarding breaks the moment the API lives on
  * a different domain/subdomain than the frontend.
- *
- * Don't write a raw fetch() to the API in a component — import this hook
- * instead. The no-restricted-syntax ESLint rule enforces this everywhere
- * except this file and lib/api/server-fetch.ts (the Server Component
- * equivalent).
  */
 export function useApiFetch() {
   const { getToken } = useAuth();

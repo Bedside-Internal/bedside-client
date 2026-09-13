@@ -26,7 +26,7 @@ export function TierBadge() {
     return <span className="flex items-center gap-1.5 rounded-full bg-[var(--color-amber)]/10 px-3 py-1 text-xs font-bold text-[var(--color-amber)]"><Crown className="h-3.5 w-3.5" strokeWidth={2.5} />Pro</span>;
   }
   if (status.singleStation.isCapped && status.fullCircuit.isCapped) {
-    return <span className="rounded-full bg-[var(--color-coral)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--color-coral)]">Out of free attempts — upgrade coming soon</span>;
+    return <span className="rounded-full bg-[var(--color-coral)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--color-coral)]">Out of free attempts!</span>;
   }
 
   return (

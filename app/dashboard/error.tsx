@@ -21,7 +21,7 @@ export default function DashboardError({
             </p>
             <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
                 That&apos;s likely a temporary hiccup with the server or your
-                connection — not your onboarding status. Try again.
+                connection, not your onboarding status. Try again.
             </p>
             <div className="mt-2 flex items-center gap-3">
                 <button

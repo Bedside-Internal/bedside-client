@@ -131,7 +131,7 @@ export function QuestionRunner({
                         {isRatedItems && <RatingTaskAndLegend />}
                     </ScenarioPanel>
 
-                    {/* Rated-items nav lives inside RatingPanel instead — skip the duplicate here. */}
+                    {/* Rated-items nav lives inside RatingPanel */}
                     {!isRatedItems && (
                         <div className="mt-8 flex items-center gap-3">
                             <button
@@ -173,7 +173,7 @@ export function QuestionRunner({
                                 onClick={() => setPhase("responding")}
                                 className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-6 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
                             >
-                                I&apos;m ready — start responding
+                                I&apos;m ready, start responding
                                 <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                             </button>
                         </>

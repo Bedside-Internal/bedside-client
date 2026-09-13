@@ -231,7 +231,7 @@ export function MyQuestionsClient({
                                         Generate your own AI-powered questions
                                     </p>
                                     <p className="mt-1 text-sm text-slate-400">
-                                        Upgrade to instantly generate a fully-scored practice question — no admin review needed.
+                                        Upgrade to instantly generate a fully-scored practice question, no admin review needed.
                                     </p>
                                 </div>
                             ) : (

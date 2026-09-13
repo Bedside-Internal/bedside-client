@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 
-/** Minimal shape this component actually needs — works for StationDTO, CompetencyDTO, or anything else with an href. */
 interface RandomPickable {
     href: string;
 }

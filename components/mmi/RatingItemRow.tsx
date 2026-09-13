@@ -5,7 +5,7 @@ import type { RatingLabel, ResponseItemDetail } from "@/types/formats";
 
 interface RatingItemRowProps {
     item: ResponseItemDetail;
-    index: number; // 0-based — drives the A/B/C/D badge
+    index: number; // 0-based
     value: RatingLabel | null;
     onChange: (rating: RatingLabel) => void;
 }

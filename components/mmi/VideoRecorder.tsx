@@ -22,7 +22,7 @@ export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
         onRecordingChange?.(mediaBlob);
     }, [mediaBlob, onRecordingChange]);
 
-    // MediaRecorder's webm output frequently has no duration in its metadata —
+    // MediaRecorder's webm output frequently has no duration in its metadata
     // Chrome reports duration: Infinity and paints nothing but a black frame.
     // Seeking once past the end and back forces a real duration + first frame.
     useEffect(() => {
@@ -41,7 +41,6 @@ export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
         };
 
         if (videoEl.readyState >= 1) {
-            // HAVE_METADATA or higher already — the event already fired, run now.
             fixDuration();
         } else {
             videoEl.addEventListener("loadedmetadata", fixDuration, { once: true });

@@ -15,7 +15,7 @@ export function DevResetOnboardingButton() {
       await resetOnboarding();
       router.push("/onboarding");
       router.refresh();
-      console.log("Onboarding reset — navigating to /onboarding");
+      console.log("Onboarding reset, now navigating to /onboarding");
     };
   }, [router]);
 

@@ -21,7 +21,7 @@ import {
  * lib/iconRegistry.ts
  *
  * Feature docs in Mongo store an `icon` string key (e.g. "stethoscope"),
- * not a component — React components can't be serialized into the
+ * not a component. React components can't be serialized into the
  * database. This registry is the single place that maps those keys to
  * actual Lucide icon components.
  *

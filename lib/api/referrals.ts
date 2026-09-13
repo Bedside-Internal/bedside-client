@@ -2,7 +2,7 @@ import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
 
 /**
  * RSC / server-only. Uses serverApiFetch (which reads the Clerk server
- * session) — this must never be imported from a "use client" file. See
+ * session); this must never be imported from a "use client" file. See
  * lib/api/referrals-client.ts for the one function client components need.
  */
 

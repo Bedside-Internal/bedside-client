@@ -11,9 +11,6 @@ export function useMyQuestions(initialItems: UserSubmittedQuestion[] = []) {
     const [error, setError] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
 
-    // No synchronous setState here — just kicks off the promise chain.
-    // All state updates happen inside .then/.catch/.finally, which run
-    // as microtasks, not synchronously within the effect's call stack.
     const load = useCallback(() => {
         return apiFetch<UserSubmittedQuestion[]>("/api/questions/mine")
             .then((data) => {
@@ -29,8 +26,6 @@ export function useMyQuestions(initialItems: UserSubmittedQuestion[] = []) {
         load();
     }, [load]);
 
-    // Manual refetch (called from a click handler, not an effect) — fine
-    // to set loading/error synchronously here since it's event-driven.
     const refetch = useCallback(async () => {
         setLoading(true);
         setError(null);

@@ -21,7 +21,7 @@ export function ReferralCard({ shareUrl, activatedCount, tiers }: ReferralCardPr
             toast.success("Link copied");
             setTimeout(() => setCopied(false), 2000);
         } catch {
-            toast.error("Couldn't copy — copy it manually instead");
+            toast.error("Couldn't copy it, please do this manually instead");
         }
     }
 
@@ -35,7 +35,7 @@ export function ReferralCard({ shareUrl, activatedCount, tiers }: ReferralCardPr
                     <p className="font-semibold text-[var(--color-ink)]">Invite friends, unlock access</p>
                     <p className="text-sm text-slate-400">
                         {activatedCount === 0
-                            ? "Share your link — access is earned through referrals and testimonials, not payment."
+                            ? "Share your link. Access is earned through referrals and testimonials (not payment for the time being)."
                             : `${activatedCount} friend${activatedCount === 1 ? "" : "s"} joined so far.`}
                     </p>
                 </div>

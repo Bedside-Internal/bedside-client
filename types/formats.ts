@@ -107,7 +107,7 @@ export interface SubmitRatingResult {
     feedback: RatingResponseFeedback;
 }
 
-/** Discriminate with `"items" in feedback` — only RatingResponseFeedback has it. */
+/** Discriminate with `"items" in feedback */
 export type AnyResponseFeedback = ResponseFeedback | RatingResponseFeedback;
 
 export interface ApiErrorPayload {

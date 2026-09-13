@@ -24,10 +24,6 @@ export default async function OnboardingPage() {
   
   const firstName = user?.firstName ?? "there";
   
-
-  // Already sorted by `order` server-side. Unavailable tracks are included
-  // (not filtered out) — they render as visible-but-disabled "coming soon"
-  // cards, same as the old hardcoded array.
   const tracks = await getFeatures("track");
 
   return (

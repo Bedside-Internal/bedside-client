@@ -86,7 +86,7 @@ export function ResponseFeedbackCard({ feedback }: ResponseFeedbackCardProps) {
                                     See your full breakdown
                                 </p>
                                 <p className="text-xs text-[var(--color-ink)]/50">
-                                    Per-dimension scores, rationale, and areas to improve — with Pro
+                                    Per-dimension scores, rationale, and areas to improve using the Pro tier
                                 </p>
                             </div>
                         </div>

@@ -27,8 +27,7 @@ export default function Features({ formatCards }: { formatCards: FormatCardDTO[]
           </RevealOnScroll>
           <RevealOnScroll delay="d1">
             <p className="max-w-[320px] text-base leading-relaxed text-neutral-600">
-              Most tools charge per track. We give you everything — all
-              formats, one subscription.
+              Most tools charge per track. We give you everything, all formats, one subscription.
             </p>
           </RevealOnScroll>
         </div>

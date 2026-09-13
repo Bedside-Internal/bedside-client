@@ -84,7 +84,7 @@ export function StationRunner({
                     setFeedback(result.feedback);
                 }
             } catch {
-                setError("Couldn't submit that response — your answer is still here, try again.");
+                setError("Couldn't submit that response, your answer is still here, try again.");
                 throw new Error("submit-failed");
             } finally {
                 setSubmitting(false);

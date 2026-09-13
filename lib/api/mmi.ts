@@ -14,7 +14,6 @@ import type {
 // (if any) keep working without a repo-wide rename.
 export const MmiApiError = ApiError;
 
-/** Server-Component-only — call once, when a station page first loads. */
 export async function getStationQuestions(
     slug: string,
     formatSlug: string = "mmi",
@@ -24,7 +23,6 @@ export async function getStationQuestions(
     );
 }
 
-/** Server-Component-only — call once per circuit, before the first question renders. */
 export async function startAttempt(formatSlug: string = "mmi"): Promise<Attempt> {
     return serverApiFetch<Attempt>("/api/mmi/attempts", {
         method: "POST",
@@ -32,7 +30,6 @@ export async function startAttempt(formatSlug: string = "mmi"): Promise<Attempt>
     });
 }
 
-/** Server-only. Client components should call the wrapped version in mmi-actions.ts instead. */
 export async function getQuestion(questionId: string): Promise<QuestionDetail> {
     return serverApiFetch<QuestionDetail>(
         `/api/mmi/questions/${encodeURIComponent(questionId)}`

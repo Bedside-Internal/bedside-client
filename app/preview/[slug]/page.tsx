@@ -28,16 +28,12 @@ export default async function PreviewStationPage({ params, searchParams }: Previ
             </div>
         );
     }
-
-    // No attempt started yet — show an explicit "Begin" step instead of
-    // eagerly creating an attempt row on every page load (same fix as the
-    // MMI station page).
     if (!attemptParam) {
         return (
             <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">
                 <p className="text-lg font-semibold text-[var(--color-ink)]">{sectionTitle}</p>
                 <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
-                    Ready when you are — starting counts as one practice attempt.
+                    Ready when you are, starting counts as one practice attempt.
                 </p>
                 <BeginStationButton formatSlug="preview" basePath="preview" slug={slug} qid={qidParam}/>
             </div>

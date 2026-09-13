@@ -5,10 +5,10 @@ interface CountdownCardProps {
 
 export function CountdownCard({ daysRemaining, prepTimeUsedPercent }: CountdownCardProps) {
     return (
-        <div className="w-56 shrink-0 rounded-2xl border border-[var(--color-sand)] bg-white p-6 text-right shadow-sm">
-            <span className="text-4xl font-extrabold text-[var(--color-ink)]">{daysRemaining}</span>
+        <div className="w-56 shrink-0 rounded-2xl bg-[var(--color-sand)]/50 p-6 text-right">
+            <span className="text-3xl font-bold text-[var(--color-ink)]">{daysRemaining}</span>
             <p className="mb-4 text-sm text-slate-400">days until interview</p>
-            <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-sand)]">
+            <div className="h-1.5 w-full overflow-hidden rounded-full bg-white">
                 <div
                     className="h-full rounded-full bg-[var(--color-mint)]"
                     style={{ width: `${prepTimeUsedPercent}%` }}

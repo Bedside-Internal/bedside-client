@@ -5,10 +5,7 @@ export default function DesktopOnlyGate({
   }) {
     return (
       <>
-        {/* Real app — only rendered visible at lg and up */}
         <div className="hidden lg:block">{children}</div>
-  
-        {/* Blocking message — only visible below lg */}
         <div className="flex min-h-screen flex-col items-center justify-center px-8 text-center lg:hidden">
           <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-full border-[2.5px] border-ink bg-mint">
             <svg

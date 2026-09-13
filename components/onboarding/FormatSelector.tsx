@@ -11,7 +11,7 @@ import type { PublicFeature } from "@/lib/features";
 interface FormatSelectorProps {
     track?: string;
     // Fetched server-side by the parent page via getFeatures("format", toTrackId(track))
-    // and passed down — this component itself never talks to the API directly,
+    // and passed down; this component itself never talks to the API directly,
     // since it's a client component and the features endpoint requires
     // server-side Clerk auth forwarding.
     formats: PublicFeature[];

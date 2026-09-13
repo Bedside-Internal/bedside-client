@@ -27,8 +27,6 @@ interface UseMediaRecorderResult {
     reset: () => void;
 }
 
-// Recording only ever needs a blob URL for local playback — the blob itself
-// gets handed to the submit call later, nothing is persisted to storage here.
 export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRecorderResult {
     const [status, setStatus] = useState<RecorderStatus>("idle");
     const [error, setError] = useState<string | null>(null);
@@ -93,15 +91,12 @@ export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRec
 
                 const elapsedMs = Date.now() - startedAtRef.current;
                 
-                // Chrome's MediaRecorder omits the duration/cues index from webm
-                // output, so <video>.duration stays Infinity forever — patch the
-                // real elapsed time into the blob's EBML header directly.
                 let finalBlob = rawBlob;
                 if (kind === "video" && resolvedType.includes("webm")) {
                     try {
                         finalBlob = await fixWebmDuration(rawBlob, elapsedMs);
                     } catch {
-                        finalBlob = rawBlob; // patch failed — fall back to the raw blob rather than losing the recording
+                        finalBlob = rawBlob; // patch failed, fall back to the raw blob rather than losing the recording
                     }
                 }
 
@@ -126,7 +121,7 @@ export function useMediaRecorder({ kind }: UseMediaRecorderOptions): UseMediaRec
             setStatus("error");
             setError(
                 err instanceof DOMException && err.name === "NotAllowedError"
-                    ? `${kind === "video" ? "Camera/mic" : "Mic"} access was blocked — check your browser permissions and try again.`
+                    ? `${kind === "video" ? "Camera/mic" : "Mic"} access was blocked, check your browser permissions and try again.`
                     : `Couldn't start recording. Check your device and try again.`
             );
             cleanupStream();

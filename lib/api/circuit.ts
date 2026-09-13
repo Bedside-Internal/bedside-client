@@ -1,13 +1,8 @@
 import "server-only";
 import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
-import type { CircuitPreview, CircuitAttemptState, CircuitResults } from "@/types/circuit";
+import type { CircuitPreview, CircuitAttemptState, CircuitResults, MyRandomStationPick } from "@/types/circuit";
 
 export { ApiError };
-
-export interface MyRandomStationPick {
-  sectionSlug: string;
-  questionId: string;
-}
 
 export async function getCircuitPreview(formatSlug: string): Promise<CircuitPreview> {
   return serverApiFetch<CircuitPreview>(`/api/${formatSlug}/circuit/preview`);

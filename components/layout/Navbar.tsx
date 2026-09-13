@@ -11,15 +11,10 @@ const links = [
 export default function Navbar() {
   return (
     <nav className="sticky top-0 z-[100] flex h-16 items-center justify-between border-b-2 border-ink bg-cream px-[5vw]">
-      <a href="#" className="flex items-center gap-2.5 text-ink no-underline">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M10 0L11.8 8.2L20 10L11.8 11.8L10 20L8.2 11.8L0 10L8.2 8.2Z"
-            fill="#3BBA9C"
-          />
-        </svg>
+      <a href="#" className="flex items-center gap-2 text-ink no-underline">
+        <img src={"/bedside_logo.svg"} alt="Bedside" className="h-10 w-auto" />
         <span className="font-display text-[22px] tracking-tight">
-        Bedside
+          Bedside
         </span>
       </a>
 

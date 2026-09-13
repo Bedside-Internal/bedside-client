@@ -25,12 +25,7 @@ export default function Footer({ socialLinks = [] }: FooterProps) {
         <div className="mb-12 flex flex-wrap items-start justify-between gap-10">
           <div>
             <div className="mb-3 flex items-center gap-2.5">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M10 0L11.8 8.2L20 10L11.8 11.8L10 20L8.2 11.8L0 10L8.2 8.2Z"
-                  fill="#3BBA9C"
-                />
-              </svg>
+              <img src="/bedside_logo_light.svg" alt="Bedside" className="h-6 w-auto" />
               <span className="font-display text-[22px] tracking-tight text-cream">
                 Bedside
               </span>

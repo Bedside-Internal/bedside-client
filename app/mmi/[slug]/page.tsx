@@ -38,7 +38,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
             <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">
                 <p className="text-lg font-semibold text-[var(--color-ink)]">{sectionTitle}</p>
                 <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
-                    Ready when you are — starting counts as one practice attempt.
+                    Ready when you are, starting counts as one practice attempt.
                 </p>
                 <BeginStationButton formatSlug="mmi" basePath="mmi" slug={slug} qid={qidParam} />
             </div>

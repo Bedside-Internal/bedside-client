@@ -52,8 +52,13 @@ export function ResponseComposer({
     const { restoredDraft, restoredAt, clearDraft, dismissRestore } =
         useDraftAutosave(attemptId, questionId, text);
 
-    useUnsavedChangesGuard(mode === "written" && text.trim().length > 0 && !submitting);
-
+    useUnsavedChangesGuard(
+        (mode === "written" && text.trim().length > 0 ||
+            mode === "audio" && audioBlob !== null ||
+            mode === "video" && videoBlob !== null) &&
+        !submitting
+    );
+    
     const wordCount = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
     const canSubmit =
         mode === "written"

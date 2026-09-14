@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import MagneticButton from "@/components/ui/MagneticButton";
+import { Logo } from "../ui/Logo";
 
 const links = [
   { href: "#features", label: "Formats" },
@@ -49,12 +50,7 @@ export default function Navbar() {
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
-      <a href="#" className="flex items-center gap-2 text-ink no-underline">
-        <img src={"/bedside_logo.svg"} alt="Bedside" className="h-10 w-auto" />
-        <span className="font-display text-[22px] tracking-tight">
-          Bedside
-        </span>
-      </a>
+      <Logo href="/" />
 
       <div className="hidden items-center gap-7 md:flex">
         {links.map((l) => (

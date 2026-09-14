@@ -1,13 +1,10 @@
-// lib/hooks/useDraftAutosave.ts
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useAuth } from "@clerk/nextjs";
 import { useApiFetch } from "@/lib/api/use-api-fetch";
 
 const DRAFT_PREFIX = "bedside:draft:";
 const DEBOUNCE_MS = 400;
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 
 interface DraftEnvelope {
     text: string;
@@ -22,51 +19,54 @@ function draftPath(attemptId: string, questionId: string) {
     return `/api/attempts/${attemptId}/questions/${questionId}/draft`;
 }
 
+// Pure, synchronous read
+function readLocalDraft(key: string): DraftEnvelope | null {
+    if (typeof window === "undefined") return null;
+    try {
+        const raw = window.localStorage.getItem(key);
+        if (!raw) return null;
+        const parsed: DraftEnvelope = JSON.parse(raw);
+        return parsed?.text?.trim() ? parsed : null;
+    } catch {
+        return null;
+    }
+}
+
 export function useDraftAutosave(attemptId: string, questionId: string, text: string) {
     const key = draftKey(attemptId, questionId);
     const path = draftPath(attemptId, questionId);
-    const { getToken } = useAuth();
-    const apiFetch = useApiFetch(); // used for the non-urgent calls (mount GET, clear)
+    const apiFetch = useApiFetch();
 
-    const [restored, setRestored] = useState<string | null>(null);
-    const [restoredAt, setRestoredAt] = useState<number | null>(null);
-    const hasCheckedRestore = useRef(false);
+    // Seeded synchronously from localStorage on first render
+    const [restoredDraft, setRestoredDraft] = useState<DraftEnvelope | null>(() => readLocalDraft(key));
+
+    const hasCheckedServerFallback = useRef(false);
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const lastSyncedTextRef = useRef<string>("");
     const textRef = useRef(text);
-    textRef.current = text; // so the visibilitychange handler always reads the latest value
 
-    // Restore: localStorage first, server fallback only if local is empty
+    // Mirror the latest text into a ref for the visibilitychange/pagehide
+    // handlers to read, without needing text in their effect's deps.
     useEffect(() => {
-        if (hasCheckedRestore.current) return;
-        hasCheckedRestore.current = true;
+        textRef.current = text;
+    }, [text]);
 
-        let foundLocal = false;
-        try {
-            const raw = window.localStorage.getItem(key);
-            if (raw) {
-                const parsed: DraftEnvelope = JSON.parse(raw);
-                if (parsed?.text?.trim()) {
-                    setRestored(parsed.text);
-                    setRestoredAt(parsed.savedAt);
-                    foundLocal = true;
-                }
-            }
-        } catch {
-            // corrupt entry — ignore
-        }
+    // Server fallback
+    // rule flags.
+    useEffect(() => {
+        if (hasCheckedServerFallback.current) return;
+        hasCheckedServerFallback.current = true;
 
-        if (foundLocal) return;
+        if (readLocalDraft(key)) return; // already seeded via lazy init above
 
         apiFetch<{ text: string; updatedAt: string } | null>(path)
             .then((data) => {
                 if (data?.text?.trim()) {
-                    setRestored(data.text);
-                    setRestoredAt(new Date(data.updatedAt).getTime());
+                    setRestoredDraft({ text: data.text, savedAt: new Date(data.updatedAt).getTime() });
                 }
             })
             .catch(() => {
-                // no server draft, or request failed
+                // no server draft, or request failed — nothing to restore
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key, path]);
@@ -90,32 +90,24 @@ export function useDraftAutosave(attemptId: string, questionId: string, text: st
         };
     }, [key, text]);
 
-    // Server sync to where this fires only on tab-hide/pagehide. Uses fetch+keepalive
+    // Server sync
     const syncToServer = useCallback(() => {
         const currentText = textRef.current;
         if (currentText.trim().length === 0) return;
         if (currentText === lastSyncedTextRef.current) return;
 
-        getToken()
-            .then((token) => {
-                if (!token) return;
-                return fetch(`${BASE_URL}${path}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({ text: currentText }),
-                    keepalive: true, // lets the request survive the page unloading
-                });
-            })
+        apiFetch(path, {
+            method: "POST",
+            body: JSON.stringify({ text: currentText }),
+            keepalive: true,
+        })
             .then(() => {
                 lastSyncedTextRef.current = currentText;
             })
             .catch(() => {
                 // best-effort — localStorage already has the latest text regardless
             });
-    }, [getToken, path]);
+    }, [apiFetch, path]);
 
     useEffect(() => {
         const handleVisibility = () => {
@@ -136,13 +128,18 @@ export function useDraftAutosave(attemptId: string, questionId: string, text: st
             // ignore
         }
         apiFetch(path, { method: "DELETE" }).catch(() => {
+            // non-critical
         });
     }, [key, path, apiFetch]);
 
     const dismissRestore = useCallback(() => {
-        setRestored(null);
-        setRestoredAt(null);
+        setRestoredDraft(null);
     }, []);
 
-    return { restoredDraft: restored, restoredAt, clearDraft, dismissRestore };
+    return {
+        restoredDraft: restoredDraft?.text ?? null,
+        restoredAt: restoredDraft?.savedAt ?? null,
+        clearDraft,
+        dismissRestore,
+    };
 }

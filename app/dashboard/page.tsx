@@ -1,4 +1,4 @@
-import { Grid2X2, FileText, Video, GraduationCap, School, Users } from "lucide-react";
+import { Grid2X2, FileText, Video, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { User } from "@clerk/nextjs/server";
 import { createElement } from "react";

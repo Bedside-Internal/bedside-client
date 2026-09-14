@@ -1,8 +1,29 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+function useIsGenuinelyMobile() {
+  const [blocked, setBlocked] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse) and (max-width: 768px)");
+    const update = () => setBlocked(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  return blocked;
+}
+
 export default function DesktopOnlyGate({
-    children,
-  }: {
-    children: React.ReactNode;
-  }) {
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const isMobile = useIsGenuinelyMobile();
+
+  if (isMobile) {
     return (
       <>
         <div className="hidden lg:block">{children}</div>
@@ -33,4 +54,7 @@ export default function DesktopOnlyGate({
         </div>
       </>
     );
+  } else {
+    return <>{children}</>;
   }
+}

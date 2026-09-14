@@ -19,6 +19,7 @@ interface Crumb {
 }
 
 interface QuestionRunnerProps {
+    attemptId: string;
     question: QuestionDetail;
     breadcrumb: Crumb[];
     onExit: () => void;
@@ -36,6 +37,7 @@ interface QuestionRunnerProps {
 }
 
 export function QuestionRunner({
+    attemptId,
     question,
     breadcrumb,
     onExit,
@@ -108,8 +110,8 @@ export function QuestionRunner({
                         aria-label="Go to dashboard"
                         title={dashboardReady ? "Go to dashboard" : "Finish onboarding to unlock your dashboard"}
                         className={`rounded-lg p-2 transition ${dashboardReady
-                                ? "text-[var(--color-ink)]/60 hover:bg-white"
-                                : "cursor-not-allowed text-[var(--color-ink)]/25"
+                            ? "text-[var(--color-ink)]/60 hover:bg-white"
+                            : "cursor-not-allowed text-[var(--color-ink)]/25"
                             }`}
                     >
                         <Home className="h-5 w-5" strokeWidth={2.25} />
@@ -200,6 +202,8 @@ export function QuestionRunner({
                                     />
                                 ) : (
                                     <ResponseComposer
+                                        attemptId={attemptId}
+                                        questionId={question.id}
                                         guidanceNote={question.guidance_note}
                                         submitting={submitting}
                                         onSubmit={handleSubmit}

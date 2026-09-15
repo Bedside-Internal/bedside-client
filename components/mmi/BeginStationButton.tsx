@@ -10,9 +10,10 @@ interface BeginStationButtonProps {
   slug: string;
   label?: string;
   qid?: string;
+  size?: number;
 }
 
-export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin →", qid }: BeginStationButtonProps) {
+export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin →", qid, size }: BeginStationButtonProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [blocked, setBlocked] = useState(false);
@@ -21,8 +22,10 @@ export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin 
     startTransition(async () => {
       const result = await startAttemptAction(formatSlug);
       if (result.ok) {
-        const qidParam = qid ? `&qid=${encodeURIComponent(qid)}` : "&q=0";
-        router.push(`/${basePath}/${slug}?attempt=${result.attemptId}${qidParam}`);
+        const params = new URLSearchParams({ attempt: result.attemptId });
+        if (qid) params.set("qid", qid); else params.set("q", "0");
+        if (size) params.set("size", String(size));
+        router.push(`/${basePath}/${slug}?${params.toString()}`);
       } else if (result.reason === "paywall") {
         setBlocked(true);
       }

@@ -118,6 +118,7 @@ export interface ApiErrorPayload {
 export interface SectionQuestions {
     sectionTitle: string;
     questions: QuestionListItem[];
+    totalAvailable: number;
 }
 
 export interface CompetencyDTO {

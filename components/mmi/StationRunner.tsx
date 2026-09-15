@@ -17,6 +17,7 @@ interface StationRunnerProps {
     initialIndex: number;
     initialQuestion: QuestionDetail;
     dashboardReady: boolean;
+    sessionSize?: number;
 }
 
 export function StationRunner({
@@ -29,7 +30,8 @@ export function StationRunner({
     attemptId,
     initialIndex,
     initialQuestion,
-    dashboardReady
+    dashboardReady,
+    sessionSize
 }: StationRunnerProps) {
     const router = useRouter();
     const [index, setIndex] = useState(initialIndex);
@@ -50,13 +52,14 @@ export function StationRunner({
                     const detail = await getQuestion(questionIds[clamped].id);
                     setQuestion(detail);
                     setIndex(clamped);
-                    router.replace(`/${basePath}/${slug}?attempt=${attemptId}&q=${clamped}`, { scroll: false });
+                    const sizeParam = sessionSize ? `&size=${sessionSize}` : "";
+                    router.replace(`/${basePath}/${slug}?attempt=${attemptId}&q=${clamped}${sizeParam}`, { scroll: false });
                 } catch {
-                    setError("Couldn't load that question. Try again.");
+                    setError("Couldn't load that question.");
                 }
             });
         },
-        [index, questionIds, basePath, slug, attemptId, router]
+        [index, questionIds, attemptId, basePath, slug, sessionSize, router],
     );
 
     const handleSubmit = useCallback(

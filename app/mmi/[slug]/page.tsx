@@ -2,22 +2,29 @@ import { getStationQuestions, getQuestion } from "@/lib/api/mmi";
 import { StationRunner } from "@/components/mmi/StationRunner";
 import { BeginStationButton } from "@/components/mmi/BeginStationButton";
 import { getOnboardingProgress } from "@/lib/actions";
+import { getTierStatus } from "@/lib/api/tier";
+import { SessionSizePicker } from "@/components/mmi/SessionSizePicker";
 
 interface StationPageProps {
     params: Promise<{ slug: string }>;
-    searchParams: Promise<{ attempt?: string; q?: string; qid?: string }>;
+    searchParams: Promise<{ attempt?: string; q?: string; qid?: string; size?: string }>;
 }
 
 export default async function StationPage({ params, searchParams }: StationPageProps) {
     const { slug } = await params;
-    const { attempt: attemptParam, q: qParam, qid: qidParam } = await searchParams;
+    const { attempt: attemptParam, q: qParam, qid: qidParam, size: sizeParam } = await searchParams;
 
-    const [{ sectionTitle, questions }, progress] = await Promise.all([
-        getStationQuestions(slug, "mmi"),
+    const parsedSize = sizeParam ? parseInt(sizeParam, 10) : undefined;
+    const sessionSize = parsedSize && Number.isFinite(parsedSize) && parsedSize > 0 ? parsedSize : undefined;
+
+    const [{ sectionTitle, questions, totalAvailable }, progress, tierStatus] = await Promise.all([
+        getStationQuestions(slug, "mmi", sessionSize),
         getOnboardingProgress(),
+        getTierStatus(),
     ]);
 
     const dashboardReady = Boolean(progress?.track && progress?.format);
+    const canCustomizeSessionSize = tierStatus.tier !== "free";
 
     if (questions.length === 0) {
         return (
@@ -36,7 +43,14 @@ export default async function StationPage({ params, searchParams }: StationPageP
                 <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
                     Ready when you are, starting counts as one practice attempt.
                 </p>
-                <BeginStationButton formatSlug="mmi" basePath="mmi" slug={slug} qid={qidParam} />
+                <SessionSizePicker
+                    slug={slug}
+                    qid={qidParam}
+                    currentSize={sessionSize}
+                    poolSize={totalAvailable}
+                    canCustomize={canCustomizeSessionSize}
+                />
+                <BeginStationButton formatSlug="mmi" basePath="mmi" slug={slug} qid={qidParam} size={sessionSize} />
             </div>
         );
     }
@@ -61,6 +75,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
             initialIndex={index}
             initialQuestion={currentQuestion}
             dashboardReady={dashboardReady}
+            sessionSize={sessionSize}
         />
     );
 }

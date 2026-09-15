@@ -11,15 +11,17 @@ import type {
 } from "@/types/formats";
 
 // Kept as an alias so existing `instanceof MmiApiError` checks elsewhere
-// (if any) keep working without a repo-wide rename.
 export const MmiApiError = ApiError;
 
 export async function getStationQuestions(
     slug: string,
     formatSlug: string = "mmi",
+    sessionSize?: number,
 ): Promise<SectionQuestions> {
+    const params = new URLSearchParams({ format: formatSlug });
+    if (sessionSize) params.set("sessionSize", String(sessionSize));
     return serverApiFetch<SectionQuestions>(
-        `/api/mmi/sections/${encodeURIComponent(slug)}/questions?format=${encodeURIComponent(formatSlug)}`
+        `/api/mmi/sections/${encodeURIComponent(slug)}/questions?${params.toString()}`
     );
 }
 

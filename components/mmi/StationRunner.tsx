@@ -59,7 +59,7 @@ export function StationRunner({
                 }
             });
         },
-        [index, questionIds, attemptId, basePath, slug, sessionSize],
+        [index, questionIds, attemptId, basePath, slug, sessionSize, router],
     );
 
     const handleSubmit = useCallback(

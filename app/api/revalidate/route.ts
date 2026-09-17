@@ -12,6 +12,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const tag = typeof body.tag === "string" ? body.tag : "marketing-landing";
 
-    revalidateTag(tag);
+    revalidateTag(tag, { expire: 0 });
     return NextResponse.json({ revalidated: true, tag, now: Date.now() });
 }

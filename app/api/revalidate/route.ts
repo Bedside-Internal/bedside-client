@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Called by the Express API right after an admin write to marketing content
 // (testimonials, formats, pricing, faq, social-links) actually succeeds.
-// This REPLACES time-based revalidate entirely — no more polling on a timer.
 export async function POST(req: NextRequest) {
     const secret = req.headers.get("x-revalidate-secret");
     if (!secret || secret !== process.env.REVALIDATE_SECRET) {

@@ -8,6 +8,9 @@ import { getDashboardData } from "@/app/dashboard/page";
 import { ApiError } from "@/lib/api/server-fetch";
 import { MyQuestionsClient } from "@/components/dashboard/MyQuestionsClient";
 import NextLink from "next/link";
+import { getFeatures } from "@/lib/features";
+import { createElement } from "react";
+import { resolveIcon } from "@/lib/iconRegistry";
 
 interface DashboardData {
     track: { id: string; slug: string; label: string };
@@ -45,13 +48,15 @@ export default async function MyQuestionsPage({ searchParams }: MyQuestionsPageP
     let usage;
     let privateQuestions;
     let formatOptions;
+    let trackFeatures;
     try {
-        [user, questions, usage, privateQuestions, formatOptions] = await Promise.all([
+        [user, questions, usage, privateQuestions, formatOptions, trackFeatures] = await Promise.all([
             currentUser(),
             getMyQuestions(),
             getUsageSummary(),
             getMyPrivateQuestions(),
             getQuestionFormats(),
+            getFeatures("track"),
         ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
@@ -60,6 +65,11 @@ export default async function MyQuestionsPage({ searchParams }: MyQuestionsPageP
         throw err;
     }
 
+    const tracks = trackFeatures.map((t) => ({
+        id: t.key,
+        label: t.title,
+        icon: createElement(resolveIcon(t.icon)),
+    }));
     const trackData = await getTrackData();
     const userTier = (user?.publicMetadata?.tier as "free" | "paid" | "admin") ?? "free";
 
@@ -71,13 +81,7 @@ export default async function MyQuestionsPage({ searchParams }: MyQuestionsPageP
 
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
-            <TopBar
-                tracks={[
-                    { id: "med-school", label: "Medical School", icon: <GraduationCap /> },
-                    { id: "college-admissions", label: "College Admissions", icon: <School /> },
-                ]}
-                activeTrackId={trackData.track.slug}
-            />
+            <TopBar tracks={tracks} activeTrackId={trackData.track.slug} />
 
             <div className="max-w-7xl px-8 py-8">
                 <NextLink

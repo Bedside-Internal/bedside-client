@@ -9,7 +9,7 @@ import Testimonials from "@/components/sections/Testimonials";
 import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
-import type { TestimonialDTO, FormatCardDTO, PricingTierDTO, FaqEntryDTO, SocialLinkDTO, LandingPageData } from "@/types/marketing";
+import type { LandingPageData } from "@/types/marketing";
 import Clarity from '@microsoft/clarity';
 import { getLandingPageData } from "@/lib/api/marketing";
 

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, GraduationCap, School } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
 import { ReferralCard } from "@/components/dashboard/ReferralCard";
 import { getOnboardingProgress } from "@/lib/actions";

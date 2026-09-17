@@ -1,17 +1,16 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { ChevronLeft, GraduationCap, School } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
 import { ReferralCard } from "@/components/dashboard/ReferralCard";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getReferralSummary, getUnlockProgress } from "@/lib/api/referrals";
-import { getPricingTiers } from "@/lib/api/marketing";
+import { getLandingPageData } from "@/lib/api/marketing";
 import { computeTierUnlockStatus } from "@/lib/referrals/tierUnlockStatus";
+import { getFeatures, PublicFeature } from "@/lib/features";
+import { createElement } from "react";
+import { resolveIcon } from "@/lib/iconRegistry";
 
-const tracks = [
-    { id: "med-school", label: "Medical School", icon: <GraduationCap /> },
-    { id: "college-admissions", label: "College Admissions", icon: <School /> },
-];
 
 export default async function ReferPage() {
     const progress = await getOnboardingProgress();
@@ -19,14 +18,27 @@ export default async function ReferPage() {
         redirect("/onboarding");
     }
 
-    const [summary, unlockProgress, pricingTiers] = await Promise.all([
+    let trackFeatures: PublicFeature[] = [];
+    try {
+        trackFeatures = await getFeatures("track");
+    } catch {
+
+    }
+
+    const tracks = trackFeatures.map((t) => ({
+        id: t.key,
+        label: t.title,
+        icon: createElement(resolveIcon(t.icon)),
+    }));
+
+    const [summary, unlockProgress, landing] = await Promise.all([
         getReferralSummary(),
         getUnlockProgress(),
-        getPricingTiers(),
+        getLandingPageData(),
     ]);
 
     const tiers = computeTierUnlockStatus(
-        pricingTiers.map((t) => ({ id: t.id, title: t.title, requirements: t.requirements })),
+        landing.pricingTiers.map((t) => ({ id: t.id, title: t.title, requirements: t.requirements })),
         unlockProgress,
     );
 

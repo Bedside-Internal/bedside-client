@@ -1,4 +1,4 @@
-import { ApiError, serverApiFetch } from "@/lib/api/server-fetch";
+import { serverApiFetch } from "@/lib/api/server-fetch";
 
 export interface PerformanceSessionPoint {
     attemptId: string;
@@ -28,7 +28,7 @@ const EMPTY_TREND: PerformanceTrendData = {
 export async function getPerformanceTrend(): Promise<PerformanceTrendData> {
     try {
         return await serverApiFetch<PerformanceTrendData>("/api/performance/trend?bucket=week&sinceDays=90");
-    } catch (err) {
+    } catch {
         return EMPTY_TREND;
     }
 }

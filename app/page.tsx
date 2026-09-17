@@ -9,28 +9,24 @@ import Testimonials from "@/components/sections/Testimonials";
 import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
-import { getTestimonials, getFormatCards, getPricingTiers, getFaqEntries, getSocialLinks } from "@/lib/api/marketing";
-import type { TestimonialDTO, FormatCardDTO, PricingTierDTO, FaqEntryDTO, SocialLinkDTO } from "@/types/marketing";
+import type { LandingPageData } from "@/types/marketing";
 import Clarity from '@microsoft/clarity';
+import { getLandingPageData } from "@/lib/api/marketing";
 
-export const revalidate = 300;
 const projectId = "y72uf0awoh"
 
 export default async function Home() {
-  let testimonials: TestimonialDTO[] = [];
-  let formatCards: FormatCardDTO[] = [];
-  let pricingTiers: PricingTierDTO[] = [];
-  let faqEntries: FaqEntryDTO[] = [];
-  let socialLinks: SocialLinkDTO[] = [];
+
+  let landingData: LandingPageData = {
+    testimonials: [],
+    formatCards: [],
+    pricingTiers: [],
+    faqEntries: [],
+    socialLinks: [],
+  };
 
   try {
-    [testimonials, formatCards, pricingTiers, faqEntries, socialLinks] = await Promise.all([
-      getTestimonials(),
-      getFormatCards(),
-      getPricingTiers(),
-      getFaqEntries(),
-      getSocialLinks(),
-    ]);
+    landingData = await getLandingPageData();
   } catch {
   }
 
@@ -43,12 +39,12 @@ export default async function Home() {
       <Marquee />
       <DemoVideo youtubeId="lXiVXQSgiZY" />
       <HowItWorks />
-      <Features formatCards={formatCards} />
-      <Testimonials testimonials={testimonials} />
+      <Features formatCards={landingData.formatCards} />
+      <Testimonials testimonials={landingData.testimonials} />
       <DarkCTA />
-      <Pricing tiers={pricingTiers} />
-      <FAQ entries={faqEntries} />
-      <Footer socialLinks={socialLinks} />
+      <Pricing tiers={landingData.pricingTiers} />
+      <FAQ entries={landingData.faqEntries} />
+      <Footer socialLinks={landingData.socialLinks} />
     </>
   );
 }

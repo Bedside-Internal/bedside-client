@@ -21,6 +21,7 @@ const MODES: ModeConfig[] = [
 ];
 
 interface ResponseComposerProps {
+    onRecordingBusyChange?: (busy: boolean) => void;
     guidanceNote?: string;
     minWords?: number;
     submitting?: boolean;
@@ -30,6 +31,7 @@ interface ResponseComposerProps {
 
 export function ResponseComposer({
     guidanceNote,
+    onRecordingBusyChange,
     minWords = 30,
     submitting = false,
     allowedModes = ["written", "audio", "video"],
@@ -62,7 +64,7 @@ export function ResponseComposer({
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-2">
+            <div data-tour="response-modes" className="flex items-center gap-2">
                 {MODES.map(({ id, label, icon: Icon }) => {
                     const active = mode === id;
                     return (
@@ -102,47 +104,49 @@ export function ResponseComposer({
                 </div>
             )}
 
-            {mode === "audio" && <AudioRecorder onRecordingChange={setAudioBlob} />}
-            {mode === "video" && <VideoRecorder onRecordingChange={setVideoBlob} />}
+            {mode === "audio" && <AudioRecorder onRecordingChange={setAudioBlob} onBusyChange={onRecordingBusyChange} />}
+            {mode === "video" && <VideoRecorder onRecordingChange={setVideoBlob} onBusyChange={onRecordingBusyChange} />}
 
-            {guidanceNote && (
-                <div className="rounded-xl border border-[var(--color-ink)]/10 bg-white">
-                    <button
-                        type="button"
-                        onClick={() => setHintsOpen((v) => !v)}
-                        className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-[var(--color-mint-hover)]"
-                    >
-                        Hints
-                        <ChevronDown
-                            className={`h-4 w-4 transition-transform ${hintsOpen ? "rotate-180" : ""
-                                }`}
-                            strokeWidth={2.5}
-                        />
-                    </button>
-                    {hintsOpen && (
-                        <p className="border-t border-[var(--color-ink)]/10 px-4 py-3 text-sm leading-relaxed text-[var(--color-ink)]/70">
-                            {guidanceNote}
-                        </p>
-                    )}
-                </div>
-            )}
+            <div data-tour="response-submission" className="flex flex-col gap-4">
+                {guidanceNote && (
+                    <div className="rounded-xl border border-[var(--color-ink)]/10 bg-white">
+                        <button
+                            type="button"
+                            onClick={() => setHintsOpen((v) => !v)}
+                            className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-[var(--color-mint-hover)]"
+                        >
+                            Hints
+                            <ChevronDown
+                                className={`h-4 w-4 transition-transform ${hintsOpen ? "rotate-180" : ""
+                                    }`}
+                                strokeWidth={2.5}
+                            />
+                        </button>
+                        {hintsOpen && (
+                            <p className="border-t border-[var(--color-ink)]/10 px-4 py-3 text-sm leading-relaxed text-[var(--color-ink)]/70">
+                                {guidanceNote}
+                            </p>
+                        )}
+                    </div>
+                )}
 
-            <button
-                type="button"
-                disabled={!canSubmit}
-                title={
-                    !canSubmit
-                        ? mode === "written"
-                            ? `Write at least ${minWords} words to submit`
-                            : "Record a response before submitting"
-                        : undefined
-                }
-                onClick={handleSubmitClick}
-                className="flex items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-                {submitting ? "Submitting…" : "Submit & get AI feedback"}
-                <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
-            </button>
+                <button
+                    type="button"
+                    disabled={!canSubmit}
+                    title={
+                        !canSubmit
+                            ? mode === "written"
+                                ? `Write at least ${minWords} words to submit`
+                                : "Record a response before submitting"
+                            : undefined
+                    }
+                    onClick={handleSubmitClick}
+                    className="flex items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                    {submitting ? "Submitting…" : "Submit & get AI feedback"}
+                    <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
+                </button>
+            </div>
         </div>
     );
 }

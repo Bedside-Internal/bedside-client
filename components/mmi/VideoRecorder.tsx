@@ -5,10 +5,11 @@ import { RotateCcw, Video as VideoIcon } from "lucide-react";
 import { formatDuration, useMediaRecorder } from "./useMediaRecorder";
 
 interface VideoRecorderProps {
+    onBusyChange?: (busy: boolean) => void;
     onRecordingChange?: (blob: Blob | null) => void;
 }
 
-export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
+export function VideoRecorder({ onRecordingChange, onBusyChange }: VideoRecorderProps) {
     const { status, error, mediaBlobUrl, mediaBlob, durationSeconds, liveStream, start, stop, reset } =
         useMediaRecorder({ kind: "video" });
     const liveRef = useRef<HTMLVideoElement | null>(null);
@@ -48,6 +49,11 @@ export function VideoRecorder({ onRecordingChange }: VideoRecorderProps) {
 
         return () => videoEl.removeEventListener("loadedmetadata", fixDuration);
     }, [mediaBlobUrl]);
+
+    useEffect(() => {
+        onBusyChange?.(status === "requesting" || status === "recording");
+        return () => onBusyChange?.(false);
+    }, [status, onBusyChange]);
 
     const recording = status === "recording";
     const recorded = status === "recorded" && mediaBlobUrl;

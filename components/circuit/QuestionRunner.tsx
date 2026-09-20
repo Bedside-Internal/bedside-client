@@ -1,6 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTutorial } from "@/hooks/useTutorial";
+import { mmiTutorial } from "@/lib/tutorials/mmi";
+import type { TutorialContext } from "@/lib/tutorials/types";
+import { TutorialOverlay } from "@/components/tutorials/TutorialOverlay";
 import { ArrowLeft, ArrowRight, User, Home } from "lucide-react";
 import { Timer } from "../mmi/Timer";
 import { ScenarioPanel } from "../mmi/ScenarioPanel";
@@ -19,6 +23,7 @@ interface Crumb {
 }
 
 interface QuestionRunnerProps {
+    tutorialContext?: TutorialContext;
     question: QuestionDetail;
     breadcrumb: Crumb[];
     onExit: () => void;
@@ -50,10 +55,22 @@ export function QuestionRunner({
     dashboardReady = false,
     onDashboard,
     composerProps,
+    tutorialContext,
 }: QuestionRunnerProps) {
     const [phase, setPhase] = useState<Phase>("reading");
     const [prevQuestionId, setPrevQuestionId] = useState(question.id);
     const isRatedItems = question.scenario.response_mode === "rated_items";
+
+    const [recordingBusy, setRecordingBusy] = useState(false);
+    const tutorialEligible = tutorialContext?.format === "mmi" && tutorialContext.practiceKind === "single-station" && !isRatedItems;
+    const tutorialDefinition = useMemo(() => mmiTutorial(phase === "submitted" ? "feedback" : phase, {
+        hasResponseTimer: question.scenario.response_time_seconds !== null,
+        hasHints: Boolean(question.guidance_note),
+        hasFeedback: Boolean(feedback),
+    }), [phase, question.scenario.response_time_seconds, question.guidance_note, feedback]);
+    const tutorial = useTutorial(tutorialDefinition, tutorialEligible && !submitting && !navPending && !recordingBusy &&
+        !(phase === "reading" && question.scenario.reading_time_seconds <= 0), question.id);
+    const tutorialPaused = Boolean(tutorial.run);
 
     const navLocked = phase === "responding" || navPending;
     const navLockedReason =
@@ -75,6 +92,7 @@ export function QuestionRunner({
 
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
+            {tutorial.run && <TutorialOverlay key={tutorial.run.id} run={tutorial.run} onEnd={tutorial.end} onPresented={tutorial.presented} />}
             <div className="flex items-center justify-between px-6 py-5">
                 <nav className="flex items-center gap-2 text-sm">
                     {breadcrumb.map((crumb, i) => (
@@ -93,6 +111,13 @@ export function QuestionRunner({
                     ))}
                 </nav>
                 <div className="flex items-center gap-4">
+                    {tutorialEligible && (
+                        <button type="button" onClick={tutorial.replay} disabled={!tutorial.canReplay || tutorialPaused}
+                            title={recordingBusy ? "Finish recording before opening the tutorial" : "Replay the tutorial for this phase"}
+                            className="rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:bg-white focus-visible:outline-2 focus-visible:outline-mint disabled:opacity-40">
+                            Take the tour
+                        </button>
+                    )}
                     <button
                         type="button"
                         onClick={onExit}
@@ -120,16 +145,18 @@ export function QuestionRunner({
 
             <div className="grid grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
                 <div className="flex flex-col lg:min-h-[600px]">
-                    <ScenarioPanel
-                        text={question.scenario.text}
-                        footerHint={
-                            phase === "reading" && !isRatedItems
-                                ? "Use this time to identify the key tensions and structure your response before the timer starts."
-                                : undefined
-                        }
-                    >
-                        {isRatedItems && <RatingTaskAndLegend />}
-                    </ScenarioPanel>
+                    <div data-tour="question-scenario" className="flex flex-1 flex-col">
+                        <ScenarioPanel
+                            text={question.scenario.text}
+                            footerHint={
+                                phase === "reading" && !isRatedItems
+                                    ? "Use this time to identify the key tensions and structure your response before the timer starts."
+                                    : undefined
+                            }
+                        >
+                            {isRatedItems && <RatingTaskAndLegend />}
+                        </ScenarioPanel>
+                    </div>
 
                     {/* Rated-items nav lives inside RatingPanel */}
                     {!isRatedItems && (
@@ -160,12 +187,13 @@ export function QuestionRunner({
 
                 <div className="flex flex-col items-center gap-8 lg:pt-4">
                     {phase === "reading" && (
-                        <>
+                        <div data-tour="reading-controls" className="flex flex-col items-center gap-8">
                             <Timer
                                 key={`read-${question.id}`}
                                 durationSeconds={question.scenario.reading_time_seconds}
                                 eyebrow="READING TIME"
                                 label="to read"
+                                isRunning={!tutorialPaused}
                                 onComplete={() => setPhase("responding")}
                             />
                             <button
@@ -176,18 +204,21 @@ export function QuestionRunner({
                                 I&apos;m ready, start responding
                                 <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
                             </button>
-                        </>
+                        </div>
                     )}
 
                     {phase === "responding" && (
                         <div className="flex w-full max-w-xl flex-col items-center gap-6">
                             {question.scenario.response_time_seconds !== null && (
-                                <Timer
-                                    key={`respond-${question.id}`}
-                                    durationSeconds={question.scenario.response_time_seconds}
-                                    eyebrow="RESPONSE TIME"
-                                    label="remaining"
-                                />
+                                <div data-tour="response-timer">
+                                    <Timer
+                                        isRunning={!tutorialPaused}
+                                        key={`respond-${question.id}`}
+                                        durationSeconds={question.scenario.response_time_seconds}
+                                        eyebrow="RESPONSE TIME"
+                                        label="remaining"
+                                    />
+                                </div>
                             )}
                             <div className="w-full">
                                 {isRatedItems && question.response_items ? (
@@ -200,6 +231,7 @@ export function QuestionRunner({
                                     />
                                 ) : (
                                     <ResponseComposer
+                                        onRecordingBusyChange={setRecordingBusy}
                                         guidanceNote={question.guidance_note}
                                         submitting={submitting}
                                         onSubmit={handleSubmit}
@@ -211,7 +243,7 @@ export function QuestionRunner({
                     )}
 
                     {phase === "submitted" && (
-                        <div className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
+                        <div data-tour="question-feedback" className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
                             {feedback && "items" in feedback ? (
                                 <RatingFeedback feedback={feedback} />
                             ) : feedback ? (

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { MmiOverviewTutorial } from "@/components/tutorials/TutorialOverlay";
 
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
@@ -39,7 +40,9 @@ export default async function MmiPage() {
                     subtitle="8-minute timed scenarios across 6 core station types; pick one to drill or run a full circuit"
                 />
 
-                <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <MmiOverviewTutorial />
+
+                <div data-tour="mmi-station-grid" className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {stations.map((station) => (
                         <StationCard key={station.title} {...station} icon={resolveIcon(station.icon)} />
                     ))}
@@ -47,7 +50,7 @@ export default async function MmiPage() {
             </div>
 
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
-                <div className="flex items-center gap-3">
+                <div data-tour="mmi-practice-options" className="flex items-center gap-3">
                     <RandomStationButton stations={stations} />
                     <RunAnotherCircuitButton formatSlug="mmi" basePath="/mmi/full" label="Start a full circuit →" />
                 </div>

@@ -6,7 +6,10 @@ import { QuestionRunner } from "../circuit/QuestionRunner";
 import { getQuestion, submitMediaResponse, submitRatings, submitResponse } from "@/lib/api/mmi-actions";
 import type { AnyResponseFeedback, ComposePayload, QuestionDetail, QuestionListItem } from "@/types/formats";
 
+import type { TutorialContext } from "@/lib/tutorials/types";
+
 interface StationRunnerProps {
+    tutorialContext?: TutorialContext;
     basePath: string;
     formatLabel: string;
     stationListHref: string;
@@ -29,7 +32,8 @@ export function StationRunner({
     attemptId,
     initialIndex,
     initialQuestion,
-    dashboardReady
+    dashboardReady,
+    tutorialContext,
 }: StationRunnerProps) {
     const router = useRouter();
     const [index, setIndex] = useState(initialIndex);
@@ -101,6 +105,7 @@ export function StationRunner({
                 </div>
             )}
             <QuestionRunner
+                tutorialContext={tutorialContext}
                 question={question}
                 breadcrumb={[
                     { label: formatLabel, href: stationListHref },

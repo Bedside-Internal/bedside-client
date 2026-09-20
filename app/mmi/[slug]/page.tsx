@@ -51,6 +51,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
 
     return (
         <StationRunner
+            tutorialContext={{ format: "mmi", practiceKind: "single-station" }}
             basePath="mmi"
             formatLabel="MMI"
             stationListHref="/onboarding/medical-school/format-mmi"

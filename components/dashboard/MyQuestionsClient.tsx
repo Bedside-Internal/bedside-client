@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/Switch";
 import { clientValidateQuestion } from "@/lib/content-safety";
 import { GenerateQuestionFlow } from "@/components/dashboard/GenerateQuestionFlow";
 import { ImportQuestionsFlow } from "@/components/dashboard/ImportQuestionsFlow";
+import { ImportDeckFlow } from "@/components/dashboard/ImportDeckFlow";
 import { UsageMeter } from "@/components/dashboard/UsageMeter";
 import type { UsageSummary, MyPrivateQuestion } from "@/lib/api/userQuestions";
 import { useQuestionScope } from "@/hooks/useQuestionScope";
@@ -36,7 +37,7 @@ interface Format {
     title: string;
 }
 
-type ComposerTab = "submit" | "generate" | "import";
+type ComposerTab = "submit" | "generate" | "import" | "importDeck";
 
 export function MyQuestionsClient({
     initialQuestions,
@@ -142,6 +143,7 @@ export function MyQuestionsClient({
                                 { key: "submit" as const, label: "Submit for Review" },
                                 { key: "generate" as const, label: "Generate with AI" },
                                 { key: "import" as const, label: "Import" },
+                                { key: "importDeck" as const, label: "Import Deck" },
                             ]).map((t) => (
                                 <button
                                     key={t.key}
@@ -263,6 +265,10 @@ export function MyQuestionsClient({
 
                         {tab === "import" && (
                             <ImportQuestionsFlow formats={formats} userTier={userTier} onImported={refetch} />
+                        )}
+
+                        {tab === "importDeck" && (
+                            <ImportDeckFlow formats={formats} userTier={userTier} onImported={refetch} />
                         )}
                     </div>
                 </div>

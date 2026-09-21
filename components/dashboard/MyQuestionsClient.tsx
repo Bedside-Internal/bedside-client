@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Switch } from "@/components/ui/Switch";
 import { clientValidateQuestion } from "@/lib/content-safety";
 import { GenerateQuestionFlow } from "@/components/dashboard/GenerateQuestionFlow";
+import { ImportQuestionsFlow } from "@/components/dashboard/ImportQuestionsFlow";
 import { UsageMeter } from "@/components/dashboard/UsageMeter";
 import type { UsageSummary, MyPrivateQuestion } from "@/lib/api/userQuestions";
 import { useQuestionScope } from "@/hooks/useQuestionScope";
@@ -35,7 +36,7 @@ interface Format {
     title: string;
 }
 
-type ComposerTab = "submit" | "generate";
+type ComposerTab = "submit" | "generate" | "import";
 
 export function MyQuestionsClient({
     initialQuestions,
@@ -52,7 +53,7 @@ export function MyQuestionsClient({
     usage: UsageSummary;
     privateQuestions: MyPrivateQuestion[];
 }) {
-    const { items: questions, error, submitting, clearError, create } = useMyQuestions(initialQuestions);
+    const { items: questions, error, submitting, clearError, create, refetch } = useMyQuestions(initialQuestions);
     const [shareWithApplicants, setShareWithApplicants] = useState(false);
     const [clientError, setClientError] = useState<string | null>(null);
     const [tab, setTab] = useState<ComposerTab>("submit");
@@ -127,8 +128,8 @@ export function MyQuestionsClient({
                                             type="button"
                                             onClick={() => setGenerateFormatSlug(f.slug)}
                                             className={`rounded-full px-3 py-1 text-xs font-semibold transition ${generateFormatSlug === f.slug
-                                                    ? "bg-[var(--color-mint)] text-white"
-                                                    : "bg-[var(--color-sand)] text-[var(--color-ink)]/60 hover:bg-[var(--color-sand)]/70"
+                                                ? "bg-[var(--color-mint)] text-white"
+                                                : "bg-[var(--color-sand)] text-[var(--color-ink)]/60 hover:bg-[var(--color-sand)]/70"
                                                 }`}
                                         >
                                             {f.title}
@@ -140,6 +141,7 @@ export function MyQuestionsClient({
                             {([
                                 { key: "submit" as const, label: "Submit for Review" },
                                 { key: "generate" as const, label: "Generate with AI" },
+                                { key: "import" as const, label: "Import" },
                             ]).map((t) => (
                                 <button
                                     key={t.key}
@@ -257,6 +259,10 @@ export function MyQuestionsClient({
                         ) : (
                             <GenerateQuestionFlow key={generateFormatSlug} embedded formatSlug={generateFormatSlug} />
                         )
+                        )}
+
+                        {tab === "import" && (
+                            <ImportQuestionsFlow formats={formats} userTier={userTier} onImported={refetch} />
                         )}
                     </div>
                 </div>
@@ -378,6 +384,6 @@ export function MyQuestionsClient({
                     )}
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

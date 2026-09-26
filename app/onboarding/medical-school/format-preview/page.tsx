@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { BreadcrumbNav } from "@/components/onboarding/BreadcrumbNav";
 import { OnboardingHeader } from "@/components/onboarding/OnboardingHeader";
@@ -7,10 +8,24 @@ import { SessionBar } from "@/components/onboarding/SessionBar";
 import { getPreviewCompetencies } from "@/lib/api/preview";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { RandomStationButton } from "@/components/mmi/RandomStationButton";
-import Link from "next/link";
+import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsButton";
+import { getTierStatus } from "@/lib/api/tier";
+import { getOnboardingProgress } from "@/lib/actions";
+import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
 
 export default async function PreviewPage() {
-    const competencies = await getPreviewCompetencies();
+    const [competencies, tierStatus, progress] = await Promise.all([
+        getPreviewCompetencies(),
+        getTierStatus(),
+        getOnboardingProgress(),
+    ]);
+
+    const dashboardReady = Boolean(progress?.track && progress?.format);
+    const canUseOwnQuestions = tierStatus.tier !== "free";
+
+    const previewSectionSlugs = new Set(competencies.map((c) => c.href.split("/").filter(Boolean).pop()));
+    const privateQuestions = canUseOwnQuestions ? await getMyPrivateQuestions() : [];
+    const hasOwnPreviewQuestions = privateQuestions.some((q) => previewSectionSlugs.has(q.sectionSlug));
 
     return (
         <div className="min-h-screen relative">
@@ -25,6 +40,7 @@ export default async function PreviewPage() {
             <div className="flex items-center justify-between px-6 py-5">
                 <BreadcrumbNav
                     items={[
+                        ...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []),
                         { label: "Medical School Interview", href: "/onboarding/medical-school" },
                         { label: "PREview" },
                     ]}
@@ -58,6 +74,14 @@ export default async function PreviewPage() {
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
                 <div className="flex items-center gap-3">
                     <RandomStationButton stations={competencies} />
+                    <PracticeMyQuestionsButton
+                        formatSlug="preview"
+                        formatLabel="PREview"
+                        circuitBasePath="/preview/full"
+                        stationBasePath="preview"
+                        canUseOwnQuestions={canUseOwnQuestions}
+                        hasOwnQuestions={hasOwnPreviewQuestions}
+                    />
                     <Link
                         href="/preview/full"
                         className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"

@@ -1,4 +1,4 @@
-import { Grid2X2, FileText, Video, GraduationCap, School, Users } from "lucide-react";
+import { Grid2X2, FileText, Video, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { User } from "@clerk/nextjs/server";
 import { createElement } from "react";
@@ -18,6 +18,8 @@ import { serverApiFetch, ApiError } from "@/lib/api/server-fetch";
 import { getReferralSummary } from "@/lib/api/referrals";
 import { getFeatures } from "@/lib/features";
 import { resolveIcon } from "@/lib/iconRegistry";
+import { getPerformanceTrend } from "@/lib/api/performance";
+import { PerformanceTrendChart } from "@/components/dashboard/PerformanceTrendChart";
 
 const iconMap: Record<string, LucideIcon> = {
     grid: Grid2X2,
@@ -87,7 +89,8 @@ function AccountSyncingState() {
 
 export default async function Dashboard() {
     const progress = await getOnboardingProgress();
-
+    const performanceTrend = await getPerformanceTrend();
+    
     if (!progress?.track || !progress?.format) {
         redirect("/onboarding");
     }
@@ -200,6 +203,9 @@ export default async function Dashboard() {
                             <SectionLabel>Overall readiness</SectionLabel>
                             <ReadinessSummary overallScore={data.readiness.overallScore} breakdown={data.readiness.breakdown} />
                         </div>
+                        
+                        <PerformanceTrendChart data={performanceTrend} />
+
                         <ActivityStreakCard
                             activityItems={data.recentActivity.items}
                             lockedCount={data.recentActivity.lockedCount}

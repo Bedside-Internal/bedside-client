@@ -108,3 +108,11 @@ export interface SocialLinkDTO {
     url: string;
     label: string | null;
 }
+
+export interface LandingPageData {
+    testimonials: TestimonialDTO[];
+    formatCards: FormatCardDTO[];
+    pricingTiers: PricingTierDTO[];
+    faqEntries: FaqEntryDTO[];
+    socialLinks: SocialLinkDTO[];
+}

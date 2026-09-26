@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
-import { ProgressBar } from "@/components/dashboard/Progressbar";
+import { MetricsCarousel } from "./MetricsCarousel";
 
 export interface FormatMetric {
   label: string;
@@ -79,10 +79,8 @@ export function FormatCard({
       </button>
 
       {expanded && (
-        <div className="mb-2 space-y-3 pt-1">
-          {metrics.map((metric) => (
-            <ProgressBar key={metric.label} label={metric.label} value={metric.value} tone={metric.tone} />
-          ))}
+        <div className="mb-2 pt-1">
+          <MetricsCarousel metrics={metrics} />
         </div>
       )}
 

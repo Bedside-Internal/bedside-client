@@ -7,6 +7,8 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Switch } from "@/components/ui/Switch";
 import { clientValidateQuestion } from "@/lib/content-safety";
 import { GenerateQuestionFlow } from "@/components/dashboard/GenerateQuestionFlow";
+import { ImportQuestionsFlow } from "@/components/dashboard/ImportQuestionsFlow";
+import { ImportDeckFlow } from "@/components/dashboard/ImportDeckFlow";
 import { UsageMeter } from "@/components/dashboard/UsageMeter";
 import type { UsageSummary, MyPrivateQuestion } from "@/lib/api/userQuestions";
 import { useQuestionScope } from "@/hooks/useQuestionScope";
@@ -35,25 +37,28 @@ interface Format {
     title: string;
 }
 
-type ComposerTab = "submit" | "generate";
+type ComposerTab = "submit" | "generate" | "import" | "importDeck";
 
 export function MyQuestionsClient({
     initialQuestions,
     formats,
+    initialFormatSlug,
     userTier,
     usage,
     privateQuestions,
 }: {
     initialQuestions: UserSubmittedQuestion[];
     formats: Format[];
+    initialFormatSlug: string;
     userTier: "free" | "paid" | "admin";
     usage: UsageSummary;
     privateQuestions: MyPrivateQuestion[];
 }) {
-    const { items: questions, error, submitting, clearError, create } = useMyQuestions(initialQuestions);
+    const { items: questions, error, submitting, clearError, create, refetch } = useMyQuestions(initialQuestions);
     const [shareWithApplicants, setShareWithApplicants] = useState(false);
     const [clientError, setClientError] = useState<string | null>(null);
     const [tab, setTab] = useState<ComposerTab>("submit");
+    const [generateFormatSlug, setGenerateFormatSlug] = useState(initialFormatSlug);
     const { pendingId: scopePendingId, error: scopeError, clearError: clearScopeError, requestShare, cancelShare, makePrivate } = useQuestionScope();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -116,9 +121,29 @@ export function MyQuestionsClient({
 
                     <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm">
                         <div className="mb-4 flex items-center gap-1 border-b border-[var(--color-sand)]">
+                            {tab === "generate" && userTier !== "free" && (
+                                <div className="mb-3 flex flex-wrap gap-1.5">
+                                    {formats.map((f) => (
+                                        <button
+                                            key={f.slug}
+                                            type="button"
+                                            onClick={() => setGenerateFormatSlug(f.slug)}
+                                            className={`rounded-full px-3 py-1 text-xs font-semibold transition ${generateFormatSlug === f.slug
+                                                ? "bg-[var(--color-mint)] text-white"
+                                                : "bg-[var(--color-sand)] text-[var(--color-ink)]/60 hover:bg-[var(--color-sand)]/70"
+                                                }`}
+                                        >
+                                            {f.title}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+
                             {([
                                 { key: "submit" as const, label: "Submit for Review" },
                                 { key: "generate" as const, label: "Generate with AI" },
+                                { key: "import" as const, label: "Import" },
+                                { key: "importDeck" as const, label: "Import Deck" },
                             ]).map((t) => (
                                 <button
                                     key={t.key}
@@ -223,20 +248,27 @@ export function MyQuestionsClient({
                             </form>
                         )}
 
-                        {tab === "generate" && (
-                            userTier === "free" ? (
-                                <div className="mt-4 rounded-lg border border-dashed border-[var(--color-sand)] bg-[var(--color-sand)]/30 px-5 py-8 text-center">
-                                    <Lock className="mx-auto h-8 w-8 text-slate-300" />
-                                    <p className="mt-3 font-medium text-[var(--color-ink)]">
-                                        Generate your own AI-powered questions
-                                    </p>
-                                    <p className="mt-1 text-sm text-slate-400">
-                                        Upgrade to instantly generate a fully-scored practice question, no admin review needed.
-                                    </p>
-                                </div>
-                            ) : (
-                                <GenerateQuestionFlow embedded />
-                            )
+                        {tab === "generate" && (userTier === "free" ? (
+                            <div className="mt-4 rounded-lg border border-dashed border-[var(--color-sand)] bg-[var(--color-sand)]/30 px-5 py-8 text-center">
+                                <Lock className="mx-auto h-8 w-8 text-slate-300" />
+                                <p className="mt-3 font-medium text-[var(--color-ink)]">
+                                    Generate your own AI-powered questions
+                                </p>
+                                <p className="mt-1 text-sm text-slate-400">
+                                    Upgrade to instantly generate a fully-scored practice question, no admin review needed.
+                                </p>
+                            </div>
+                        ) : (
+                            <GenerateQuestionFlow key={generateFormatSlug} embedded formatSlug={generateFormatSlug} />
+                        )
+                        )}
+
+                        {tab === "import" && (
+                            <ImportQuestionsFlow formats={formats} userTier={userTier} onImported={refetch} />
+                        )}
+
+                        {tab === "importDeck" && (
+                            <ImportDeckFlow formats={formats} userTier={userTier} onImported={refetch} />
                         )}
                     </div>
                 </div>
@@ -358,6 +390,6 @@ export function MyQuestionsClient({
                     )}
                 </div>
             </div>
-        </div >
+        </div>
     );
 }

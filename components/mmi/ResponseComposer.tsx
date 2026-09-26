@@ -5,6 +5,9 @@ import { ArrowRight, ChevronDown, Mic, PenLine, Video } from "lucide-react";
 import { AudioRecorder } from "./AudioRecorder";
 import { VideoRecorder } from "./VideoRecorder";
 import { ComposePayload } from "@/types/formats";
+import { useDraftAutosave } from "@/hooks/useDraftAutosave";
+import { useUnsavedChangesGuard } from "@/hooks/useUnsavedChangesGuard";
+import { timeAgo } from "@/lib/utils";
 
 export type ComposerMode = "written" | "audio" | "video";
 
@@ -22,6 +25,8 @@ const MODES: ModeConfig[] = [
 
 interface ResponseComposerProps {
     onRecordingBusyChange?: (busy: boolean) => void;
+    attemptId: string;
+    questionId: string;
     guidanceNote?: string;
     minWords?: number;
     submitting?: boolean;
@@ -30,6 +35,8 @@ interface ResponseComposerProps {
 }
 
 export function ResponseComposer({
+    attemptId,
+    questionId,
     guidanceNote,
     onRecordingBusyChange,
     minWords = 30,
@@ -44,6 +51,16 @@ export function ResponseComposer({
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
 
+    const { restoredDraft, restoredAt, clearDraft, dismissRestore } =
+        useDraftAutosave(attemptId, questionId, text);
+
+    useUnsavedChangesGuard(
+        (mode === "written" && text.trim().length > 0 ||
+            mode === "audio" && audioBlob !== null ||
+            mode === "video" && videoBlob !== null) &&
+        !submitting
+    );
+
     const wordCount = text.trim().length === 0 ? 0 : text.trim().split(/\s+/).length;
     const canSubmit =
         mode === "written"
@@ -55,6 +72,7 @@ export function ResponseComposer({
     function handleSubmitClick() {
         if (mode === "written") {
             onSubmit({ mode: "written", text });
+            clearDraft();
         } else if (mode === "audio" && audioBlob) {
             onSubmit({ mode: "audio", blob: audioBlob });
         } else if (mode === "video" && videoBlob) {
@@ -64,6 +82,29 @@ export function ResponseComposer({
 
     return (
         <div className="flex flex-col gap-4">
+            {restoredDraft && (
+                <div className="flex items-center justify-between rounded-xl border border-[var(--color-amber)]/30 bg-[var(--color-amber)]/10 px-4 py-3 text-sm">
+                    <span className="text-[var(--color-ink)]/70">
+                        We found an unsaved draft from {timeAgo(restoredAt)}.
+                    </span>
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => { setText(restoredDraft); dismissRestore(); }}
+                            className="font-semibold text-[var(--color-mint-hover)]"
+                        >
+                            Restore
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => { dismissRestore(); clearDraft(); }}
+                            className="text-[var(--color-ink)]/40"
+                        >
+                            Discard
+                        </button>
+                    </div>
+                </div>
+            )}
             <div data-tour="response-modes" className="flex items-center gap-2">
                 {MODES.map(({ id, label, icon: Icon }) => {
                     const active = mode === id;

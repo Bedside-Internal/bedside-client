@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import clsx from "clsx";
 import RevealOnScroll from "@/components/ui/RevealOnScroll";
 import MagneticButton from "@/components/ui/MagneticButton";
 import type { PricingTierDTO } from "@/types/marketing";
 
 function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }) {
+  const { isSignedIn } = useUser();
+  
   const cycles = tier.billingCycles;
   const [selectedMonths, setSelectedMonths] = useState<number | null>(
     tier.defaultCycleMonths ?? cycles[0]?.months ?? null,
@@ -16,6 +19,8 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
   const req = tier.requirements;
   const isEarned =
     req.referralsRequired > 0 || req.ownTestimonialRequired || req.referredTestimonialRequired;
+
+  const ctaHref = isSignedIn ? "/dashboard/refer" : "/sign-in"; // either upgrade option or go to sign-in
 
   const requirementLabels: string[] = [];
   if (req.referralsRequired > 0) {
@@ -153,7 +158,7 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
         </div>
 
         <MagneticButton
-          href={isEarned ? "/sign-in" : "#"}
+          href={ctaHref}
           className={clsx(
             "block w-full rounded-md border-[2.5px] border-ink py-4 text-center text-base font-semibold shadow-hard transition-[box-shadow,transform] duration-[120ms] ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:translate-x-[3px] hover:translate-y-[3px]",
             tier.featured

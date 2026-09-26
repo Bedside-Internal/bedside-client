@@ -85,6 +85,7 @@ export interface ResponseFeedback {
     strengths: string[];
     areasToImprove: string[];
     summary: string;
+    idealResponse?: string;
     tier: "basic" | "full";
 }
 
@@ -117,6 +118,7 @@ export interface ApiErrorPayload {
 export interface SectionQuestions {
     sectionTitle: string;
     questions: QuestionListItem[];
+    totalAvailable: number;
 }
 
 export interface CompetencyDTO {

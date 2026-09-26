@@ -88,6 +88,7 @@ export function CircuitStationRunner({
         </div>
       )}
       <QuestionRunner
+        attemptId={attemptId}
         question={question}
         breadcrumb={[{ label: breadcrumbLabel }, { label: station.title }]}
         onExit={() => router.push(exitHref)}

@@ -96,6 +96,7 @@ export function CasperStationRunner({
             )}
             {question.scenario.response_mode === "video" ? (
                 <QuestionRunner
+                    attemptId={attemptId}
                     question={question}
                     breadcrumb={breadcrumb}
                     onExit={() => router.push("/onboarding/medical-school/format-casper")}

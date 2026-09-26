@@ -7,7 +7,7 @@ import type {
     PrivateQuestionResult,
 } from "@/lib/api/userQuestions";
 
-export function useQuestionGeneration(formatSlug = "mmi") {
+export function useQuestionGeneration(formatSlug: string) {
     const apiFetch = useApiFetch();
 
     const [sections, setSections] = useState<SectionOption[]>([]);

@@ -1,12 +1,16 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
-import { GraduationCap, School } from "lucide-react";
+import { redirect } from "next/navigation";
+import { ChevronLeft, GraduationCap, School } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
 import { getMyQuestions, getUsageSummary, getMyPrivateQuestions, getQuestionFormats } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getDashboardData } from "@/app/dashboard/page";
 import { ApiError } from "@/lib/api/server-fetch";
 import { MyQuestionsClient } from "@/components/dashboard/MyQuestionsClient";
+import NextLink from "next/link";
+import { getFeatures } from "@/lib/features";
+import { createElement } from "react";
+import { resolveIcon } from "@/lib/iconRegistry";
 
 interface DashboardData {
     track: { id: string; slug: string; label: string };
@@ -21,6 +25,10 @@ interface DashboardData {
     }>;
 }
 
+interface MyQuestionsPageProps {
+    searchParams: Promise<{ format?: string }>;
+}
+
 async function getTrackData(): Promise<DashboardData> {
     const progress = await getOnboardingProgress();
     if (!progress?.track) {
@@ -29,11 +37,7 @@ async function getTrackData(): Promise<DashboardData> {
     return getDashboardData(progress.track);
 }
 
-export default async function MyQuestionsPage() {
-    if (process.env.NEXT_PUBLIC_DISABLE_PAGE === "1") {
-        notFound();
-    }
-
+export default async function MyQuestionsPage({ searchParams }: MyQuestionsPageProps) {
     const progress = await getOnboardingProgress();
     if (!progress?.track || !progress?.format) {
         redirect("/onboarding");
@@ -44,13 +48,15 @@ export default async function MyQuestionsPage() {
     let usage;
     let privateQuestions;
     let formatOptions;
+    let trackFeatures;
     try {
-        [user, questions, usage, privateQuestions, formatOptions] = await Promise.all([
+        [user, questions, usage, privateQuestions, formatOptions, trackFeatures] = await Promise.all([
             currentUser(),
             getMyQuestions(),
             getUsageSummary(),
             getMyPrivateQuestions(),
             getQuestionFormats(),
+            getFeatures("track"),
         ]);
     } catch (err) {
         if (err instanceof ApiError && err.status === 404) {
@@ -59,20 +65,33 @@ export default async function MyQuestionsPage() {
         throw err;
     }
 
+    const tracks = trackFeatures.map((t) => ({
+        id: t.key,
+        label: t.title,
+        icon: createElement(resolveIcon(t.icon)),
+    }));
     const trackData = await getTrackData();
     const userTier = (user?.publicMetadata?.tier as "free" | "paid" | "admin") ?? "free";
 
+    const { format: requestedFormat } = await searchParams;
+    const initialFormatSlug =
+        requestedFormat && formatOptions.some((f) => f.slug === requestedFormat)
+            ? requestedFormat
+            : (formatOptions[0]?.slug ?? "mmi");
+
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
-            <TopBar
-                tracks={[
-                    { id: "med-school", label: "Medical School", icon: <GraduationCap /> },
-                    { id: "college-admissions", label: "College Admissions", icon: <School /> },
-                ]}
-                activeTrackId={trackData.track.slug}
-            />
+            <TopBar tracks={tracks} activeTrackId={trackData.track.slug} />
 
             <div className="max-w-7xl px-8 py-8">
+                <NextLink
+                    href="/dashboard"
+                    className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-slate-400 transition hover:text-[var(--color-ink)]"
+                >
+                    <ChevronLeft className="h-4 w-4" />
+                    Back to dashboard
+                </NextLink>
+
                 <div className="mb-6">
                     <h1 className="font-poppins text-xl font-bold text-[var(--color-ink)]">My Questions</h1>
                     <p className="mt-1 text-sm text-slate-400">
@@ -83,6 +102,7 @@ export default async function MyQuestionsPage() {
                 <MyQuestionsClient
                     initialQuestions={questions}
                     formats={formatOptions}
+                    initialFormatSlug={initialFormatSlug}
                     userTier={userTier}
                     usage={usage}
                     privateQuestions={privateQuestions}

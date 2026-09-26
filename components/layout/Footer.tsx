@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SocialIcon, PLATFORM_LABELS } from "./SocialIcon";
 import type { SocialLinkDTO } from "@/types/marketing";
+import { Logo } from "../ui/Logo";
 
 const productLinks = [
   { href: "#features", label: "Formats" },
@@ -24,12 +25,7 @@ export default function Footer({ socialLinks = [] }: FooterProps) {
       <div className="mx-auto max-w-[1160px]">
         <div className="mb-12 flex flex-wrap items-start justify-between gap-10">
           <div>
-            <div className="mb-3 flex items-center gap-2.5">
-              <img src="/bedside_logo_light.svg" alt="Bedside" className="h-6 w-auto" />
-              <span className="font-display text-[22px] tracking-tight text-cream">
-                Bedside
-              </span>
-            </div>
+            <Logo theme="cream" width={30} height={30} />
             <p className="max-w-[240px] text-sm leading-relaxed text-cream/45">
               AI-powered mock interviews for med school applicants. Every
               format. No excuses.

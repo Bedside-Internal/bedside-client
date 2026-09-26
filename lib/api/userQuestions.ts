@@ -102,3 +102,16 @@ export interface FormatOption {
 export async function getQuestionFormats(): Promise<FormatOption[]> {
     return serverApiFetch<FormatOption[]>("/api/questions/formats");
 }
+
+export type {
+    ColumnRole,
+    ColumnRoleAssignment,
+    ColumnMapping,
+    CsvParsePreview,
+    CsvPreviewResponse,
+    SegmentedBlock,
+    PdfPreviewResponse,
+    ImportedQuestion,
+    SkippedImportRow,
+    ImportCommitResult,
+} from "@/types/questionImport";

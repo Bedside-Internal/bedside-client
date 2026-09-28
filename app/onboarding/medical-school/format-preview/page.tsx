@@ -12,6 +12,7 @@ import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsB
 import { getTierStatus } from "@/lib/api/tier";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
+import { FormatOverviewTutorial } from "@/components/tutorials/TutorialOverlay";
 
 export default async function PreviewPage() {
     const [competencies, tierStatus, progress] = await Promise.all([
@@ -54,8 +55,9 @@ export default async function PreviewPage() {
                     title="Practice your responses"
                     subtitle="Read a scenario and select from a scale"
                 />
+                <FormatOverviewTutorial format="preview" />
 
-                <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div data-tour="preview-competency-grid" className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {competencies.map((c) => (
                         <StationCard
                             key={c.title}
@@ -72,7 +74,7 @@ export default async function PreviewPage() {
             </div>
 
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
-                <div className="flex items-center gap-3">
+                <div data-tour="preview-practice-options" className="flex items-center gap-3">
                     <RandomStationButton stations={competencies} />
                     <PracticeMyQuestionsButton
                         formatSlug="preview"

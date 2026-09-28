@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { useTutorial } from "@/hooks/useTutorial";
+import { casperTutorial } from "@/lib/tutorials/casper";
 import { mmiTutorial } from "@/lib/tutorials/mmi";
+import { previewTutorial } from "@/lib/tutorials/preview";
 import type { TutorialContext } from "@/lib/tutorials/types";
 import { TutorialOverlay } from "@/components/tutorials/TutorialOverlay";
 import { ArrowLeft, ArrowRight, User, Home } from "lucide-react";
@@ -64,12 +66,19 @@ export function QuestionRunner({
     const isRatedItems = question.scenario.response_mode === "rated_items";
 
     const [recordingBusy, setRecordingBusy] = useState(false);
-    const tutorialEligible = tutorialContext?.format === "mmi" && tutorialContext.practiceKind === "single-station" && !isRatedItems;
-    const tutorialDefinition = useMemo(() => mmiTutorial(phase === "submitted" ? "feedback" : phase, {
-        hasResponseTimer: question.scenario.response_time_seconds !== null,
-        hasHints: Boolean(question.guidance_note),
-        hasFeedback: Boolean(feedback),
-    }), [phase, question.scenario.response_time_seconds, question.guidance_note, feedback]);
+    const tutorialEligible = tutorialContext?.practiceKind === "single-station" && (
+        tutorialContext.format === "preview" ? isRatedItems : !isRatedItems
+    );
+    const tutorialDefinition = useMemo(() => {
+        const stage = phase === "submitted" ? "feedback" : phase;
+        const options = {
+            hasResponseTimer: question.scenario.response_time_seconds !== null,
+            hasFeedback: Boolean(feedback),
+        };
+        if (tutorialContext?.format === "preview") return previewTutorial(stage, options);
+        if (tutorialContext?.format === "casper") return casperTutorial(stage, { ...options, videoResponse: true });
+        return mmiTutorial(stage, { ...options, hasHints: Boolean(question.guidance_note) });
+    }, [phase, question.scenario.response_time_seconds, question.guidance_note, feedback, tutorialContext?.format]);
     const tutorial = useTutorial(tutorialDefinition, tutorialEligible && !submitting && !navPending && !recordingBusy &&
         !(phase === "reading" && question.scenario.reading_time_seconds <= 0), question.id);
     const tutorialPaused = Boolean(tutorial.run);
@@ -115,8 +124,9 @@ export function QuestionRunner({
                 <div className="flex items-center gap-4">
                     {tutorialEligible && (
                         <button type="button" onClick={tutorial.replay} disabled={!tutorial.canReplay || tutorialPaused}
-                            title={recordingBusy ? "Finish recording before opening the tutorial" : "Replay the tutorial for this phase"}
-                            className="rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:bg-white focus-visible:outline-2 focus-visible:outline-mint disabled:opacity-40">
+                            aria-disabled={!tutorial.canReplay || tutorialPaused}
+                            title={!tutorial.isSupported ? "Tutorials are available on larger screens" : recordingBusy ? "Finish recording before opening the tutorial" : "Replay the tutorial for this phase"}
+                            className="rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:bg-white focus-visible:outline-2 focus-visible:outline-mint disabled:cursor-not-allowed disabled:opacity-40">
                             Take the tour
                         </button>
                     )}
@@ -225,6 +235,7 @@ export function QuestionRunner({
                             <div className="w-full">
                                 {isRatedItems && question.response_items ? (
                                     <RatingPanel
+                                        tutorialEnabled={tutorialEligible}
                                         items={question.response_items}
                                         submitting={submitting}
                                         onSubmit={(ratings) => handleSubmit({ mode: "rated_items", ratings })}

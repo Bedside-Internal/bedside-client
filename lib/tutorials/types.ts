@@ -1,6 +1,7 @@
 export type TutorialStage = "overview" | "reading" | "responding" | "feedback";
 export type TutorialStatus = "presented" | "completed";
 export type TutorialOutcome = "completed" | "dismissed" | "interrupted";
+export type TutorialFormat = "mmi" | "preview" | "casper" | "dashboard" | "my-questions";
 
 export interface TutorialProgress {
     dismissed: boolean;
@@ -14,13 +15,14 @@ export interface TutorialStep {
 }
 
 export interface TutorialDefinition {
-    format: "mmi";
+    format: TutorialFormat;
     stage: TutorialStage;
+    pausesTimer: boolean;
     steps: TutorialStep[];
 }
 
 /** Opt in at the route, never by inspecting a shared component's location. */
 export interface TutorialContext {
-    format: "mmi";
+    format: "mmi" | "preview" | "casper";
     practiceKind: "single-station";
 }

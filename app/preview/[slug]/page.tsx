@@ -49,6 +49,7 @@ export default async function PreviewStationPage({ params, searchParams }: Previ
 
     return (
         <StationRunner
+            tutorialContext={{ format: "preview", practiceKind: "single-station" }}
             basePath="preview"
             formatLabel="PREview"
             stationListHref="/onboarding/medical-school/format-preview"

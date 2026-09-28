@@ -3,6 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { progressUpdateForOutcome } from "@/lib/tutorials/outcomes";
 import { readTutorialProgress, tutorialStorageKey, updateTutorialProgress } from "@/lib/tutorials/storage";
 import type { TutorialDefinition, TutorialOutcome } from "@/lib/tutorials/types";
 
@@ -37,18 +38,21 @@ export function useTutorial(definition: TutorialDefinition, enabled: boolean, in
     const pathname = usePathname();
     const scope = `${userId}:${pathname}:${instance}:${definition.stage}`;
     const [candidate, setCandidate] = useState<TutorialRun | null>(null);
-    const gate = `${scope}:${enabled}`;
-    const [previousGate, setPreviousGate] = useState(gate);
-    if (previousGate !== gate) {
-        setPreviousGate(gate);
-        setCandidate(null);
-    }
+    const [isSupported, setIsSupported] = useState(false);
     const attempted = useRef(new Set<string>());
     const sequence = useRef(0);
-    const run = enabled && isLoaded && userId && candidate?.scope === scope ? candidate : null;
+    const run = enabled && isSupported && isLoaded && userId && candidate?.scope === scope ? candidate : null;
+
+    useEffect(() => {
+        const media = window.matchMedia("(min-width: 64rem)");
+        const updateSupport = () => setIsSupported(media.matches);
+        updateSupport();
+        media.addEventListener("change", updateSupport);
+        return () => media.removeEventListener("change", updateSupport);
+    }, []);
 
     const launch = useCallback((automatic: boolean) => {
-        if (!enabled || !isLoaded || !userId) return;
+        if (!enabled || !isSupported || !isLoaded || !userId) return;
         const storageKey = tutorialStorageKey(userId, definition.format);
         const progress = readTutorialProgress(storageKey);
         if (automatic && (attempted.current.has(scope) || progress.dismissed || progress.stages[definition.stage])) return;
@@ -56,7 +60,24 @@ export function useTutorial(definition: TutorialDefinition, enabled: boolean, in
         if (!targets) return;
         attempted.current.add(scope);
         setCandidate({ id: ++sequence.current, scope, storageKey, automatic, definition, targets });
-    }, [enabled, isLoaded, userId, definition, scope]);
+    }, [enabled, isSupported, isLoaded, userId, definition, scope]);
+
+    const end = useCallback((current: TutorialRun, outcome: TutorialOutcome) => {
+        const update = progressUpdateForOutcome(current.automatic, outcome);
+        if (update) updateTutorialProgress(current.storageKey, current.definition.stage, update);
+        setCandidate((value) => value?.id === current.id ? null : value);
+    }, []);
+
+    useEffect(() => {
+        if (!candidate) return;
+        if (!enabled || !isSupported || !isLoaded || !userId || candidate.scope !== scope) {
+            let cancelled = false;
+            queueMicrotask(() => {
+                if (!cancelled) end(candidate, "interrupted");
+            });
+            return () => { cancelled = true; };
+        }
+    }, [candidate, enabled, isSupported, isLoaded, userId, scope, end]);
 
     useEffect(() => {
         // After commit: targets and Clerk identity must exist before any DOM work.
@@ -68,12 +89,6 @@ export function useTutorial(definition: TutorialDefinition, enabled: boolean, in
             window.removeEventListener("resize", onResize);
         };
     }, [launch]);
-
-    const end = useCallback((current: TutorialRun, outcome: TutorialOutcome) => {
-        if (outcome === "completed") updateTutorialProgress(current.storageKey, current.definition.stage, "completed");
-        if (outcome === "dismissed" && current.automatic) updateTutorialProgress(current.storageKey, current.definition.stage, "dismissed");
-        setCandidate((value) => value?.id === current.id ? null : value);
-    }, []);
 
     const presented = useCallback((current: TutorialRun) => {
         updateTutorialProgress(current.storageKey, current.definition.stage, "presented");
@@ -94,5 +109,12 @@ export function useTutorial(definition: TutorialDefinition, enabled: boolean, in
         };
     }, [run, end]);
 
-    return { run, replay: () => launch(false), end, presented, canReplay: enabled && isLoaded && Boolean(userId) };
+    return {
+        run,
+        replay: () => launch(false),
+        end,
+        presented,
+        canReplay: enabled && isSupported && isLoaded && Boolean(userId),
+        isSupported,
+    };
 }

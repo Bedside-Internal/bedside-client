@@ -2,10 +2,13 @@
 
 import { Component, useCallback, useEffect, useMemo, useRef, type ReactNode } from "react";
 import { Joyride, EVENTS, type EventData, type TooltipRenderProps } from "react-joyride";
-import { X } from "lucide-react";
+import { CircleHelp, X } from "lucide-react";
 import { isTutorialTargetVisible, useTutorial, type TutorialRun } from "@/hooks/useTutorial";
+import { casperTutorial } from "@/lib/tutorials/casper";
 import { mmiTutorial } from "@/lib/tutorials/mmi";
-import type { TutorialOutcome } from "@/lib/tutorials/types";
+import { previewTutorial } from "@/lib/tutorials/preview";
+import { dashboardTutorial, myQuestionsTutorial } from "@/lib/tutorials/pages";
+import type { TutorialDefinition, TutorialOutcome } from "@/lib/tutorials/types";
 
 const button = "rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mint";
 
@@ -70,13 +73,12 @@ function ActiveTutorial({ run, onEnd, onPresented }: OverlayProps) {
         target: run.targets[index],
         data: {
             finish: () => finish("completed"), dismiss: () => finish("dismissed"),
-            timed: run.definition.stage === "reading" || run.definition.steps.some((item) => item.target === '[data-tour="response-timer"]'),
+            timed: run.definition.pausesTimer,
         } satisfies TutorialActions,
     })), [run, finish]);
 
     useEffect(() => {
         ended.current = false;
-        const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
         // A stalled library initialization must never hold a practice timer.
         deadline.current = setTimeout(() => finish("interrupted"), 3000);
         const escape = (event: KeyboardEvent) => {
@@ -91,10 +93,8 @@ function ActiveTutorial({ run, onEnd, onPresented }: OverlayProps) {
             clearTimeout(deadline.current);
             if (frame.current !== undefined) cancelAnimationFrame(frame.current);
             document.removeEventListener("keydown", escape, true);
-            // Restore the original trigger even after visiting several tooltips.
-            queueMicrotask(() => {
-                if (previousFocus && isTutorialTargetVisible(previousFocus)) previousFocus.focus({ preventScroll: true });
-            });
+            // Technical teardown is intentionally not persisted as completion or dismissal.
+            // Joyride's focus trap restores focus to the element active before the tooltip.
         };
     }, [finish]);
 
@@ -137,7 +137,7 @@ function ActiveTutorial({ run, onEnd, onPresented }: OverlayProps) {
             locale={{ back: "Back", next: "Next", last: "Finish", skip: "Skip tour", close: "Close tutorial" }}
             options={{
                 skipBeacon: true, blockTargetInteraction: true, closeButtonAction: "skip",
-                dismissKeyAction: false, overlayClickAction: false, scrollDuration: 0,
+                dismissKeyAction: false, disableFocusTrap: false, overlayClickAction: false, scrollDuration: 0,
                 targetWaitTimeout: 0, spotlightRadius: 16, zIndex: 10000,
                 backgroundColor: "var(--color-cream)", arrowColor: "var(--color-cream)",
                 primaryColor: "var(--color-mint)", textColor: "var(--color-ink)",
@@ -153,12 +153,39 @@ export function TutorialOverlay(props: OverlayProps) {
 /** Small client island keeps the overview page server-rendered. */
 export function MmiOverviewTutorial() {
     const definition = useMemo(() => mmiTutorial("overview"), []);
-    const tutorial = useTutorial(definition, true, "overview");
+    return <TutorialLauncher definition={definition} />;
+}
+
+function TutorialLauncher({ definition, instance = "overview", compact = false }: { definition: TutorialDefinition; instance?: string; compact?: boolean }) {
+    const tutorial = useTutorial(definition, true, instance);
+    const disabled = !tutorial.canReplay || Boolean(tutorial.run);
+    const title = !tutorial.isSupported ? "Tutorials are available on larger screens" : "Replay this tutorial";
+
     return (
-        <div className="mt-4 flex justify-center">
-            <button type="button" onClick={tutorial.replay} disabled={!tutorial.canReplay || Boolean(tutorial.run)}
-                className={`${button} text-ink/60 hover:bg-white disabled:opacity-40`}>Take the tour</button>
+        <div className={compact ? "shrink-0" : "mt-4 flex justify-center"}>
+            <button type="button" onClick={tutorial.replay} disabled={disabled} aria-disabled={disabled} title={title}
+                className={compact
+                    ? "inline-flex items-center gap-1.5 rounded-md px-1 py-0.5 text-xs font-medium text-slate-400 hover:text-ink/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mint disabled:cursor-not-allowed disabled:opacity-40"
+                    : `${button} text-ink/60 hover:bg-white disabled:cursor-not-allowed disabled:opacity-40`}>
+                {compact && <CircleHelp className="h-3.5 w-3.5" aria-hidden="true" />}
+                Take the tour
+            </button>
             {tutorial.run && <TutorialOverlay key={tutorial.run.id} run={tutorial.run} onEnd={tutorial.end} onPresented={tutorial.presented} />}
         </div>
     );
+}
+
+export function FormatOverviewTutorial({ format }: { format: "preview" | "casper" }) {
+    const definition = useMemo(() => format === "preview" ? previewTutorial("overview") : casperTutorial("overview"), [format]);
+    return <TutorialLauncher definition={definition} />;
+}
+
+export function DashboardTutorial() {
+    const definition = useMemo(() => dashboardTutorial(), []);
+    return <TutorialLauncher definition={definition} compact />;
+}
+
+export function MyQuestionsTutorial() {
+    const definition = useMemo(() => myQuestionsTutorial(), []);
+    return <TutorialLauncher definition={definition} />;
 }

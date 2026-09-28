@@ -117,9 +117,11 @@ export function MyQuestionsClient({
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,540px)_1fr] lg:items-start">
                 <div className="flex flex-col gap-6">
-                    <UsageMeter usage={usage} userTier={userTier} />
+                    <div data-tour="questions-usage">
+                        <UsageMeter usage={usage} userTier={userTier} />
+                    </div>
 
-                    <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm">
+                    <div data-tour="questions-tools" className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm">
                         <div className="mb-4 flex items-center gap-1 border-b border-[var(--color-sand)]">
                             {tab === "generate" && userTier !== "free" && (
                                 <div className="mb-3 flex flex-wrap gap-1.5">
@@ -273,7 +275,7 @@ export function MyQuestionsClient({
                     </div>
                 </div>
 
-                <div className="lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:self-start lg:overflow-y-auto">
+                <div data-tour="questions-library" className="lg:sticky lg:top-8 lg:max-h-[calc(100vh-4rem)] lg:self-start lg:overflow-y-auto">
                     <h2 className="mb-4 font-poppins text-lg font-semibold text-[var(--color-ink)]">Your Questions</h2>
 
                     {!hasAnyQuestions ? (

@@ -12,6 +12,7 @@ import { PracticeMyQuestionsButton } from "@/components/mmi/PracticeMyQuestionsB
 import { getTierStatus } from "@/lib/api/tier";
 import { getOnboardingProgress } from "@/lib/actions";
 import { getMyPrivateQuestions } from "@/lib/api/userQuestions";
+import { FormatOverviewTutorial } from "@/components/tutorials/TutorialOverlay";
 
 export default async function CasperPage() {
     const [competencies, tierStatus, progress] = await Promise.all([
@@ -43,14 +44,15 @@ export default async function CasperPage() {
             </div>
             <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">
                 <OnboardingHeader eyebrow="CASPer - Situational Judgement" title="Practice by competency" subtitle="Each section: watch a short scenario, then answer questions in five minutes" />
-                <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <FormatOverviewTutorial format="casper" />
+                <div data-tour="casper-competency-grid" className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {competencies.map((c) => (
                         <StationCard key={c.title} icon={resolveIcon(c.icon)} title={c.title} description={c.description} totalQuestions={c.totalQuestions} completedQuestions={c.completedQuestions} unitLabel="sections" href={c.href} />
                     ))}
                 </div>
             </div>
             <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
-                <div className="flex items-center gap-3">
+                <div data-tour="casper-practice-options" className="flex items-center gap-3">
                     <RandomStationButton stations={competencies} />
                     <PracticeMyQuestionsButton
                         formatSlug="casper"

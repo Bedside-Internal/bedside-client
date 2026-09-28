@@ -25,5 +25,5 @@ export function mmiTutorial(
             { target: target("question-feedback"), title: "Review your feedback", content: options.hasFeedback === false ? "Your response was saved, but feedback isn't available this time. You can still move on to the next question." : "Check your score, what you did well, and what you can improve before the next question." },
         ],
     };
-    return { format: "mmi", stage, steps: steps[stage] };
+    return { format: "mmi", stage, pausesTimer: stage === "reading" || (stage === "responding" && Boolean(options.hasResponseTimer)), steps: steps[stage] };
 }

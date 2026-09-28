@@ -20,6 +20,7 @@ import { getFeatures } from "@/lib/features";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { getPerformanceTrend } from "@/lib/api/performance";
 import { PerformanceTrendChart } from "@/components/dashboard/PerformanceTrendChart";
+import { DashboardTutorial } from "@/components/tutorials/TutorialOverlay";
 
 const iconMap: Record<string, LucideIcon> = {
     grid: Grid2X2,
@@ -142,8 +143,11 @@ export default async function Dashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-8 pb-12 lg:grid-cols-3">
-                    <section aria-label="Your formats">
-                        <SectionLabel>Your formats</SectionLabel>
+                    <section aria-label="Your formats" data-tour="dashboard-formats">
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Your formats</p>
+                            <DashboardTutorial />
+                        </div>
                         <div className="space-y-6">
                             {data.formats.map((format) => (
                                 <FormatCard
@@ -163,7 +167,7 @@ export default async function Dashboard() {
                         </div>
                     </section>
 
-                    <section aria-label="Recommended next" className="space-y-8">
+                    <section aria-label="Recommended next" className="space-y-8" data-tour="dashboard-actions">
                         {data.weakestArea && weakestAreaIcon && (
                             <div>
                                 <SectionLabel>Recommended next</SectionLabel>
@@ -198,7 +202,7 @@ export default async function Dashboard() {
                         </div>
                     </section>
 
-                    <section aria-label="Overall readiness" className="space-y-6">
+                    <section aria-label="Overall readiness" className="space-y-6" data-tour="dashboard-readiness">
                         <div>
                             <SectionLabel>Overall readiness</SectionLabel>
                             <ReadinessSummary overallScore={data.readiness.overallScore} breakdown={data.readiness.breakdown} />

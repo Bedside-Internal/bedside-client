@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, User, Home } from "lucide-react";
+import { TutorialOverlay } from "@/components/tutorials/TutorialOverlay";
+import { useTutorial } from "@/hooks/useTutorial";
+import { casperTutorial } from "@/lib/tutorials/casper";
 import { Timer } from "../mmi/Timer";
 import { ScenarioPanel } from "../mmi/ScenarioPanel";
 import { ResponseFeedbackCard } from "../mmi/ResponseFeedbackCard";
@@ -33,6 +36,13 @@ export function CasperQuestionRunner({
     const [texts, setTexts] = useState<Record<string, string>>({});
     const [submitted, setSubmitted] = useState(false);
 
+    const tutorialDefinition = useMemo(() => casperTutorial(submitted ? "feedback" : "responding", {
+        hasResponseTimer: question.scenario.response_time_seconds !== null,
+        hasFeedback: Boolean(feedback),
+    }), [submitted, question.scenario.response_time_seconds, feedback]);
+    const tutorial = useTutorial(tutorialDefinition, !submitting && !navPending, question.id);
+    const tutorialPaused = Boolean(tutorial.run);
+
     const navLocked = navPending;
     const allFilled = question.prompts.every((p) => (texts[p.id] ?? "").trim().length > 0);
 
@@ -48,6 +58,7 @@ export function CasperQuestionRunner({
 
     return (
         <div className="min-h-screen bg-[var(--color-cream)]">
+            {tutorial.run && <TutorialOverlay key={tutorial.run.id} run={tutorial.run} onEnd={tutorial.end} onPresented={tutorial.presented} />}
             <div className="flex items-center justify-between px-6 py-5">
                 <nav className="flex items-center gap-2 text-sm">
                     {breadcrumb.map((crumb, i) => (
@@ -60,6 +71,12 @@ export function CasperQuestionRunner({
                     ))}
                 </nav>
                 <div className="flex items-center gap-4">
+                    <button type="button" onClick={tutorial.replay} disabled={!tutorial.canReplay || tutorialPaused}
+                        aria-disabled={!tutorial.canReplay || tutorialPaused}
+                        title={!tutorial.isSupported ? "Tutorials are available on larger screens" : "Replay the tutorial for this section"}
+                        className="rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:bg-white focus-visible:outline-2 focus-visible:outline-mint disabled:cursor-not-allowed disabled:opacity-40">
+                        Take the tour
+                    </button>
                     <button type="button" onClick={onExit} aria-label="Exit station" className="rounded-lg p-2 text-[var(--color-ink)]/60 hover:bg-white">
                         <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
                     </button>
@@ -78,7 +95,9 @@ export function CasperQuestionRunner({
 
             <div className="grid grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
                 <div className="flex flex-col lg:min-h-[600px]">
-                    <ScenarioPanel text={question.scenario.text} videoUrl={question.scenario.video_url} />
+                    <div data-tour="question-scenario">
+                        <ScenarioPanel text={question.scenario.text} videoUrl={question.scenario.video_url} />
+                    </div>
                     <div className="mt-8 flex items-center gap-3">
                         <button type="button" disabled={!hasPrev || navLocked} onClick={onPrev} className="flex items-center gap-1 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40">
                             <ArrowLeft className="h-4 w-4" strokeWidth={2.5} /> Prev
@@ -91,8 +110,9 @@ export function CasperQuestionRunner({
 
                 <div className="flex flex-col gap-4 lg:pt-4">
                     {!submitted && question.scenario.response_time_seconds !== null && (
-                        <div className="flex items-center justify-between">
+                        <div data-tour="casper-timer" className="flex items-center justify-between">
                             <Timer
+                                isRunning={!tutorialPaused}
                                 key={`respond-${question.id}`}
                                 durationSeconds={question.scenario.response_time_seconds}
                                 eyebrow="TIME REMAINING"
@@ -102,7 +122,8 @@ export function CasperQuestionRunner({
                         </div>
                     )}
 
-                    {!submitted && question.prompts.map((p, i) => (
+                    {!submitted && <div data-tour="casper-responses" className="flex flex-col gap-4">
+                        {question.prompts.map((p, i) => (
                         <div key={p.id} className="rounded-xl bg-white p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
                             <p className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--color-ink)]">
                                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--color-sand)] text-xs">Q{i + 1}</span>
@@ -117,10 +138,12 @@ export function CasperQuestionRunner({
                             />
                             <p className="mt-1 text-right text-xs text-[var(--color-ink)]/40">Suggested: 3-5 sentences</p>
                         </div>
-                    ))}
+                        ))}
+                    </div>}
 
                     {!submitted && (
                         <button
+                            data-tour="casper-submit"
                             type="button"
                             disabled={!allFilled || submitting}
                             onClick={handleSubmit}
@@ -130,7 +153,11 @@ export function CasperQuestionRunner({
                         </button>
                     )}
 
-                    {submitted && feedback && <ResponseFeedbackCard feedback={feedback} />}
+                    {submitted && feedback && (
+                        <div data-tour="question-feedback" className="flex flex-col gap-4">
+                            <ResponseFeedbackCard feedback={feedback} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

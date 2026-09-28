@@ -11,6 +11,7 @@ interface RatingPanelProps {
     onSubmit: (ratings: { itemId: string; rating: RatingLabel }[]) => void;
     onPrevQuestion?: () => void;
     hasPrevQuestion?: boolean;
+    tutorialEnabled?: boolean;
 }
 
 export function RatingPanel({
@@ -19,6 +20,7 @@ export function RatingPanel({
     onSubmit,
     onPrevQuestion,
     hasPrevQuestion = false,
+    tutorialEnabled = false,
 }: RatingPanelProps) {
     const [ratings, setRatings] = useState<Record<string, RatingLabel>>({});
 
@@ -36,7 +38,7 @@ export function RatingPanel({
 
     return (
         <div className="flex w-full flex-col gap-4">
-            <div className="divide-y divide-[var(--color-sand)] rounded-2xl border border-[var(--color-sand)] bg-white">
+            <div data-tour={tutorialEnabled ? "rating-options" : undefined} className="divide-y divide-[var(--color-sand)] rounded-2xl border border-[var(--color-sand)] bg-white">
                 {items.map((item, i) => (
                     <RatingItemRow
                         key={item.id}
@@ -48,7 +50,7 @@ export function RatingPanel({
                 ))}
             </div>
 
-            <div className="flex items-center justify-between">
+            <div data-tour={tutorialEnabled ? "rating-submission" : undefined} className="flex items-center justify-between">
                 {hasPrevQuestion ? (
                     <button
                         type="button"

@@ -62,7 +62,7 @@ export function StationCard({
         {description}
       </p>
 
-      <div className="mt-auto">
+      <div data-tour="station-progress" className="mt-auto">
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--color-sand)]">
           {started && (
             <div

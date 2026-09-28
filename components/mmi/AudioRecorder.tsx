@@ -5,16 +5,22 @@ import { Mic, RotateCcw, Square } from "lucide-react";
 import { formatDuration, useMediaRecorder } from "./useMediaRecorder";
 
 interface AudioRecorderProps {
+    onBusyChange?: (busy: boolean) => void;
     onRecordingChange?: (blob: Blob | null) => void;
 }
 
-export function AudioRecorder({ onRecordingChange }: AudioRecorderProps) {
+export function AudioRecorder({ onRecordingChange, onBusyChange }: AudioRecorderProps) {
     const { status, error, mediaBlobUrl, mediaBlob, durationSeconds, start, stop, reset } =
         useMediaRecorder({ kind: "audio" });
 
     useEffect(() => {
         onRecordingChange?.(mediaBlob);
     }, [mediaBlob, onRecordingChange]);
+
+    useEffect(() => {
+        onBusyChange?.(status === "requesting" || status === "recording");
+        return () => onBusyChange?.(false);
+    }, [status, onBusyChange]);
 
     const recording = status === "recording";
     const recorded = status === "recorded" && mediaBlobUrl;

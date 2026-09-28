@@ -37,6 +37,7 @@ export function Timer({
     const [remaining, setRemaining] = useState(durationSeconds);
     const [prevSignal, setPrevSignal] = useState(`${durationSeconds}:${resetKey}`);
     const onCompleteRef = useRef(onComplete);
+    const completedSignal = useRef<string | null>(null);
 
     useEffect(() => {
         onCompleteRef.current = onComplete;
@@ -57,8 +58,12 @@ export function Timer({
     }, [isRunning]);
 
     useEffect(() => {
-        if (remaining === 0) onCompleteRef.current?.();
-    }, [remaining]);
+        if (isRunning && remaining === 0 && completedSignal.current !== signal) {
+            completedSignal.current = signal;
+            onCompleteRef.current?.();
+        }
+        if (remaining > 0) completedSignal.current = null;
+    }, [remaining, isRunning, signal]);
 
     const pct = durationSeconds > 0 ? remaining / durationSeconds : 0;
     const ringColor =

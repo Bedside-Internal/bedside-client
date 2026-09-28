@@ -11,6 +11,7 @@ import NextLink from "next/link";
 import { getFeatures } from "@/lib/features";
 import { createElement } from "react";
 import { resolveIcon } from "@/lib/iconRegistry";
+import { MyQuestionsTutorial } from "@/components/tutorials/TutorialOverlay";
 
 interface DashboardData {
     track: { id: string; slug: string; label: string };
@@ -98,6 +99,7 @@ export default async function MyQuestionsPage({ searchParams }: MyQuestionsPageP
                         Submit practice questions for admin review. Approved questions become available to other applicants.
                     </p>
                 </div>
+                <MyQuestionsTutorial />
 
                 <MyQuestionsClient
                     initialQuestions={questions}

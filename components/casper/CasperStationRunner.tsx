@@ -96,6 +96,7 @@ export function CasperStationRunner({
             )}
             {question.scenario.response_mode === "video" ? (
                 <QuestionRunner
+                    tutorialContext={{ format: "casper", practiceKind: "single-station" }}
                     attemptId={attemptId}
                     question={question}
                     breadcrumb={breadcrumb}

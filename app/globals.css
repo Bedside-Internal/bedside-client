@@ -91,6 +91,30 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Tour scrolling is immediate, including for reduced-motion users. */
+html:has([data-bedside-tutorial]) {
+  scroll-behavior: auto;
+}
+
+@media (width < 64rem) {
+  /* Hide the portal immediately while the resize handler tears it down. */
+  #react-joyride-portal:has([data-bedside-tutorial]) {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The existing custom cursor does not run with reduced motion enabled. */
+  html:has([data-bedside-tutorial]),
+  html:has([data-bedside-tutorial]) * {
+    cursor: auto !important;
+  }
+
+  [data-bedside-tutorial] button {
+    cursor: pointer !important;
+  }
+}
+
 body {
   background: #fdfcfb;
   color: #1a1a1a;

@@ -1,17 +1,10 @@
 import "server-only";
 import { auth } from "@clerk/nextjs/server";
+import { ApiError } from "./api-error";
 
 const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 
-export class ApiError extends Error {
-  status: number;
-  payload: unknown;
-  constructor(status: number, payload: unknown) {
-    super(`API request failed with status ${status}`);
-    this.status = status;
-    this.payload = payload;
-  }
-}
+export { ApiError }; 
 
 interface ServerApiFetchOptions extends RequestInit {
   /**

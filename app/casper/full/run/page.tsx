@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCircuitAttempt } from "@/lib/api/circuit";
+import { getCircuitAttempt, ApiError } from "@/lib/api/circuit";
 import { getQuestion } from "@/lib/api/mmi";
 import { CircuitTransition } from "@/components/circuit/CircuitTransition";
 import { CircuitStationRunner } from "@/components/circuit/CircuitStationRunner";
@@ -13,11 +13,20 @@ export default async function CasperFullMockRunPage({ searchParams }: CasperFull
     const { attempt: attemptId, station: stationParam, phase } = await searchParams;
     if (!attemptId) redirect("/casper/full");
 
-    const [state, progress] = await Promise.all([
-        getCircuitAttempt("casper", attemptId),
-        getOnboardingProgress(),
-      ]);
-      const dashboardReady = Boolean(progress?.track && progress?.format);
+    let state, progress;
+    try {
+        [state, progress] = await Promise.all([
+            getCircuitAttempt("casper", attemptId),
+            getOnboardingProgress(),
+        ]);
+    } catch (e) {
+        if (e instanceof ApiError && (e.status === 403 || e.status === 404)) {
+            redirect("/casper/full");
+        }
+        throw e;
+    }
+
+    const dashboardReady = Boolean(progress?.track && progress?.format);
     const stationIndex = stationParam ? parseInt(stationParam, 10) : 0;
     const index = Number.isFinite(stationIndex) ? Math.max(0, Math.min(state.stations.length - 1, stationIndex)) : 0;
     const currentStation = state.stations[index];

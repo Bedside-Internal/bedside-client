@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getCircuitAttempt } from "@/lib/api/circuit";
+import { getCircuitAttempt, ApiError } from "@/lib/api/circuit";
 import { getQuestion } from "@/lib/api/mmi";
 import { CircuitTransition } from "@/components/circuit/CircuitTransition";
 import { CircuitStationRunner } from "@/components/circuit/CircuitStationRunner";
@@ -13,10 +13,18 @@ export default async function CircuitRunPage({ searchParams }: CircuitRunPagePro
   const { attempt: attemptId, station: stationParam, phase } = await searchParams;
   if (!attemptId) redirect("/mmi/full");
 
-  const [state, progress] = await Promise.all([
-    getCircuitAttempt("mmi", attemptId),
-    getOnboardingProgress(),
-  ]);
+  let state, progress;
+  try {
+      [state, progress] = await Promise.all([
+          getCircuitAttempt("mmi", attemptId),
+          getOnboardingProgress(),
+      ]);
+  } catch (e) {
+      if (e instanceof ApiError && (e.status === 403 || e.status === 404)) {
+          redirect("/mmi/full");
+      }
+      throw e;
+  }
 
   const dashboardReady = Boolean(progress?.track && progress?.format);
   const stationIndex = stationParam ? parseInt(stationParam, 10) : 0;

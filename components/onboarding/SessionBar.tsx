@@ -2,11 +2,12 @@
 
 import { UserButton } from "@clerk/nextjs";
 import { InterviewSetupPanel } from "@/components/UserProfile/InterviewSection";
-import { Bell, Sun, Target, Video } from "lucide-react";
+import { Bell, Shield, Sun, Target, Video } from "lucide-react";
 import { AppearancePanel } from "@/components/UserProfile/AppearanceSection";
 import { NotificationsPanel } from "@/components/UserProfile/NotificationSection";
 import { GoalsSchedulePanel } from "../UserProfile/GoalsAndScheduleSection";
 import { TierBadge } from "@/components/ui/TierBadge";
+import { PrivacyPanel } from "../UserProfile/PrivacySection";
 
 export function SessionBar({ label = "" }: { label?: string }) {
   return (
@@ -26,6 +27,9 @@ export function SessionBar({ label = "" }: { label?: string }) {
           </UserButton.UserProfilePage>
           <UserButton.UserProfilePage label="Goals and Schedule" url="goals-schedule" labelIcon={<Target className="h-4 w-4" />}>
             <GoalsSchedulePanel onSave={async () => { }} />
+          </UserButton.UserProfilePage>
+          <UserButton.UserProfilePage label="Privacy" url="privacy" labelIcon={<Shield className="h-4 w-4" />}>
+            <PrivacyPanel />
           </UserButton.UserProfilePage>
         </UserButton>
       </div>

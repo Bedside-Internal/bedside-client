@@ -171,6 +171,7 @@ export function MyQuestionsClient({
                                         Question text
                                     </label>
                                     <textarea
+                                        data-clarity-mask="True"
                                         id="questionText"
                                         name="questionText"
                                         rows={3}
@@ -210,6 +211,7 @@ export function MyQuestionsClient({
                                         Category
                                     </label>
                                     <input
+                                        data-clarity-mask="True"
                                         id="categoryText"
                                         name="categoryText"
                                         type="text"

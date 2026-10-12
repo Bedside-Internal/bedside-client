@@ -258,7 +258,7 @@ export function QuestionRunner({
                     )}
 
                     {phase === "submitted" && (
-                        <div data-tour="question-feedback" className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
+                        <div data-tour="question-feedback" data-clarity-mask="True" className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
                             {feedback && "items" in feedback ? (
                                 <RatingFeedback feedback={feedback} />
                             ) : feedback ? (

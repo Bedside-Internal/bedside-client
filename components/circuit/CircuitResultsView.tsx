@@ -31,7 +31,7 @@ export function CircuitResultsView({
   runAnotherLabel,
 }: CircuitResultsViewProps) {
   return (
-    <div className="min-h-screen bg-[var(--color-cream)] px-6 py-10">
+    <div data-clarity-mask="True" className="min-h-screen bg-[var(--color-cream)] px-6 py-10">
       <div className="mx-auto grid max-w-4xl gap-6 lg:grid-cols-[320px_1fr]">
         <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-6 text-center shadow-sm">
           <span className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-[var(--color-mint)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-mint)]">

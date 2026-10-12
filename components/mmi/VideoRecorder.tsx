@@ -63,6 +63,7 @@ export function VideoRecorder({ onRecordingChange, onBusyChange }: VideoRecorder
             <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-[var(--color-ink)]">
                 {recorded ? (
                     <video
+                        data-clarity-mask="True"
                         key="playback"
                         ref={playbackRef}
                         controls
@@ -72,7 +73,7 @@ export function VideoRecorder({ onRecordingChange, onBusyChange }: VideoRecorder
                     />
                 ) : recording ? (
                     <>
-                        <video key="live" ref={liveRef} autoPlay muted playsInline className="h-full w-full object-cover" />
+                        <video data-clarity-mask="True" key="live" ref={liveRef} autoPlay muted playsInline className="h-full w-full object-cover" />
                         <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-[var(--color-coral)] px-2.5 py-1 text-xs font-bold text-white">
                             <span className="h-1.5 w-1.5 rounded-full bg-white" />
                             REC {formatDuration(durationSeconds)}

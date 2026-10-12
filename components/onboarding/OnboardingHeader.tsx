@@ -20,6 +20,7 @@ export function OnboardingHeader({
   return (
     <div className={cn("min-w-0 text-center", className)}>
       <p
+        data-clarity-mask="True"
         className={cn(
           "mb-2 text-sm font-semibold text-emerald-600",
           eyebrowClassName

@@ -205,6 +205,7 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                     <div>
                         <label className="text-sm font-medium text-[var(--color-ink)]">Upload a CSV or PDF</label>
                         <input
+                            data-clarity-mask="True"
                             ref={fileInputRef}
                             type="file"
                             accept=".csv,.pdf,text/csv,application/pdf"
@@ -300,12 +301,14 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                                     {pdfPreview.confident.map((block, i) => (
                                         <div key={`c-${i}`} className="flex items-start gap-2 rounded-lg border border-[var(--color-sand)] bg-white p-3">
                                             <input
+                                                data-clarity-mask="True"
                                                 type="checkbox"
                                                 checked={confidentApproved[i] ?? true}
                                                 onChange={(e) => setConfidentApproved((prev) => ({ ...prev, [i]: e.target.checked }))}
                                                 className="mt-1.5"
                                             />
                                             <textarea
+                                                data-clarity-mask="True"
                                                 value={confidentTexts[i] ?? block.text}
                                                 onChange={(e) => setConfidentTexts((prev) => ({ ...prev, [i]: e.target.value }))}
                                                 rows={2}
@@ -325,12 +328,14 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                                         {pdfPreview.needsReview.map((block, i) => (
                                             <div key={`r-${i}`} className="flex items-start gap-2 rounded-lg border border-[var(--color-amber)]/30 bg-[var(--color-amber)]/5 p-3">
                                                 <input
+                                                    data-clarity-mask="True"
                                                     type="checkbox"
                                                     checked={needsReviewApproved[i] ?? false}
                                                     onChange={(e) => setNeedsReviewApproved((prev) => ({ ...prev, [i]: e.target.checked }))}
                                                     className="mt-1.5"
                                                 />
                                                 <textarea
+                                                    data-clarity-mask="True"
                                                     value={needsReviewTexts[i] ?? block.text}
                                                     onChange={(e) => setNeedsReviewTexts((prev) => ({ ...prev, [i]: e.target.value }))}
                                                     rows={2}

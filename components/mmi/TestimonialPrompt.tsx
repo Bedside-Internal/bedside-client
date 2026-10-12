@@ -175,6 +175,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
             <div className="mb-5">
                 <label className="mb-2 block text-[13px] font-medium text-ink/50">Your quote</label>
                 <textarea
+                    data-clarity-mask="True"
                     rows={4}
                     value={quote}
                     onChange={(e) => setQuote(e.target.value)}
@@ -188,6 +189,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                     School <span className="text-ink/30">(optional)</span>
                 </label>
                 <input
+                    data-clarity-mask="True"
                     type="text"
                     value={subtitle}
                     onChange={(e) => setSubtitle(e.target.value)}
@@ -244,6 +246,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
                     </div>
                 ) : (
                     <input
+                        data-clarity-mask="True"
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                         disabled={uploadingPhoto}
@@ -255,6 +258,7 @@ export default function TestimonialPrompt({ attemptId }: TestimonialPromptProps)
 
             <label className="mb-6 flex items-start gap-2.5 text-[13px] leading-snug text-ink/60">
                 <input
+                    data-clarity-mask="True"
                     type="checkbox"
                     checked={consent}
                     onChange={(e) => setConsent(e.target.checked)}

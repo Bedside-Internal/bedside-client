@@ -153,6 +153,7 @@ export function ImportDeckFlow({ formats, userTier, onImported }: ImportDeckFlow
                     <div>
                         <label className="text-sm font-medium text-[var(--color-ink)]">Upload a Quizlet, Anki, or Knowt export</label>
                         <input
+                            data-clarity-mask="True"
                             ref={fileInputRef}
                             type="file"
                             accept=".csv,.tsv,.txt,text/csv,text/plain"
@@ -186,12 +187,14 @@ export function ImportDeckFlow({ formats, userTier, onImported }: ImportDeckFlow
                                     >
                                         <div className="flex-1 flex flex-col gap-1.5">
                                             <textarea
+                                                data-clarity-mask="True"
                                                 value={card.front}
                                                 onChange={(e) => updateField(i, "front", e.target.value)}
                                                 rows={1}
                                                 className="w-full resize-none rounded-md border border-[var(--color-sand)] px-2 py-1 text-sm font-medium"
                                             />
                                             <textarea
+                                                data-clarity-mask="True"
                                                 value={card.back}
                                                 onChange={(e) => updateField(i, "back", e.target.value)}
                                                 rows={1}

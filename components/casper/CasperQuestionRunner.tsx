@@ -130,7 +130,8 @@ export function CasperQuestionRunner({
                                 {p.text}
                             </p>
                             <textarea
-                                value={texts[p.id] ?? ""}
+                                data-clarity-mask="True"
+                                value={texts[p.id] ?? ""}                            
                                 onChange={(e) => setTexts((t) => ({ ...t, [p.id]: e.target.value }))}
                                 placeholder="Type your response here..."
                                 rows={5}
@@ -154,7 +155,7 @@ export function CasperQuestionRunner({
                     )}
 
                     {submitted && feedback && (
-                        <div data-tour="question-feedback" className="flex flex-col gap-4">
+                        <div data-tour="question-feedback" data-clarity-mask="True" className="flex flex-col gap-4">
                             <ResponseFeedbackCard feedback={feedback} />
                         </div>
                     )}

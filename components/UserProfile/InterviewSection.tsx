@@ -194,7 +194,7 @@ export function InterviewSetupPanel({ onSave }: InterviewSetupPanelProps) {
   }
 
   return (
-    <div className="flex h-full flex-col bg-[var(--color-cream)]">
+    <div data-clarity-mask="True" className="flex h-full flex-col bg-[var(--color-cream)]">
       <div className="flex-1 overflow-y-auto px-1 py-1">
         <h2 className="text-xl font-bold text-[var(--color-ink)]">Interview Setup</h2>
         <p className="mt-1 text-sm text-slate-400">

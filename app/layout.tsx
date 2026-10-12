@@ -8,6 +8,7 @@ import { DevResetOnboardingButton } from "@/components/ui/Devresetonboarding";
 import { SomeComponent } from "@/components/ui/Tokenretrieval";
 import DesktopOnlyGate from "@/components/layout/DesktopOnlyGate";
 import { ReferralAttribution } from "@/components/referrals/ReferralAttribution";
+import ClarityInit from "@/components/layout/ClarityInit";
 
 export const metadata: Metadata = {
   title: "Bedside: Stop guessing how you'd do. Find out.",
@@ -36,6 +37,7 @@ export default function RootLayout({
           <CustomCursor />
           <SomeComponent />
           <DevResetOnboardingButton />
+          <ClarityInit />
           <DesktopOnlyGate>{children}</DesktopOnlyGate>
           <Toaster richColors position="top-right" />
         </ClerkProvider>

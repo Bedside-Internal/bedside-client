@@ -64,24 +64,29 @@ export function PrivacyPanel() {
                 )}
 
                 <div className="mt-6 divide-y divide-slate-100 rounded-xl border border-slate-100">
-                    <div className="flex items-center justify-between gap-4 px-4 py-4">
+                    <div className="flex items-start justify-between gap-6 px-4 py-4">
                         <div>
                             <p className="text-sm font-medium text-[var(--color-ink)]">
                                 Anonymous session recordings
                             </p>
-                            <p className="text-sm text-slate-400">
-                                Lets us see where people click and get stuck, using Microsoft Clarity.
-                                Your answers and personal details are masked. Changes apply the next
-                                time you visit.
+                            <p className="mt-0.5 text-sm text-slate-400">
+                                Helps us see where people get stuck, using Microsoft Clarity. Your
+                                answers and personal details are masked.
                             </p>
                         </div>
-                        <Switch
-                            checked={allow}
-                            onChange={() => setDraft(!allow)}
-                            label="Toggle anonymous session recordings"
-                        />
+                        <div className="shrink-0">
+                            <Switch
+                                checked={allow}
+                                onChange={() => setDraft(!allow)}
+                                label="Toggle anonymous session recordings"
+                            />
+                        </div>
                     </div>
                 </div>
+
+                <p className="mt-3 text-xs text-slate-400">
+                    Changes apply the next time you visit.
+                </p>
             </div>
 
             <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-100 pt-4">

@@ -10,10 +10,7 @@ import DarkCTA from "@/components/sections/DarkCTA";
 import Pricing from "@/components/sections/Pricing";
 import FAQ from "@/components/sections/FAQ";
 import type { LandingPageData } from "@/types/marketing";
-import Clarity from '@microsoft/clarity';
 import { getLandingPageData } from "@/lib/api/marketing";
-
-const projectId = "y72uf0awoh"
 
 export default async function Home() {
 
@@ -29,8 +26,6 @@ export default async function Home() {
     landingData = await getLandingPageData();
   } catch {
   }
-
-  Clarity.init(projectId);
   
   return (
     <>

@@ -105,7 +105,7 @@ export function ResponseComposer({
                     </div>
                 </div>
             )}
-            <div data-tour="response-modes" className="flex items-center gap-2">
+            <div data-tour="response-modes" data-clarity-mask="True" className="flex items-center gap-2">
                 {MODES.map(({ id, label, icon: Icon }) => {
                     const active = mode === id;
                     return (
@@ -130,6 +130,7 @@ export function ResponseComposer({
             {mode === "written" && (
                 <div className="flex flex-col gap-2">
                     <textarea
+                        data-clarity-mask="True"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         placeholder="Start typing your response here..."

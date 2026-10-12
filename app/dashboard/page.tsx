@@ -130,7 +130,7 @@ export default async function Dashboard() {
         : null;
 
     return (
-        <div className="min-h-screen bg-[var(--color-cream)]">
+        <div data-clarity-mask="True"  className="min-h-screen bg-[var(--color-cream)]">
             <TopBar tracks={tracks} activeTrackId={data.track.slug} />
 
             <div className="mx-auto max-w-[1600px] px-10">

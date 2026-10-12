@@ -14,6 +14,7 @@ export function ScenarioPanel({ text, videoUrl, footerHint, children }: Scenario
                 </span>
                 {videoUrl && (
                     <video
+                        data-clarity-mask="True"
                         controls
                         src={videoUrl}
                         className="mt-4 w-full rounded-xl bg-black"

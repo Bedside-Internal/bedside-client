@@ -29,7 +29,7 @@ export function AudioRecorder({ onRecordingChange, onBusyChange }: AudioRecorder
         <div className="flex flex-col items-center gap-4 rounded-xl border border-[var(--color-ink)]/10 bg-white px-6 py-10">
             {recorded ? (
                 <>
-                    <audio controls src={mediaBlobUrl} className="w-full" />
+                    <audio data-clarity-mask="True" controls src={mediaBlobUrl} className="w-full" />
                     <button
                         type="button"
                         onClick={reset}

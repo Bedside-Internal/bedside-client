@@ -18,7 +18,7 @@ export function GreetingHeader({ name, streakDays }: GreetingHeaderProps) {
   return (
     <div className="pt-4">
       <h1 className="font-display text-[44px] leading-[0.95] tracking-tight text-[var(--color-ink)] sm:text-[56px]">
-        Good <span suppressHydrationWarning>{getTimeOfDay()}</span>, {name}
+        Good <span suppressHydrationWarning>{getTimeOfDay()}</span>, <span data-clarity-mask="True">{name}</span>
       </h1>
       <p className="mt-3 text-slate-400">
         {streakDays > 0 ? (

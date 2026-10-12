@@ -78,7 +78,7 @@ export function AppearancePanel({ onSave }: AppearancePanelProps) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div data-clarity-mask="True" className="flex h-full flex-col">
       <div className="flex-1 overflow-y-auto px-1 py-1">
         <h2 className="text-xl font-bold text-[var(--color-ink)]">Appearance</h2>
         <p className="mt-1 text-sm text-slate-400">

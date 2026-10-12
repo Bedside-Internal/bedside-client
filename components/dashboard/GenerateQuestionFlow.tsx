@@ -141,6 +141,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             What do you want to practice?
                         </label>
                         <textarea
+                            data-clarity-mask="True"
                             value={topic}
                             onChange={(e) => setTopic(e.target.value)}
                             minLength={20}
@@ -168,6 +169,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                     <div>
                         <label className="text-sm font-medium text-[var(--color-ink)]">Scenario</label>
                         <textarea
+                            data-clarity-mask="True"
                             value={scenarioText}
                             onChange={(e) => setScenarioText(e.target.value)}
                             rows={4}
@@ -178,6 +180,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                     <div>
                         <label className="text-sm font-medium text-[var(--color-ink)]">Guidance Note</label>
                         <textarea
+                            data-clarity-mask="True"
                             value={guidanceNote}
                             onChange={(e) => setGuidanceNote(e.target.value)}
                             rows={2}
@@ -193,6 +196,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             </span>
                         </label>
                         <textarea
+                            data-clarity-mask="True"
                             value={modelAnswer}
                             onChange={(e) => setModelAnswer(e.target.value)}
                             rows={3}
@@ -206,12 +210,14 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             {dimensions.map((d, i) => (
                                 <div key={i} className="flex items-center gap-2">
                                     <input
+                                        data-clarity-mask="True"
                                         value={d.label}
                                         onChange={(e) => updateDimension(i, "label", e.target.value)}
                                         placeholder="Dimension label"
                                         className="flex-1 rounded-lg border border-[var(--color-sand)] px-3 py-1.5 text-sm"
                                     />
                                     <input
+                                        data-clarity-mask="True"
                                         type="number"
                                         min={0}
                                         max={10}

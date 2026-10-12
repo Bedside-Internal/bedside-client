@@ -2,31 +2,37 @@
 
 import { UserButton } from "@clerk/nextjs";
 import { InterviewSetupPanel } from "@/components/UserProfile/InterviewSection";
-import { Bell, Sun, Target, Video } from "lucide-react";
+import { Bell, Shield, Sun, Target, Video } from "lucide-react";
 import { AppearancePanel } from "@/components/UserProfile/AppearanceSection";
 import { NotificationsPanel } from "@/components/UserProfile/NotificationSection";
 import { GoalsSchedulePanel } from "../UserProfile/GoalsAndScheduleSection";
 import { TierBadge } from "@/components/ui/TierBadge";
+import { PrivacyPanel } from "../UserProfile/PrivacySection";
 
 export function SessionBar({ label = "" }: { label?: string }) {
   return (
     <div className="flex items-center gap-4">
       {label && <span className="text-sm text-slate-400">{label}</span>}
       <TierBadge />
-      <UserButton>
-        <UserButton.UserProfilePage label="Notifications" url="notifications" labelIcon={<Bell className="h-4 w-4" />}>
-          <NotificationsPanel onSave={async () => { }} />
-        </UserButton.UserProfilePage>
-        <UserButton.UserProfilePage label="Interview Setup" url="interview-setup" labelIcon={<Video className="h-4 w-4" />}>
-          <InterviewSetupPanel onSave={async () => { }} />
-        </UserButton.UserProfilePage>
-        <UserButton.UserProfilePage label="Appearance" url="appearance" labelIcon={<Sun className="h-4 w-4" />}>
-          <AppearancePanel onSave={async () => { }} />
-        </UserButton.UserProfilePage>
-        <UserButton.UserProfilePage label="Goals and Schedule" url="goals-schedule" labelIcon={<Target className="h-4 w-4" />}>
-          <GoalsSchedulePanel onSave={async () => { }} />
-        </UserButton.UserProfilePage>
-      </UserButton>
+      <div data-clarity-mask="True">
+        <UserButton>
+          <UserButton.UserProfilePage label="Notifications" url="notifications" labelIcon={<Bell className="h-4 w-4" />}>
+            <NotificationsPanel onSave={async () => { }} />
+          </UserButton.UserProfilePage>
+          <UserButton.UserProfilePage label="Interview Setup" url="interview-setup" labelIcon={<Video className="h-4 w-4" />}>
+            <InterviewSetupPanel onSave={async () => { }} />
+          </UserButton.UserProfilePage>
+          <UserButton.UserProfilePage label="Appearance" url="appearance" labelIcon={<Sun className="h-4 w-4" />}>
+            <AppearancePanel onSave={async () => { }} />
+          </UserButton.UserProfilePage>
+          <UserButton.UserProfilePage label="Goals and Schedule" url="goals-schedule" labelIcon={<Target className="h-4 w-4" />}>
+            <GoalsSchedulePanel onSave={async () => { }} />
+          </UserButton.UserProfilePage>
+          <UserButton.UserProfilePage label="Privacy" url="privacy" labelIcon={<Shield className="h-4 w-4" />}>
+            <PrivacyPanel />
+          </UserButton.UserProfilePage>
+        </UserButton>
+      </div>
     </div>
   );
 }

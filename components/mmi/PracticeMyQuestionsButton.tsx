@@ -88,7 +88,7 @@ export function PracticeMyQuestionsButton({
                 <div className="absolute bottom-full right-0 mb-2 w-64 overflow-hidden rounded-xl border border-[var(--color-sand)] bg-white shadow-lg z-10">
                     {hasOwnQuestions ? (
                         <>
-                            <button type="button" onClick={runFullCircuit} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
+                            <button type="button" onClick={runFullCircuit} className="block [@media(pointer:coarse)_and_(max-width:768px)]:hidden w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">
                                 Full circuit — my questions
                             </button>
                             <button type="button" onClick={runRandomStation} className="block w-full px-4 py-3 text-left text-sm font-medium text-[var(--color-ink)] hover:bg-[var(--color-sand)]">

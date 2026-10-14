@@ -1,26 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { isMobileReadyPath } from "@/lib/mobile-routes";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { PHONE_MEDIA_QUERY, isMobileReadyPath } from "@/lib/mobile-routes";
 import DesktopOnlyMessage from "@/components/layout/DesktopOnlyMessage";
 
-function useIsGenuinelyMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(pointer: coarse) and (max-width: 768px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
-  return isMobile;
-}
-
 /**
- * Blocks phone-sized, touch-first viewports on routes that aren't mobile-ready.
+ * Blocks phones on routes that aren't mobile-ready.
  * Which routes are ready is decided in lib/mobile-routes.ts.
  */
 export default function DesktopOnlyGate({
@@ -28,10 +14,10 @@ export default function DesktopOnlyGate({
 }: {
   children: React.ReactNode;
 }) {
-  const isMobile = useIsGenuinelyMobile();
+  const isPhone = useMediaQuery(PHONE_MEDIA_QUERY);
   const pathname = usePathname();
 
-  if (isMobile && !isMobileReadyPath(pathname)) {
+  if (isPhone && !isMobileReadyPath(pathname)) {
     return <DesktopOnlyMessage />;
   }
 

@@ -55,7 +55,7 @@ export function SessionSizePicker({
                         key={opt ?? "all"}
                         type="button"
                         onClick={() => select(opt)}
-                        className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${active
+                        className={`rounded-lg px-3.5 py-2.5 text-xs font-semibold transition sm:px-3 sm:py-1.5 ${active
                                 ? "bg-[var(--color-mint)] text-white"
                                 : "text-[var(--color-ink)]/60 hover:bg-[var(--color-sand)]"
                             }`}

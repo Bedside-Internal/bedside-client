@@ -25,12 +25,12 @@ export default function DesktopOnlyMessage() {
         </svg>
       </div>
       <h1 className="mb-3 font-display text-[32px] leading-tight tracking-tighter text-ink">
-        Practice runs are best on desktop
+        Best on desktop
       </h1>
       <p className="mb-8 max-w-[320px] text-[15px] leading-relaxed text-neutral-500">
-        We&apos;re still tuning timed practice for phones. You can still browse
-        stations, manage your questions, and check your dashboard here. Open a
-        laptop when you&apos;re ready to practice.
+        Full mock circuits and CASPer need a bigger screen for now. You can still
+        practice single MMI and PREview stations, manage your questions, and check
+        your dashboard from your phone.
       </p>
       <Link
         href="/dashboard"

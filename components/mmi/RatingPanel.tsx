@@ -50,13 +50,13 @@ export function RatingPanel({
                 ))}
             </div>
 
-            <div data-tour={tutorialEnabled ? "rating-submission" : undefined} className="flex items-center justify-between">
+            <div data-tour={tutorialEnabled ? "rating-submission" : undefined} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 {hasPrevQuestion ? (
                     <button
                         type="button"
                         onClick={onPrevQuestion}
                         disabled={submitting}
-                        className="flex items-center gap-1 text-sm font-semibold text-[var(--color-ink)]/50 hover:text-[var(--color-ink)] disabled:cursor-not-allowed disabled:opacity-40"
+                        className="order-last flex items-center justify-center gap-1 py-2 text-sm font-semibold text-[var(--color-ink)]/50 hover:text-[var(--color-ink)] sm:order-none sm:justify-start sm:py-0 disabled:cursor-not-allowed disabled:opacity-40"
                     >
                         <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
                         Previous question
@@ -65,15 +65,15 @@ export function RatingPanel({
                     <span />
                 )}
 
-                <div className="flex items-center gap-4">
-                    <span className="text-sm text-[var(--color-ink)]/50">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
+                    <span className="text-center text-sm text-[var(--color-ink)]/50 sm:text-left">
                         {ratedCount} of {items.length} rated
                     </span>
                     <button
                         type="button"
                         disabled={!allRated || submitting}
                         onClick={handleSubmit}
-                        className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-ink)]/15 disabled:text-[var(--color-ink)]/40 disabled:shadow-none"
+                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 text-sm sm:w-auto sm:py-2.5 font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:bg-[var(--color-ink)]/15 disabled:text-[var(--color-ink)]/40 disabled:shadow-none"
                     >
                         {submitting ? "Submitting…" : `Rate all ${items.length} to continue`}
                         <ArrowRight className="h-4 w-4" strokeWidth={2.5} />

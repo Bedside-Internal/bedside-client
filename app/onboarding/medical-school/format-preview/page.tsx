@@ -86,7 +86,7 @@ export default async function PreviewPage() {
                     />
                     <Link
                         href="/preview/full"
-                        className="flex w-full items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 sm:w-auto sm:py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
+                        className="[@media(pointer:coarse)_and_(max-width:768px)]:hidden flex w-full items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 sm:w-auto sm:py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
                     >
                         Start a full mock test →
                     </Link>

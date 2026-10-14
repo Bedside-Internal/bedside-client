@@ -39,7 +39,9 @@ export function HeroHeadline() {
     if (line2.current) scramble(line2.current, "how you'd do.", 520);
   
     const handleScroll = () => {
-      const shear = Math.min(window.scrollY * 0.14, 80);
+      // Smaller shear on phones so the headline never slides off screen.
+      const maxShear = window.innerWidth < 640 ? 20 : 80;
+      const shear = Math.min(window.scrollY * 0.14, maxShear);
       if (line1.current) line1.current.style.transform = `translateX(${-shear}px)`;
       if (line2.current) line2.current.style.transform = `translateX(${shear}px)`;
     };
@@ -49,7 +51,7 @@ export function HeroHeadline() {
 
 
   return (
-  <h1 className="mb-3 font-display text-[clamp(58px,9vw,116px)] leading-[0.92] tracking-tighter text-ink overflow-visible">
+  <h1 className="mb-3 font-display text-[clamp(44px,9vw,116px)] leading-[0.92] tracking-tighter text-ink overflow-visible">
     <span ref={line1} className="inline-block">Stop guessing</span>
     <br />
     <span ref={line2} className="inline-block">how you&apos;d do.</span>
@@ -136,7 +138,7 @@ export default function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-[calc(100vh-64px)] flex-col items-center justify-center overflow-hidden px-[5vw] pb-[60px] pt-20 text-center"
+      className="relative flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center overflow-hidden px-[5vw] pb-[60px] pt-14 text-center sm:pt-20"
     >
       <div
         data-parallax="-0.08"
@@ -164,14 +166,14 @@ export default function Hero() {
 
       <div
         data-parallax="-0.13"
-        className="pointer-events-none absolute right-[3.5%] top-[16%] z-10 hidden max-w-[272px] animate-float-c md:block"
+        className="pointer-events-none absolute right-[3.5%] top-[16%] z-10 hidden max-w-[272px] animate-float-c xl:block"
       >
         <InterviewCard />
       </div>
 
       <div
         data-parallax="-0.06"
-        className="pointer-events-none absolute bottom-[24%] left-[4%] z-10 hidden animate-float-a sm:block"
+        className="pointer-events-none absolute bottom-[24%] left-[4%] z-10 hidden animate-float-a lg:block"
       >
         <div className="whitespace-nowrap rounded-full border-2 border-ink bg-coral px-[18px] py-[9px] text-[13px] font-bold text-white shadow-hard-sm">
           6 formats covered ✦
@@ -180,7 +182,7 @@ export default function Hero() {
 
       <div
         data-parallax="-0.09"
-        className="pointer-events-none absolute bottom-[22%] right-[4%] z-10 hidden max-w-[210px] animate-float-b md:block"
+        className="pointer-events-none absolute bottom-[22%] right-[4%] z-10 hidden max-w-[210px] animate-float-b lg:block"
       >
         <div className="rounded-lg border-2 border-ink bg-white p-3 px-4 text-left shadow-hard-sm">
           <div className="mb-1.5 text-[9px] font-bold uppercase tracking-wider text-mint">

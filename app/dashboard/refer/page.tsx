@@ -46,7 +46,7 @@ export default async function ReferPage() {
         <div className="min-h-screen bg-[var(--color-cream)]">
             <TopBar tracks={tracks} activeTrackId={progress.track} />
 
-            <div className="mx-auto max-w-[1600px] px-10 py-8">
+            <div className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:px-10">
                 <Link
                     href="/dashboard"
                     className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-slate-400 transition hover:text-[var(--color-ink)]"

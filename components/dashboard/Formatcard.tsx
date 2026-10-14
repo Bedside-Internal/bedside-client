@@ -54,18 +54,18 @@ export function FormatCard({
   }
 
   return (
-    <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-6 shadow-sm">
-      <div className="mb-1 flex items-start justify-between">
-        <div className="flex items-center gap-3">
+    <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm sm:p-6">
+      <div className="mb-1 flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--color-sand)]">
             {icon}
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="font-semibold text-[var(--color-ink)]">{title}</p>
             <p className="text-sm text-slate-400">{subtitle}</p>
           </div>
         </div>
-        <span className="text-2xl font-bold text-[var(--color-ink)]">{score}</span>
+        <span className="shrink-0 text-2xl font-bold text-[var(--color-ink)]">{score}</span>
       </div>
 
       <button
@@ -84,7 +84,7 @@ export function FormatCard({
         </div>
       )}
 
-      <div className="flex items-center justify-between border-t border-[var(--color-sand)] pt-4">
+      <div className="flex items-center justify-between gap-3 border-t border-[var(--color-sand)] pt-4">
         <span className="text-sm text-slate-400">{progressLabel}</span>
         <Link
           href={continueHref}

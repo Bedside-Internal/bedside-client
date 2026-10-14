@@ -63,7 +63,7 @@ lib/
 
 ## Things to know before you touch this
 - **Format availability is data-driven, not hardcoded.** Which formats show as selectable (CASPer is currently hidden) is controlled by the `features` collection in a NoSQL store via the server's `/api/features` endpoint, not by editing frontend code. If you need to turn CASPer on, that's an admin-site/data change, not a client code change.
-- **No mobile support yet.** `components/layout/DesktopOnlyGate.tsx` + server-side checks actively redirect mobile viewports to `/desktop-only`. This is intentional (see Tech Debt doc), not a bug — don't "fix" it without checking with product first.
+- **Mobile is enabled route by route.** `components/layout/DesktopOnlyGate.tsx` shows `/desktop-only`-style messaging on phone-sized, touch-first viewports for any route NOT listed in `lib/mobile-routes.ts`. Mobile-ready today: landing, sign-in/up, onboarding/select screens, dashboard, My Questions, refer. The practice runners (`/mmi`, `/casper`, `/preview`) stay desktop-only until they're designed and tested on real devices. To unlock a route, add its prefix to `lib/mobile-routes.ts` after checking it on a phone.
 - **Server actions vs API routes**: `lib/actions.ts` uses Next.js server actions (talk to Clerk directly, e.g. onboarding progress stored in Clerk `publicMetadata`). Everything else goes through `lib/api/*` hitting the Express server. Know which one you're extending before adding a new data flow.
 - **Design system**: colors and fonts are CSS variables + Tailwind config, not ad-hoc hex codes — check the Design Branding doc in Notion before introducing new colors. The visual language (hard-edged neubrutalist cards, offset shadows, sparkle motif) is a deliberate brand choice, not a placeholder style.
 

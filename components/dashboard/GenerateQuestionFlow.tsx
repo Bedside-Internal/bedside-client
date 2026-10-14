@@ -114,7 +114,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             onChange={(e) => setSectionId(e.target.value)}
                             disabled={sectionsLoading}
                             required
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm"
                         >
                             <option value="">Select a section…</option>
                             {sections.map((s) => (
@@ -128,7 +128,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                         <select
                             value={difficulty}
                             onChange={(e) => setDifficulty(e.target.value as typeof difficulty)}
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm"
                         >
                             <option value="easy">Easy</option>
                             <option value="medium">Medium</option>
@@ -149,7 +149,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             required
                             rows={4}
                             placeholder="Describe the scenario or concept you want a question generated about…"
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm"
                         />
                         <span className="text-xs text-[var(--color-ink)]/40">{topic.length}/2000</span>
                     </div>
@@ -173,7 +173,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             value={scenarioText}
                             onChange={(e) => setScenarioText(e.target.value)}
                             rows={4}
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm"
                         />
                     </div>
 
@@ -184,7 +184,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             value={guidanceNote}
                             onChange={(e) => setGuidanceNote(e.target.value)}
                             rows={2}
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm"
                         />
                     </div>
 
@@ -200,7 +200,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                             value={modelAnswer}
                             onChange={(e) => setModelAnswer(e.target.value)}
                             rows={3}
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm"
                         />
                     </div>
 
@@ -214,7 +214,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                                         value={d.label}
                                         onChange={(e) => updateDimension(i, "label", e.target.value)}
                                         placeholder="Dimension label"
-                                        className="flex-1 rounded-lg border border-[var(--color-sand)] px-3 py-1.5 text-sm"
+                                        className="flex-1 rounded-lg border border-[var(--color-sand)] px-3 py-1.5 text-base sm:text-sm"
                                     />
                                     <input
                                         data-clarity-mask="True"
@@ -224,7 +224,7 @@ export function GenerateQuestionFlow({ embedded = false, formatSlug }: GenerateQ
                                         step={0.5}
                                         value={d.weight}
                                         onChange={(e) => updateDimension(i, "weight", e.target.value)}
-                                        className="w-20 rounded-lg border border-[var(--color-sand)] px-2 py-1.5 text-sm"
+                                        className="w-20 rounded-lg border border-[var(--color-sand)] px-2 py-1.5 text-base sm:text-sm"
                                     />
                                     <button
                                         type="button"

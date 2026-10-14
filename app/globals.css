@@ -179,3 +179,11 @@ body {
 @utility animate-blink {
   animation: blink 0.9s step-start infinite;
 }
+
+/* Horizontal scroll rows (tab strips, pill rows) without a visible scrollbar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

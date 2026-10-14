@@ -13,10 +13,10 @@ interface ReadinessSummaryProps {
 
 export function ReadinessSummary({ overallScore, breakdown }: ReadinessSummaryProps) {
   return (
-    <div className="rounded-2xl border-2 border-[var(--color-ink)] bg-white p-6 shadow-hard-sm">
-      <div className="flex items-center gap-6">
+    <div className="rounded-2xl border-2 border-[var(--color-ink)] bg-white p-5 shadow-hard-sm sm:p-6">
+      <div className="flex flex-col items-center gap-5 sm:flex-row sm:gap-6">
         <CircularProgress value={overallScore} suffix="/100" size={128} strokeWidth={12} />
-        <div className="flex-1 space-y-3">
+        <div className="w-full space-y-3 sm:flex-1">
           {breakdown.map((item) => (
             <ProgressBar key={item.label} label={item.label} value={item.value} />
           ))}

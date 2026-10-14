@@ -8,10 +8,11 @@ import { NotificationsPanel } from "@/components/UserProfile/NotificationSection
 import { GoalsSchedulePanel } from "../UserProfile/GoalsAndScheduleSection";
 import { TierBadge } from "@/components/ui/TierBadge";
 import { PrivacyPanel } from "../UserProfile/PrivacySection";
+import { cn } from "@/lib/utils";
 
-export function SessionBar({ label = "" }: { label?: string }) {
+export function SessionBar({ label = "", className }: { label?: string; className?: string }) {
   return (
-    <div className="flex items-center gap-4">
+    <div className={cn("flex items-center gap-3 sm:gap-4", className)}>
       {label && <span className="text-sm text-slate-400">{label}</span>}
       <TierBadge />
       <div data-clarity-mask="True">

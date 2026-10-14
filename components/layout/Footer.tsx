@@ -47,7 +47,7 @@ export default function Footer({ socialLinks = [] }: FooterProps) {
               </div>
             )}
           </div>
-          <div className="flex flex-wrap gap-16">
+          <div className="flex flex-wrap gap-x-16 gap-y-10">
             <div>
               <div className="mb-4 text-xs font-bold uppercase tracking-wider text-cream/40">
                 Product

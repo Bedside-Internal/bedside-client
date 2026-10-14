@@ -30,7 +30,7 @@ export function TierBadge() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2 sm:gap-3">
       <TierMeter label="samples" status={status.singleStation} />
       <TierMeter label="mocks" status={status.fullCircuit} />
     </div>
@@ -41,11 +41,11 @@ function TierMeter({ label, status }: { label: string; status: KindStatus }) {
   const limit = status.limit ?? 1;
   const pct = Math.min(100, Math.round((status.used / limit) * 100));
   return (
-    <div className="flex items-center gap-2">
-      <div className="h-1.5 w-14 overflow-hidden rounded-full bg-slate-200">
+    <div className="flex items-center gap-1.5 sm:gap-2" title={`${status.used}/${status.limit} ${label}`}>
+      <div className="h-1.5 w-8 overflow-hidden rounded-full bg-slate-200 sm:w-14">
         <div className={`h-full rounded-full transition-all ${status.isCapped ? "bg-[var(--color-coral)]" : "bg-[var(--color-mint)]"}`} style={{ width: `${pct}%` }} />
       </div>
-      <span className="text-xs font-medium text-slate-400">{status.used}/{status.limit} {label}</span>
+      <span className="text-xs font-medium text-slate-400">{status.used}/{status.limit}<span className="hidden sm:inline"> {label}</span></span>
     </div>
   );
 }

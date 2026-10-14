@@ -96,7 +96,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
     if (testimonials.length === 0) return null;
 
     return (
-        <section id="testimonials" className="bg-sand px-[5vw] py-[120px]">
+        <section id="testimonials" className="bg-sand px-[5vw] py-20 md:py-[120px]">
             <div className="mx-auto max-w-[1160px]">
                 <RevealOnScroll className="mb-10 text-center">
                     <div className="mx-auto mb-[18px] inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-[5px]">

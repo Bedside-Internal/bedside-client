@@ -32,7 +32,7 @@ export default async function CasperPage() {
         <div className="min-h-screen relative">
             <div className="fixed inset-0 -z-20 bg-[var(--color-sand)]" />
             <Image src="/images/casper.jpg" alt="" fill priority={false} className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20" />
-            <div className="flex items-center justify-between px-6 py-5">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:px-6 sm:py-5">
                 <BreadcrumbNav
                     items={[
                         ...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []),
@@ -42,17 +42,17 @@ export default async function CasperPage() {
                 />
                 <SessionBar />
             </div>
-            <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">
+            <div className="mx-auto max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pb-28">
                 <OnboardingHeader eyebrow="CASPer - Situational Judgement" title="Practice by competency" subtitle="Each section: watch a short scenario, then answer questions in five minutes" />
                 <FormatOverviewTutorial format="casper" />
-                <div data-tour="casper-competency-grid" className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div data-tour="casper-competency-grid" className="mt-10 grid grid-cols-1 sm:mt-14 gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {competencies.map((c) => (
                         <StationCard key={c.title} icon={resolveIcon(c.icon)} title={c.title} description={c.description} totalQuestions={c.totalQuestions} completedQuestions={c.completedQuestions} unitLabel="sections" href={c.href} />
                     ))}
                 </div>
             </div>
-            <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
-                <div data-tour="casper-practice-options" className="flex items-center gap-3">
+            <div className="mx-auto flex max-w-6xl justify-end px-4 pb-10 sm:-mt-16 sm:px-6">
+                <div data-tour="casper-practice-options" className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                     <RandomStationButton stations={competencies} />
                     <PracticeMyQuestionsButton
                         formatSlug="casper"
@@ -62,7 +62,7 @@ export default async function CasperPage() {
                         canUseOwnQuestions={canUseOwnQuestions}
                         hasOwnQuestions={hasOwnCasperQuestions}
                     />
-                    <Link href="/casper/full" className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]">
+                    <Link href="/casper/full" className="flex w-full items-center justify-center gap-1 rounded-xl bg-[var(--color-mint)] px-5 py-3 sm:w-auto sm:py-2.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]">
                         Start a full mock test →
                     </Link>
                 </div>

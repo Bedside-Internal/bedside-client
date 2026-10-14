@@ -5,7 +5,7 @@ const delays = ["", "d1", "d2"] as const;
 
 export default function HowItWorks() {
   return (
-    <section id="how" className="bg-cream px-[5vw] py-[120px]">
+    <section id="how" className="bg-cream px-[5vw] py-20 md:py-[120px]">
       <div className="mx-auto max-w-[1160px]">
         <RevealOnScroll className="mb-16">
           <div className="mb-[18px] inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-[5px]">

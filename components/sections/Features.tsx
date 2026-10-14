@@ -12,7 +12,7 @@ const accentHex: Record<FormatCardAccent, string> = {
 
 export default function Features({ formatCards }: { formatCards: FormatCardDTO[] }) {
   return (
-    <section id="features" className="bg-sand px-[5vw] py-[120px]">
+    <section id="features" className="bg-sand px-[5vw] py-20 md:py-[120px]">
       <div className="mx-auto max-w-[1160px]">
         <div className="mb-16 flex flex-wrap items-end justify-between gap-6">
           <RevealOnScroll>

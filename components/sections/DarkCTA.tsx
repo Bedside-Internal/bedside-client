@@ -3,7 +3,7 @@ import MagneticButton from "@/components/ui/MagneticButton";
 
 export default function DarkCTA() {
   return (
-    <section className="relative overflow-hidden bg-ink px-[5vw] py-[120px] text-center">
+    <section className="relative overflow-hidden bg-ink px-[5vw] py-20 md:py-[120px] text-center">
       <div className="pointer-events-none absolute -right-10 -top-10 text-mint opacity-[0.08]">
         <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
           <path

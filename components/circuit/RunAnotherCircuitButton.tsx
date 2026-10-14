@@ -26,7 +26,7 @@ export function RunAnotherCircuitButton({ formatSlug, basePath, label = "Run ano
       type="button"
       disabled={isPending}
       onClick={handleClick}
-      className="rounded-xl bg-[var(--color-mint)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-mint-hover)] disabled:opacity-50"
+      className="w-full rounded-xl bg-[var(--color-mint)] px-4 py-3 text-sm sm:w-auto sm:py-2 font-semibold text-white hover:bg-[var(--color-mint-hover)] disabled:opacity-50"
     >
       {isPending ? "Starting…" : label}
     </button>

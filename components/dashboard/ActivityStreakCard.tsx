@@ -102,7 +102,7 @@ function TabButton({
         <button
             type="button"
             onClick={onClick}
-            className={`rounded-t-lg px-4 py-2.5 text-sm font-semibold transition ${active
+            className={`rounded-t-lg px-3 py-2.5 text-sm font-semibold transition sm:px-4 ${active
                     ? "border-b-2 border-[var(--color-mint)] text-[var(--color-ink)]"
                     : "text-slate-400 hover:text-[var(--color-ink)]"
                 }`}

@@ -38,7 +38,7 @@ export default async function MmiPage() {
                 priority={false}
                 className="pointer-events-none absolute inset-0 -z-10 object-cover opacity-20"
             />
-            <div className="flex items-center justify-between px-6 py-5">
+            <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 px-4 py-4 sm:px-6 sm:py-5">
                 <BreadcrumbNav
                     items={[
                         ...(dashboardReady ? [{ label: "Dashboard", href: "/dashboard" }] : []),
@@ -49,7 +49,7 @@ export default async function MmiPage() {
                 <SessionBar />
             </div>
 
-            <div className="mx-auto max-w-6xl px-6 pb-28 pt-4">
+            <div className="mx-auto max-w-6xl px-4 pb-10 pt-4 sm:px-6 sm:pb-28">
                 <OnboardingHeader
                     eyebrow="Multiple Mini Interview"
                     title="Practice your stations"
@@ -58,15 +58,15 @@ export default async function MmiPage() {
 
                 <MmiOverviewTutorial />
 
-                <div data-tour="mmi-station-grid" className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div data-tour="mmi-station-grid" className="mt-10 grid grid-cols-1 sm:mt-14 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {stations.map((station) => (
                         <StationCard key={station.title} {...station} icon={resolveIcon(station.icon)} />
                     ))}
                 </div>
             </div>
 
-            <div className="mx-auto -mt-16 flex max-w-6xl justify-end px-6 pb-10">
-                <div data-tour="mmi-practice-options" className="flex items-center gap-3">
+            <div className="mx-auto flex max-w-6xl justify-end px-4 pb-10 sm:-mt-16 sm:px-6">
+                <div data-tour="mmi-practice-options" className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
                     <RandomStationButton stations={stations} />
                     <PracticeMyQuestionsButton
                         formatSlug="mmi"

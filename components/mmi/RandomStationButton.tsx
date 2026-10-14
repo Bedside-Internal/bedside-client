@@ -24,7 +24,7 @@ export function RandomStationButton({ stations }: RandomStationButtonProps) {
       type="button"
       onClick={handleClick}
       disabled={stations.length === 0}
-      className="rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
+      className="w-full rounded-xl bg-white px-5 py-3 text-sm sm:w-auto sm:py-2.5 font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
     >
       Practice a random station
     </button>

@@ -1,6 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { ChevronLeft, GraduationCap, School } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { TopBar } from "@/components/dashboard/Topbar";
 import { getMyQuestions, getUsageSummary, getMyPrivateQuestions, getQuestionFormats } from "@/lib/api/userQuestions";
 import { getOnboardingProgress } from "@/lib/actions";
@@ -84,7 +84,7 @@ export default async function MyQuestionsPage({ searchParams }: MyQuestionsPageP
         <div className="min-h-screen bg-[var(--color-cream)]">
             <TopBar tracks={tracks} activeTrackId={trackData.track.slug} />
 
-            <div className="max-w-7xl px-8 py-8">
+            <div className="max-w-7xl px-4 py-6 sm:px-8 sm:py-8">
                 <NextLink
                     href="/dashboard"
                     className="mb-6 inline-flex items-center gap-1 text-sm font-medium text-slate-400 transition hover:text-[var(--color-ink)]"

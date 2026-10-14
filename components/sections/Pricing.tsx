@@ -46,7 +46,7 @@ function TierCard({ tier, delay }: { tier: PricingTierDTO; delay?: "d1" | "d2" }
     <RevealOnScroll delay={delay} className="flex-1 min-w-[280px]">
       <div
         className={clsx(
-          "relative h-full rounded-[10px] border-[2.5px] border-ink p-11 px-9 shadow-hard transition-transform duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]",
+          "relative h-full rounded-[10px] border-[2.5px] border-ink p-8 shadow-hard sm:p-11 sm:px-9 transition-transform duration-150 ease-[cubic-bezier(0.25,0.1,0.25,1)] hover:-translate-x-[2px] hover:-translate-y-[2px]",
           tier.featured ? "bg-mint" : "bg-white",
         )}
       >
@@ -177,9 +177,9 @@ export default function Pricing({ tiers }: { tiers: PricingTierDTO[] }) {
   if (tiers.length === 0) return null;
 
   return (
-    <section id="pricing" className="bg-cream px-[5vw] py-[120px]">
+    <section id="pricing" className="bg-cream px-[5vw] py-20 md:py-[120px]">
       <div className="mx-auto max-w-[1000px]">
-        <RevealOnScroll className="mb-[72px] text-center">
+        <RevealOnScroll className="mb-12 text-center md:mb-[72px]">
           <div className="mb-[18px] inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-[5px]">
             <span className="text-[11px] font-bold uppercase tracking-wider text-mint">Pricing</span>
           </div>

@@ -29,8 +29,8 @@ export function PerformanceTrendChart({ data }: { data: TrendData }) {
     }));
 
     return (
-        <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-6 shadow-sm">
-            <div className="mb-4 flex items-baseline justify-between">
+        <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-4 shadow-sm sm:p-6">
+            <div className="mb-4 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <h3 className="font-semibold text-[var(--color-ink)]">Progress over time</h3>
                 {data.monthlyAverage !== null && (
                     <span className="text-sm text-[var(--color-ink)]/55">

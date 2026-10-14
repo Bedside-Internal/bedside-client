@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Menu, X } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import { Logo } from "../ui/Logo";
 
@@ -14,6 +15,7 @@ const links = [
 
 export default function Navbar() {
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -44,14 +46,28 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close the mobile menu with Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
+  // Keep the bar on screen while the menu is open, even if the page scrolls.
+  const slideAway = hidden && !menuOpen;
+
   return (
     <nav
       className={`sticky top-0 z-[100] flex h-16 items-center justify-between border-b-2 border-ink bg-cream px-[5vw] transition-transform duration-300 ease-in-out ${
-        hidden ? "-translate-y-full" : "translate-y-0"
+        slideAway ? "-translate-y-full" : "translate-y-0"
       }`}
     >
       <Logo href="/" />
 
+      {/* Desktop */}
       <div className="hidden items-center gap-7 md:flex">
         {links.map((l) => (
           <a
@@ -69,6 +85,44 @@ export default function Navbar() {
           Get started →
         </MagneticButton>
       </div>
+
+      {/* Mobile: the CTA stays visible, section links live in the menu */}
+      <div className="flex items-center gap-2 md:hidden">
+        <MagneticButton
+          href="/sign-in"
+          className="rounded-md border-2 border-ink bg-mint px-3.5 py-2 text-[13px] font-bold text-ink shadow-hard-sm active:translate-x-[3px] active:translate-y-[3px] active:shadow-none"
+        >
+          Get started
+        </MagneticButton>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-menu"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          className="flex h-11 w-11 items-center justify-center rounded-md text-ink"
+        >
+          {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      {menuOpen && (
+        <div
+          id="mobile-nav-menu"
+          className="absolute inset-x-0 top-full border-b-2 border-ink bg-cream px-[5vw] py-2 md:hidden"
+        >
+          {links.map((l) => (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setMenuOpen(false)}
+              className="flex min-h-12 items-center border-b border-sand text-base font-medium text-ink last:border-b-0"
+            >
+              {l.label}
+            </a>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }

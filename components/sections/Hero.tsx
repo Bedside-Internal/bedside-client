@@ -166,14 +166,14 @@ export default function Hero() {
 
       <div
         data-parallax="-0.13"
-        className="pointer-events-none absolute right-[3.5%] top-[16%] z-10 hidden max-w-[272px] animate-float-c md:block"
+        className="pointer-events-none absolute right-[3.5%] top-[16%] z-10 hidden max-w-[272px] animate-float-c xl:block"
       >
         <InterviewCard />
       </div>
 
       <div
         data-parallax="-0.06"
-        className="pointer-events-none absolute bottom-[24%] left-[4%] z-10 hidden animate-float-a sm:block"
+        className="pointer-events-none absolute bottom-[24%] left-[4%] z-10 hidden animate-float-a lg:block"
       >
         <div className="whitespace-nowrap rounded-full border-2 border-ink bg-coral px-[18px] py-[9px] text-[13px] font-bold text-white shadow-hard-sm">
           6 formats covered ✦
@@ -182,7 +182,7 @@ export default function Hero() {
 
       <div
         data-parallax="-0.09"
-        className="pointer-events-none absolute bottom-[22%] right-[4%] z-10 hidden max-w-[210px] animate-float-b md:block"
+        className="pointer-events-none absolute bottom-[22%] right-[4%] z-10 hidden max-w-[210px] animate-float-b lg:block"
       >
         <div className="rounded-lg border-2 border-ink bg-white p-3 px-4 text-left shadow-hard-sm">
           <div className="mb-1.5 text-[9px] font-bold uppercase tracking-wider text-mint">

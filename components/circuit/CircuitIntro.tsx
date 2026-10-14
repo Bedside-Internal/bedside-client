@@ -36,7 +36,7 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
   const router = useRouter();
   const [micGranted, setMicGranted] = useState(false);
   const [cameraGranted, setCameraGranted] = useState(false);
-  // Phones answer in writing for now (see MOBILE_RECORDING_ENABLED), so there is no mic/camera to ask for.
+  // Phones answer in writing by design (see MOBILE_RECORDING_ENABLED), so there is no mic/camera to ask for.
   const typedOnly = useMediaQuery(PHONE_MEDIA_QUERY) && !MOBILE_RECORDING_ENABLED;
   const needsMic = preview.requiresMic && !typedOnly;
   const needsCamera = preview.requiresCamera && !typedOnly;

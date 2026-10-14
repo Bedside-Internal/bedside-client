@@ -48,10 +48,11 @@ export function ResponseComposer({
 }: ResponseComposerProps) {
     const visibleModes = MODES.filter((m) => allowedModes.includes(m.id));
     const [selectedMode, setMode] = useState<ComposerMode>(visibleModes[0]?.id ?? "written");
-    // Recording stays off on phones until it has been tested on real devices
-    // (see MOBILE_RECORDING_ENABLED), so phones only ever get the written composer.
+    // Phones answer in writing by design (see MOBILE_RECORDING_ENABLED). Only
+    // applies when the scenario allows a written answer, so a video-only
+    // scenario never turns into a text box.
     const phone = useMediaQuery(PHONE_MEDIA_QUERY);
-    const writtenOnly = phone && !MOBILE_RECORDING_ENABLED;
+    const writtenOnly = phone && !MOBILE_RECORDING_ENABLED && allowedModes.includes("written");
     const mode: ComposerMode = writtenOnly ? "written" : selectedMode;
     const [text, setText] = useState("");
     const [hintsOpen, setHintsOpen] = useState(false);

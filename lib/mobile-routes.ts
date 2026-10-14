@@ -8,10 +8,12 @@
 export const PHONE_MEDIA_QUERY = "(pointer: coarse) and (max-width: 768px)";
 
 /**
- * Audio/video answers on phones. Off until recording has been tested on real
- * iOS and Android devices (MediaRecorder format support, the file the server
- * receives, interruptions such as a call or a screen lock). While off, phones
- * only get the written composer. Flip this to true once that testing is done.
+ * Audio/video answers on phones. Off by design: recording needs mic/camera
+ * permissions and stream handling (MediaRecorder formats, the file the server
+ * receives, interruptions such as a call or a screen lock) that we chose not to
+ * support on phones. Phones answer in writing, and video-only formats (CASPer)
+ * stay desktop-only. Turning this on is not a one-line change: it needs real
+ * device testing first, and CASPer's route block and runner would need review.
  */
 export const MOBILE_RECORDING_ENABLED = false;
 

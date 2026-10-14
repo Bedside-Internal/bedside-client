@@ -28,9 +28,9 @@ export default function DesktopOnlyMessage() {
         Best on desktop
       </h1>
       <p className="mb-8 max-w-[320px] text-[15px] leading-relaxed text-neutral-500">
-        Full mock circuits and CASPer need a bigger screen for now. You can still
-        practice single MMI and PREview stations, manage your questions, and check
-        your dashboard from your phone.
+        CASPer needs a bigger screen for now. You can still practice MMI and
+        PREview (single stations or full circuits), manage your questions, and
+        check your dashboard from your phone.
       </p>
       <Link
         href="/dashboard"

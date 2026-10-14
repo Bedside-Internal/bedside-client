@@ -27,16 +27,14 @@ const MOBILE_READY_PREFIXES = [
   "/sign-up",
   "/onboarding", // track, format and station select screens
   "/dashboard", // dashboard, /my-questions and /refer
-  "/mmi", // single-station practice (full circuits are excluded below)
-  "/preview", // single-station practice (full mock tests are excluded below)
+  "/mmi", // single-station practice and full circuits
+  "/preview", // single-station practice and full mock tests
   "/desktop-only",
   "/r", // referral redirect handler
 ] as const;
 
 /** Carved out of the prefixes above, and checked first. */
 const DESKTOP_ONLY_PREFIXES = [
-  "/mmi/full", // timed multi-station circuit
-  "/preview/full",
   "/casper", // video-response format
 ] as const;
 

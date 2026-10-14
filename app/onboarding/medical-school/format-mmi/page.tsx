@@ -76,9 +76,7 @@ export default async function MmiPage() {
                         canUseOwnQuestions={canUseOwnQuestions}
                         hasOwnQuestions={hasOwnMmiQuestions}
                     />
-                    <div className="w-full [@media(pointer:coarse)_and_(max-width:768px)]:hidden sm:w-auto">
-                        <RunAnotherCircuitButton formatSlug="mmi" basePath="/mmi/full" label="Start a full circuit →" />
-                    </div>
+                    <RunAnotherCircuitButton formatSlug="mmi" basePath="/mmi/full" label="Start a full circuit →" />
                 </div>
             </div>
         </div>

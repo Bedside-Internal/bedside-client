@@ -31,9 +31,9 @@ export function CircuitResultsView({
   runAnotherLabel,
 }: CircuitResultsViewProps) {
   return (
-    <div data-clarity-mask="True" className="min-h-screen bg-[var(--color-cream)] px-6 py-10">
+    <div data-clarity-mask="True" className="min-h-dvh bg-[var(--color-cream)] px-4 py-6 sm:px-6 sm:py-10">
       <div className="mx-auto grid max-w-4xl gap-6 lg:grid-cols-[320px_1fr]">
-        <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-6 text-center shadow-sm">
+        <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 text-center shadow-sm sm:p-6">
           <span className="mb-6 inline-flex items-center gap-1.5 rounded-full bg-[var(--color-mint)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-mint)]">
             <CheckCircle2 className="h-3.5 w-3.5" /> {completeLabel}
           </span>
@@ -72,7 +72,7 @@ export function CircuitResultsView({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm sm:p-6">
           <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[var(--color-ink)]/45">
             {breakdownLabel}
           </p>
@@ -80,9 +80,9 @@ export function CircuitResultsView({
             {results.stations.map((station) => {
               const Icon = resolveIcon(station.iconKey ?? "");
               return (
-                <div key={station.sectionSlug} className="flex items-center gap-3">
+                <div key={station.sectionSlug} className="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <Icon className="h-4 w-4 shrink-0 text-[var(--color-ink)]/40" strokeWidth={2} />
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-[8rem] flex-1">
                     <ProgressBar label={station.title} value={station.score ?? 0} tone={station.needsFocus ? "coral" : undefined} />
                   </div>
                   <span className="w-8 shrink-0 text-right text-sm font-semibold text-[var(--color-ink)]">
@@ -98,8 +98,8 @@ export function CircuitResultsView({
             })}
           </div>
 
-          <div className="mt-6 flex items-center justify-end gap-3 border-t border-[var(--color-sand)] pt-4">
-            <a href={backHref} className="rounded-xl px-4 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:text-[var(--color-ink)]">
+          <div className="mt-6 flex flex-col-reverse items-stretch gap-2 border-t border-[var(--color-sand)] pt-4 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
+            <a href={backHref} className="rounded-xl px-4 py-3 text-center text-sm sm:py-2 font-semibold text-[var(--color-ink)]/60 hover:text-[var(--color-ink)]">
               Review all feedback
             </a>
             <RunAnotherCircuitButton formatSlug={formatSlug} basePath={basePath} label={runAnotherLabel} />

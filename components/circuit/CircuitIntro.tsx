@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Mic, Video, CheckCircle2 } from "lucide-react";
 import { resolveIcon } from "@/lib/iconRegistry";
 import { startCircuit } from "@/lib/api/circuit-actions";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { MOBILE_RECORDING_ENABLED, PHONE_MEDIA_QUERY } from "@/lib/mobile-routes";
 import type { CircuitPreview } from "@/types/circuit";
 
 interface CircuitIntroCopy {
@@ -32,8 +34,12 @@ const DEFAULT_HOW_IT_WORKS = [
 
 export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitIntroProps) {
   const router = useRouter();
-  const [micGranted, setMicGranted] = useState(!preview.requiresMic);
-  const [cameraGranted, setCameraGranted] = useState(!preview.requiresCamera);
+  const [micGranted, setMicGranted] = useState(false);
+  const [cameraGranted, setCameraGranted] = useState(false);
+  // Phones answer in writing for now (see MOBILE_RECORDING_ENABLED), so there is no mic/camera to ask for.
+  const typedOnly = useMediaQuery(PHONE_MEDIA_QUERY) && !MOBILE_RECORDING_ENABLED;
+  const needsMic = preview.requiresMic && !typedOnly;
+  const needsCamera = preview.requiresCamera && !typedOnly;
   const [permissionError, setPermissionError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -44,8 +50,8 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
     setPermissionError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: preview.requiresMic,
-        video: preview.requiresCamera,
+        audio: needsMic,
+        video: needsCamera,
       });
       stream.getTracks().forEach((track) => track.stop());
       setMicGranted(true);
@@ -55,7 +61,7 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
     }
   }
 
-  const readyToBegin = micGranted && cameraGranted;
+  const readyToBegin = (!needsMic || micGranted) && (!needsCamera || cameraGranted);
 
   function handleBegin() {
     startTransition(async () => {
@@ -65,7 +71,7 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
   }
 
   return (
-    <div className="w-full rounded-2xl border border-[var(--color-sand)] bg-[var(--color-cream)] p-6 shadow-sm">
+    <div className="w-full rounded-2xl border border-[var(--color-sand)] bg-[var(--color-cream)] p-5 shadow-sm sm:p-6">
       <div className="mb-6 text-center">
         <p className="mb-1 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-ink)]/45">
           {copy.eyebrow ?? "Your Turn"}
@@ -96,11 +102,17 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
         {howItWorks.map((line) => <p key={line}>{line}</p>)}
       </div>
 
-      {(preview.requiresMic || preview.requiresCamera) && (
-        <div className="mb-4 flex items-center justify-between rounded-xl border border-[var(--color-sand)] bg-white px-4 py-3">
+      {typedOnly && (preview.requiresMic || preview.requiresCamera) && (
+        <p className="mb-4 rounded-xl border border-[var(--color-amber)]/30 bg-[var(--color-amber)]/10 px-4 py-3 text-xs leading-relaxed text-[var(--color-ink)]/70">
+          On your phone you&apos;ll type your responses. Open Bedside on a laptop to answer out loud or on camera.
+        </p>
+      )}
+
+      {(needsMic || needsCamera) && (
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[var(--color-sand)] bg-white px-4 py-3">
           <div className="flex items-center gap-2 text-sm text-[var(--color-ink)]">
-            {preview.requiresMic && <Mic className="h-4 w-4" strokeWidth={2} />}
-            {preview.requiresCamera && <Video className="h-4 w-4" strokeWidth={2} />}
+            {needsMic && <Mic className="h-4 w-4" strokeWidth={2} />}
+            {needsCamera && <Video className="h-4 w-4" strokeWidth={2} />}
             <span>Microphone &amp; camera access</span>
           </div>
           {readyToBegin ? (
@@ -111,7 +123,7 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
             <button
               type="button"
               onClick={requestPermissions}
-              className="rounded-lg bg-[var(--color-ink)] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-85"
+              className="shrink-0 rounded-lg bg-[var(--color-ink)] px-3 py-1.5 text-xs font-semibold text-white hover:opacity-85"
             >
               Enable
             </button>
@@ -125,13 +137,13 @@ export function CircuitIntro({ preview, formatSlug, basePath, copy }: CircuitInt
         type="button"
         disabled={!readyToBegin || isPending}
         onClick={handleBegin}
-        className="w-full rounded-xl bg-[var(--color-mint)] px-5 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:opacity-40"
+        className="w-full rounded-xl bg-[var(--color-mint)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)] disabled:cursor-not-allowed disabled:opacity-40"
       >
         {isPending ? "Starting…" : readyToBegin ? "Begin →" : "Enable mic & camera to continue"}
       </button>
 
       <div className="mt-4 text-center">
-        <a href={copy.backHref ?? "/dashboard"} className="text-xs text-[var(--color-ink)]/40 hover:text-[var(--color-ink)]/60">
+        <a href={copy.backHref ?? "/dashboard"} className="inline-block py-2 text-xs text-[var(--color-ink)]/40 hover:text-[var(--color-ink)]/60">
           ← Back to dashboard
         </a>
       </div>

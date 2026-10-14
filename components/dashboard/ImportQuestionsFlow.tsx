@@ -193,7 +193,7 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                             value={formatId}
                             onChange={(e) => setFormatId(e.target.value)}
                             disabled={previewing || committing || !!csvPreview || !!pdfPreview}
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm disabled:bg-sand/40"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm disabled:bg-sand/40"
                         >
                             <option value="">Optional</option>
                             {formats.map((f) => (
@@ -243,7 +243,7 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                                                             onChange={(e) =>
                                                                 setMapping(setColumnRole(mapping, colIndex, e.target.value as ColumnRole | "", csvPreview.headers))
                                                             }
-                                                            className="w-full rounded-md border border-[var(--color-sand)] bg-white px-2 py-1 text-xs"
+                                                            className="w-full rounded-md border border-[var(--color-sand)] bg-white px-2 py-1 text-base sm:text-xs"
                                                         >
                                                             {ROLE_OPTIONS.map((o) => (
                                                                 <option key={o.value} value={o.value}>{o.label}</option>
@@ -312,7 +312,7 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                                                 value={confidentTexts[i] ?? block.text}
                                                 onChange={(e) => setConfidentTexts((prev) => ({ ...prev, [i]: e.target.value }))}
                                                 rows={2}
-                                                className="flex-1 resize-none rounded-md border border-[var(--color-sand)] px-2 py-1.5 text-sm"
+                                                className="flex-1 resize-none rounded-md border border-[var(--color-sand)] px-2 py-1.5 text-base sm:text-sm"
                                             />
                                         </div>
                                     ))}
@@ -339,7 +339,7 @@ export function ImportQuestionsFlow({ formats, userTier, onImported }: ImportQue
                                                     value={needsReviewTexts[i] ?? block.text}
                                                     onChange={(e) => setNeedsReviewTexts((prev) => ({ ...prev, [i]: e.target.value }))}
                                                     rows={2}
-                                                    className="flex-1 resize-none rounded-md border border-[var(--color-sand)] px-2 py-1.5 text-sm"
+                                                    className="flex-1 resize-none rounded-md border border-[var(--color-sand)] px-2 py-1.5 text-base sm:text-sm"
                                                 />
                                             </div>
                                         ))}

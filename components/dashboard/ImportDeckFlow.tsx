@@ -141,7 +141,7 @@ export function ImportDeckFlow({ formats, userTier, onImported }: ImportDeckFlow
                             value={formatId}
                             onChange={(e) => setFormatId(e.target.value)}
                             disabled={previewing || committing || cards.length > 0}
-                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-sm disabled:bg-sand/40"
+                            className="mt-1 w-full rounded-lg border border-[var(--color-sand)] px-3 py-2 text-base sm:text-sm disabled:bg-sand/40"
                         >
                             <option value="">Optional</option>
                             {formats.map((f) => (
@@ -180,7 +180,7 @@ export function ImportDeckFlow({ formats, userTier, onImported }: ImportDeckFlow
                                 {cards.map((card, i) => (
                                     <div
                                         key={i}
-                                        className={`flex items-start gap-2 rounded-lg border p-3 ${card.bucket === null
+                                        className={`flex flex-col gap-2 rounded-lg border p-3 sm:flex-row sm:items-start ${card.bucket === null
                                             ? "border-[var(--color-coral)]/30 bg-[var(--color-coral)]/5"
                                             : "border-[var(--color-sand)] bg-white"
                                             }`}
@@ -191,20 +191,20 @@ export function ImportDeckFlow({ formats, userTier, onImported }: ImportDeckFlow
                                                 value={card.front}
                                                 onChange={(e) => updateField(i, "front", e.target.value)}
                                                 rows={1}
-                                                className="w-full resize-none rounded-md border border-[var(--color-sand)] px-2 py-1 text-sm font-medium"
+                                                className="w-full resize-none rounded-md border border-[var(--color-sand)] px-2 py-1 text-base sm:text-sm font-medium"
                                             />
                                             <textarea
                                                 data-clarity-mask="True"
                                                 value={card.back}
                                                 onChange={(e) => updateField(i, "back", e.target.value)}
                                                 rows={1}
-                                                className="w-full resize-none rounded-md border border-[var(--color-sand)] px-2 py-1 text-xs text-[var(--color-ink)]/70"
+                                                className="w-full resize-none rounded-md border border-[var(--color-sand)] px-2 py-1 text-base text-[var(--color-ink)]/70 sm:text-xs"
                                             />
                                         </div>
                                         <select
                                             value={card.bucket ?? ""}
                                             onChange={(e) => setBucket(i, (e.target.value || null) as Bucket)}
-                                            className="w-40 shrink-0 rounded-md border border-[var(--color-sand)] px-2 py-1.5 text-xs"
+                                            className="w-full shrink-0 rounded-md border border-[var(--color-sand)] px-2 py-1.5 text-base sm:w-40 sm:text-xs"
                                         >
                                             <option value="">Choose…</option>
                                             <option value="prompt">Practice prompt</option>

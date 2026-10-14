@@ -30,11 +30,11 @@ export default async function OnboardingPage() {
     <div className="min-h-screen bg-slate-50">
       <SessionBar />
 
-      <main className="relative flex min-h-[calc(100vh-48px)] items-center justify-center overflow-hidden px-4">
+      <main className="relative flex min-h-[calc(100dvh-48px)] items-center justify-center overflow-hidden px-4">
         <HandshakeIllustration className="pointer-events-none absolute bottom-24 left-6 hidden h-auto w-56 lg:block" />
         <ChecklistIllustration className="pointer-events-none absolute bottom-24 right-6 hidden h-auto w-56 lg:block" />
 
-        <div className="w-full min-w-0 max-w-xl py-16 text-center">
+        <div className="w-full min-w-0 max-w-xl py-10 text-center sm:py-16">
           <OnboardingHeader
             eyebrow={`Welcome ${firstName}`}
             title="What are you preparing for?"

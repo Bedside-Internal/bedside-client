@@ -18,7 +18,7 @@ interface TrackSwitcherProps {
 
 export function TrackSwitcher({ tracks, activeTrackId, onSelectTrack, onAddTrack }: TrackSwitcherProps) {
     return (
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-nowrap items-center gap-2 md:flex-wrap md:gap-3">
             {tracks.map((track) => {
                 const active = track.id === activeTrackId;
                 return (
@@ -27,7 +27,7 @@ export function TrackSwitcher({ tracks, activeTrackId, onSelectTrack, onAddTrack
                         type="button"
                         aria-pressed={active}
                         onClick={() => onSelectTrack?.(track.id)}
-                        className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${active
+                        className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${active
                                 ? "bg-[var(--color-mint)] text-white"
                                 : "border border-slate-200 bg-white text-slate-600 hover:border-slate-300"
                             }`}
@@ -40,7 +40,7 @@ export function TrackSwitcher({ tracks, activeTrackId, onSelectTrack, onAddTrack
             <button
                 type="button"
                 onClick={onAddTrack}
-                className="flex items-center gap-2 rounded-full border border-dashed border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400 transition hover:border-slate-300 hover:text-slate-500"
+                className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-dashed border-slate-200 px-4 py-2 text-sm font-semibold text-slate-400 transition hover:border-slate-300 hover:text-slate-500"
             >
                 <Plus className="h-4 w-4" />
                 <span>Add track</span>

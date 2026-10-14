@@ -51,7 +51,7 @@ export function FormatSelector({ track = "medical-school", formats }: FormatSele
                 <button
                     type="button"
                     onClick={() => router.back()}
-                    className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600"
+                    className="flex items-center gap-1 py-2 text-sm text-slate-400 hover:text-slate-600"
                 >
                     <ChevronLeft className="h-4 w-4" />
                     Back
@@ -61,7 +61,7 @@ export function FormatSelector({ track = "medical-school", formats }: FormatSele
                     type="button"
                     disabled={!selected || isPending}
                     onClick={handleContinue}
-                    className={`flex items-center gap-1 rounded-xl px-5 py-2.5 text-sm font-semibold transition ${selected && !isPending
+                    className={`flex items-center gap-1 rounded-xl px-5 py-3 text-sm font-semibold transition sm:py-2.5 ${selected && !isPending
                             ? "bg-slate-900 text-white hover:bg-slate-800"
                             : "cursor-not-allowed bg-slate-200 text-slate-400"
                         }`}

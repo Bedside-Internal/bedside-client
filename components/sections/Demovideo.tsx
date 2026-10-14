@@ -14,7 +14,7 @@ export default function DemoVideo({ youtubeId }: DemoVideoProps) {
     const thumbnailSrc = `https://i.ytimg.com/vi/${youtubeId}/maxresdefault.jpg`;
 
     return (
-        <section className="bg-cream px-[5vw] py-[100px]">
+        <section className="bg-cream px-[5vw] py-16 md:py-[100px]">
             <div className="mx-auto max-w-[1160px] text-center">
                 <RevealOnScroll className="mb-10">
                     <div className="mb-[18px] inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-[5px]">

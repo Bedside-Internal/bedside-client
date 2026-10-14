@@ -1,10 +1,11 @@
 import { SignIn } from "@clerk/nextjs";
 import { poppins } from "@/lib/fonts";
 import clsx from "clsx";
+import { Logo } from "@/components/ui/Logo";
 
 export default function SignInPage() {
   return (
-    <div className="flex min-h-screen w-full bg-black">
+    <div className="flex min-h-dvh w-full bg-black">
       <div className="relative hidden w-full max-w-md flex-col justify-between overflow-hidden bg-neutral-950 px-10 py-10 lg:flex">
         <svg
           className="pointer-events-none absolute -bottom-48 -right-32 h-[500px] w-[500px]"
@@ -39,11 +40,14 @@ export default function SignInPage() {
           className="absolute inset-0 bg-cover bg-center opacity-30"
           style={{ backgroundImage: "url('/images/background_login.png')" }}
         />
-        <div className="relative z-10">
+        <div className="relative z-10 flex w-full max-w-[25rem] flex-col items-stretch gap-6 px-4 py-10 sm:px-0">
+          {/* The brand panel is desktop-only, so show the logo above the form on phones. */}
+          <Logo className="justify-center lg:hidden" />
           <SignIn
             appearance={{
               elements: {
                 rootBox: "w-full",
+                cardBox: "w-full",
                 card: "shadow-none bg-transparent p-0",
                 headerTitle: "text-3xl font-bold text-neutral-900",
                 headerSubtitle: "text-neutral-500",
@@ -53,7 +57,7 @@ export default function SignInPage() {
                 dividerText: "text-neutral-400",
                 formFieldLabel: "text-neutral-800 font-medium",
                 formFieldInput:
-                  "rounded-xl border-neutral-200 py-3 focus:border-emerald-500 focus:ring-emerald-500",
+                  "rounded-xl border-neutral-200 py-3 focus:border-emerald-500 focus:ring-emerald-500 max-sm:text-base",
                 footerActionLink: "text-emerald-600 hover:text-emerald-700",
                 formButtonPrimary:
                   "bg-emerald-500 hover:bg-emerald-600 rounded-xl py-3 text-sm normal-case shadow-none",

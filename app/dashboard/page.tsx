@@ -133,7 +133,7 @@ export default async function Dashboard() {
         <div data-clarity-mask="True"  className="min-h-screen bg-[var(--color-cream)]">
             <TopBar tracks={tracks} activeTrackId={data.track.slug} />
 
-            <div className="mx-auto max-w-[1600px] px-10">
+            <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-10">
                 <div className="mb-8 flex flex-col items-start justify-between gap-6 border-b border-[var(--color-sand)] pb-8 sm:flex-row">
                     <GreetingHeader name={firstName} streakDays={data.streak.streakDays} />
                     <CountdownCard

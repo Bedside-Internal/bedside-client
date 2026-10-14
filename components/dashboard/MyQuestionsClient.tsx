@@ -122,7 +122,7 @@ export function MyQuestionsClient({
                     </div>
 
                     <div data-tour="questions-tools" className="rounded-2xl border border-[var(--color-sand)] bg-white p-5 shadow-sm">
-                        <div className="mb-4 flex items-center gap-1 border-b border-[var(--color-sand)]">
+                        <div className="mb-4 border-b border-[var(--color-sand)]">
                             {tab === "generate" && userTier !== "free" && (
                                 <div className="mb-3 flex flex-wrap gap-1.5">
                                     {formats.map((f) => (
@@ -141,6 +141,7 @@ export function MyQuestionsClient({
                                 </div>
                             )}
 
+                            <div className="no-scrollbar -mx-5 -mb-px flex items-center gap-1 overflow-x-auto px-5">
                             {([
                                 { key: "submit" as const, label: "Submit for Review" },
                                 { key: "generate" as const, label: "Generate with AI" },
@@ -151,7 +152,7 @@ export function MyQuestionsClient({
                                     key={t.key}
                                     type="button"
                                     onClick={() => setTab(t.key)}
-                                    className={`-mb-px flex items-center gap-1.5 border-b-2 px-3 pb-2.5 text-sm font-medium transition-colors ${tab === t.key
+                                    className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3 pb-2.5 pt-1 text-sm font-medium transition-colors ${tab === t.key
                                         ? "border-mint text-[var(--color-ink)]"
                                         : "border-transparent text-[var(--color-ink)]/40 hover:text-[var(--color-ink)]/70"
                                         }`}
@@ -162,6 +163,7 @@ export function MyQuestionsClient({
                                     )}
                                 </button>
                             ))}
+                            </div>
                         </div>
 
                         {tab === "submit" && (
@@ -179,13 +181,13 @@ export function MyQuestionsClient({
                                         minLength={20}
                                         maxLength={2000}
                                         disabled={submitting}
-                                        className="w-full resize-none rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-sm text-[var(--color-ink)] placeholder:text-slate-400 outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
+                                        className="w-full resize-none rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-base sm:text-sm text-[var(--color-ink)] placeholder:text-slate-400 outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
                                         placeholder="Describe the scenario or question you'd like to practice..."
                                     />
                                     <p className="mt-1 text-xs text-slate-400">20–2000 characters</p>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                                     <div>
                                         <label htmlFor="formatId" className="mb-1.5 block text-sm font-medium text-[var(--color-ink)]">
                                             Format
@@ -194,7 +196,7 @@ export function MyQuestionsClient({
                                             id="formatId"
                                             name="formatId"
                                             disabled={submitting}
-                                            className="w-full rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-sm text-[var(--color-ink)] outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
+                                            className="w-full rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-base sm:text-sm text-[var(--color-ink)] outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
                                         >
                                             <option value="">Optional</option>
                                             {formats.map((f) => (
@@ -218,12 +220,12 @@ export function MyQuestionsClient({
                                         required
                                         maxLength={120}
                                         disabled={submitting}
-                                        className="w-full rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-sm text-[var(--color-ink)] outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
+                                        className="w-full rounded-md border border-[var(--color-sand)] bg-white px-3 py-2 text-base sm:text-sm text-[var(--color-ink)] outline-none focus:border-mint focus:ring-1 focus:ring-mint disabled:bg-sand/40"
                                         placeholder="e.g., Ethical dilemma, Role play, Communication"
                                     />
                                 </div>
 
-                                <div className="flex items-center justify-between gap-3">
+                                <div className="flex flex-wrap items-center justify-between gap-3">
                                     <label className="flex items-center gap-3 cursor-pointer">
                                         <Switch
                                             checked={shareWithApplicants}
@@ -281,7 +283,7 @@ export function MyQuestionsClient({
                     <h2 className="mb-4 font-poppins text-lg font-semibold text-[var(--color-ink)]">Your Questions</h2>
 
                     {!hasAnyQuestions ? (
-                        <div className="flex min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 px-6 py-8 text-center">
+                        <div className="flex min-h-[240px] lg:min-h-[420px] flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--color-sand)] bg-white/60 px-6 py-8 text-center">
                             <FileText className="mx-auto h-8 w-8 text-slate-300" />
                             <p className="mt-3 text-base font-medium text-[var(--color-ink)]">No questions yet</p>
                             <p className="mt-1 text-sm text-slate-400">
@@ -294,7 +296,7 @@ export function MyQuestionsClient({
                                 <div key={q.id} className="rounded-xl border border-[var(--color-violet)]/30 bg-[var(--color-violet)]/5 p-4 shadow-sm">
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-500">
                                                 <Sparkles className="h-3.5 w-3.5 text-[var(--color-violet)]" />
                                                 <span className="font-medium text-[var(--color-ink)]">{q.sectionTitle}</span>
                                                 <span className="text-sand">·</span>
@@ -323,7 +325,7 @@ export function MyQuestionsClient({
                                                         type="button"
                                                         onClick={() => requestShare(q.id)}
                                                         disabled={scopePendingId === q.id}
-                                                        className="text-xs font-semibold text-[var(--color-mint-hover)] hover:underline disabled:opacity-50"
+                                                        className="-my-1.5 py-1.5 text-xs font-semibold text-[var(--color-mint-hover)] hover:underline disabled:opacity-50"
                                                     >
                                                         {scopePendingId === q.id ? "Requesting…" : "Request to share publicly"}
                                                     </button>
@@ -333,7 +335,7 @@ export function MyQuestionsClient({
                                                         type="button"
                                                         onClick={() => cancelShare(q.id)}
                                                         disabled={scopePendingId === q.id}
-                                                        className="text-xs font-semibold text-[var(--color-coral)] hover:underline disabled:opacity-50"
+                                                        className="-my-1.5 py-1.5 text-xs font-semibold text-[var(--color-coral)] hover:underline disabled:opacity-50"
                                                     >
                                                         {scopePendingId === q.id ? "Cancelling…" : "Cancel request"}
                                                     </button>
@@ -343,7 +345,7 @@ export function MyQuestionsClient({
                                                         type="button"
                                                         onClick={() => makePrivate(q.id)}
                                                         disabled={scopePendingId === q.id}
-                                                        className="text-xs font-semibold text-[var(--color-ink)]/50 hover:underline disabled:opacity-50"
+                                                        className="-my-1.5 py-1.5 text-xs font-semibold text-[var(--color-ink)]/50 hover:underline disabled:opacity-50"
                                                     >
                                                         {scopePendingId === q.id ? "Updating…" : "Make private"}
                                                     </button>
@@ -353,7 +355,7 @@ export function MyQuestionsClient({
                                         {q.isActive ? (
                                             <a
                                                 href={`/mmi/${q.sectionSlug}?qid=${q.id}`}
-                                                className="shrink-0 rounded-lg bg-[var(--color-violet)] px-3 py-1.5 text-xs font-semibold text-white transition hover:opacity-90"
+                                                className="shrink-0 rounded-lg bg-[var(--color-violet)] px-3 py-2 text-xs sm:py-1.5 font-semibold text-white transition hover:opacity-90"
                                             >
                                                 Practice Now
                                             </a>
@@ -370,7 +372,7 @@ export function MyQuestionsClient({
                                 <div key={q.id} className="rounded-xl border border-[var(--color-sand)] bg-white p-4 shadow-sm">
                                     <div className="flex items-start justify-between gap-4">
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 text-sm text-slate-500">
+                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-500">
                                                 {q.formatTitle && (
                                                     <span className="font-medium text-[var(--color-ink)]">{q.formatTitle}</span>
                                                 )}

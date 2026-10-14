@@ -30,11 +30,11 @@ export function PracticeMyQuestionsButton({
 
     if (!canUseOwnQuestions) {
         return (
-            <div className="group relative">
+            <div className="group relative w-full sm:w-auto">
                 <button
                     type="button"
                     disabled
-                    className="flex items-center gap-1.5 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)]/40 shadow-[0_1px_2px_rgba(26,26,26,0.04)] cursor-not-allowed"
+                    className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[var(--color-ink)]/40 sm:w-auto sm:py-2.5 shadow-[0_1px_2px_rgba(26,26,26,0.04)] cursor-not-allowed"
                 >
                     <Lock className="h-3.5 w-3.5" strokeWidth={2.5} />
                     Practice My Questions
@@ -73,12 +73,12 @@ export function PracticeMyQuestionsButton({
     }
 
     return (
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
             <button
                 type="button"
                 onClick={() => setOpen((v) => !v)}
                 disabled={isPending}
-                className="flex items-center gap-1.5 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:opacity-50"
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-[var(--color-ink)] shadow sm:w-auto sm:py-2.5-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:opacity-50"
             >
                 {isPending ? "Starting…" : "Practice My Questions"}
                 <ChevronDown className="h-3.5 w-3.5" strokeWidth={2.5} />

@@ -10,7 +10,7 @@ export default function FAQ({ entries }: { entries: FaqEntryDTO[] }) {
   if (entries.length === 0) return null;
 
   return (
-    <section id="faq" className="bg-sand px-[5vw] py-[120px]">
+    <section id="faq" className="bg-sand px-[5vw] py-20 md:py-[120px]">
       <div className="mx-auto max-w-[760px]">
         <RevealOnScroll className="mb-16">
           <div className="mb-[18px] inline-flex items-center gap-1.5 rounded-full bg-ink px-3.5 py-[5px]">

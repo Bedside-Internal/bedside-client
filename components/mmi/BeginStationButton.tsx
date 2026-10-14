@@ -45,7 +45,7 @@ export function BeginStationButton({ formatSlug, basePath, slug, label = "Begin 
       type="button"
       disabled={isPending}
       onClick={handleClick}
-      className="rounded-xl bg-[var(--color-mint)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--color-mint-hover)] disabled:opacity-50"
+      className="rounded-xl bg-[var(--color-mint)] px-6 py-3 text-sm sm:px-5 sm:py-2.5 font-semibold text-white transition hover:bg-[var(--color-mint-hover)] disabled:opacity-50"
     >
       {isPending ? "Starting…" : label}
     </button>

@@ -28,7 +28,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
 
     if (questions.length === 0) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[var(--color-cream)] px-6 text-center">
+            <div className="flex min-h-dvh items-center justify-center bg-[var(--color-cream)] px-6 text-center">
                 <p className="text-sm text-[var(--color-ink)]/60">
                     No questions are available for this station yet.
                 </p>
@@ -38,7 +38,7 @@ export default async function StationPage({ params, searchParams }: StationPageP
 
     if (!attemptParam) {
         return (
-            <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">
+            <div className="flex min-h-dvh flex-col items-center justify-center gap-4 bg-[var(--color-cream)] px-6 text-center">
                 <p className="text-lg font-semibold text-[var(--color-ink)]">{sectionTitle}</p>
                 <p className="max-w-sm text-sm text-[var(--color-ink)]/60">
                     Ready when you are, starting counts as one practice attempt.

@@ -58,17 +58,17 @@ export function CircuitTransition({
   }, [remaining]);
 
   return (
-    <div className="min-h-screen bg-[var(--color-cream)]">
-      <div className="flex items-center justify-between px-6 py-5">
-        <button onClick={() => router.push(exitHref)} aria-label="Exit">
+    <div className="min-h-dvh bg-[var(--color-cream)]">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 px-4 py-3 sm:px-6 sm:py-5">
+        <button onClick={() => router.push(exitHref)} aria-label="Exit" className="-m-2 p-2">
           <ArrowLeft className="h-5 w-5 text-[var(--color-ink)]/50" />
         </button>
-        <CircuitStepTracker stations={stations} currentIndex={currentIndex} />
+        <CircuitStepTracker stations={stations} currentIndex={currentIndex} className="order-last w-full sm:order-none sm:w-auto" />
         <DashboardHomeButton ready={dashboardReady} />
-        <div className="w-5" />
+        <div className="hidden w-5 sm:block" />
       </div>
 
-      <main className="mx-auto flex max-w-md flex-col items-center px-4 py-16 text-center">
+      <main className="mx-auto flex max-w-md flex-col items-center px-4 py-10 text-center sm:py-16">
         <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-ink)]/40">break time</p>
         <p className="mb-6 text-5xl font-bold text-[var(--color-ink)]">{remaining}s</p>
 
@@ -88,7 +88,7 @@ export function CircuitTransition({
         <button
           type="button"
           onClick={proceed}
-          className="text-sm font-semibold text-[var(--color-mint)] hover:text-[var(--color-mint-hover)]"
+          className="py-3 text-sm font-semibold text-[var(--color-mint)] hover:text-[var(--color-mint-hover)]"
         >
           Skip break and start now →
         </button>

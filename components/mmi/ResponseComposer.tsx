@@ -8,6 +8,8 @@ import { ComposePayload } from "@/types/formats";
 import { useDraftAutosave } from "@/hooks/useDraftAutosave";
 import { useUnsavedChangesGuard } from "@/hooks/useUnsavedChangesGuard";
 import { timeAgo } from "@/lib/utils";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { MOBILE_RECORDING_ENABLED, PHONE_MEDIA_QUERY } from "@/lib/mobile-routes";
 
 export type ComposerMode = "written" | "audio" | "video";
 
@@ -45,7 +47,13 @@ export function ResponseComposer({
     onSubmit,
 }: ResponseComposerProps) {
     const visibleModes = MODES.filter((m) => allowedModes.includes(m.id));
-    const [mode, setMode] = useState<ComposerMode>(visibleModes[0]?.id ?? "written");
+    const [selectedMode, setMode] = useState<ComposerMode>(visibleModes[0]?.id ?? "written");
+    // Phones answer in writing by design (see MOBILE_RECORDING_ENABLED). Only
+    // applies when the scenario allows a written answer, so a video-only
+    // scenario never turns into a text box.
+    const phone = useMediaQuery(PHONE_MEDIA_QUERY);
+    const writtenOnly = phone && !MOBILE_RECORDING_ENABLED && allowedModes.includes("written");
+    const mode: ComposerMode = writtenOnly ? "written" : selectedMode;
     const [text, setText] = useState("");
     const [hintsOpen, setHintsOpen] = useState(false);
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
@@ -83,7 +91,7 @@ export function ResponseComposer({
     return (
         <div className="flex flex-col gap-4">
             {restoredDraft && (
-                <div className="flex items-center justify-between rounded-xl border border-[var(--color-amber)]/30 bg-[var(--color-amber)]/10 px-4 py-3 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-[var(--color-amber)]/30 bg-[var(--color-amber)]/10 px-4 py-3 text-sm">
                     <span className="text-[var(--color-ink)]/70">
                         We found an unsaved draft from {timeAgo(restoredAt)}.
                     </span>
@@ -105,7 +113,7 @@ export function ResponseComposer({
                     </div>
                 </div>
             )}
-            <div data-tour="response-modes" data-clarity-mask="True" className="flex items-center gap-2">
+            <div data-tour="response-modes" data-clarity-mask="True" className={`flex items-center gap-2 ${writtenOnly ? "hidden" : ""}`}>
                 {MODES.map(({ id, label, icon: Icon }) => {
                     const active = mode === id;
                     return (
@@ -135,7 +143,7 @@ export function ResponseComposer({
                         onChange={(e) => setText(e.target.value)}
                         placeholder="Start typing your response here..."
                         rows={12}
-                        className="w-full resize-none rounded-xl border border-[var(--color-ink)]/10 bg-white p-4 text-[15px] leading-relaxed text-[var(--color-ink)] outline-none focus:border-[var(--color-mint)] focus:ring-2 focus:ring-[var(--color-mint)]/20"
+                        className="w-full resize-none rounded-xl border border-[var(--color-ink)]/10 bg-white p-4 text-base leading-relaxed max-sm:h-52 sm:text-[15px] text-[var(--color-ink)] outline-none focus:border-[var(--color-mint)] focus:ring-2 focus:ring-[var(--color-mint)]/20"
                     />
                     <div className="flex items-center justify-between text-xs text-[var(--color-ink)]/45">
                         <span>{wordCount} words</span>

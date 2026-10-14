@@ -42,7 +42,7 @@ export function RatingScale({ name, value, onChange }: RatingScaleProps) {
                         aria-checked={active}
                         onClick={() => onChange(opt.value)}
                         className={[
-                            "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition",
+                            "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition max-sm:min-h-11",
                             active
                                 ? ACTIVE_STYLES[opt.value]
                                 : "border-[var(--color-ink)]/10 bg-white text-[var(--color-ink)]/60 hover:bg-[var(--color-sand)]",

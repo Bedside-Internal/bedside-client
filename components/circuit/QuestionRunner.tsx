@@ -66,6 +66,8 @@ export function QuestionRunner({
     const isRatedItems = question.scenario.response_mode === "rated_items";
 
     const [recordingBusy, setRecordingBusy] = useState(false);
+    // Where the Timer pins its compact bar on phones (see Timer's compactSlot prop).
+    const [timerSlot, setTimerSlot] = useState<HTMLElement | null>(null);
     const tutorialEligible = tutorialContext?.practiceKind === "single-station" && (
         tutorialContext.format === "preview" ? isRatedItems : !isRatedItems
     );
@@ -102,17 +104,18 @@ export function QuestionRunner({
     }
 
     return (
-        <div className="min-h-screen bg-[var(--color-cream)]">
+        <div className="min-h-dvh bg-[var(--color-cream)]">
+            <div ref={setTimerSlot} className="sticky top-0 z-30 md:hidden" />
             {tutorial.run && <TutorialOverlay key={tutorial.run.id} run={tutorial.run} onEnd={tutorial.end} onPresented={tutorial.presented} />}
-            <div className="flex items-center justify-between px-6 py-5">
-                <nav className="flex items-center gap-2 text-sm">
+            <div className="flex items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-5">
+                <nav className="flex min-w-0 items-center gap-2 text-sm">
                     {breadcrumb.map((crumb, i) => (
-                        <span key={crumb.label} className="flex items-center gap-2">
-                            {i > 0 && <span className="text-[var(--color-ink)]/30">›</span>}
+                        <span key={crumb.label} className={`items-center gap-2 ${i === breadcrumb.length - 1 ? "flex min-w-0" : "hidden sm:flex"}`}>
+                            {i > 0 && <span className="hidden text-[var(--color-ink)]/30 sm:inline">›</span>}
                             <span
                                 className={
                                     i === breadcrumb.length - 1
-                                        ? "font-semibold text-[var(--color-ink)]"
+                                        ? "truncate font-semibold text-[var(--color-ink)]"
                                         : "font-semibold text-[var(--color-mint-hover)]"
                                 }
                             >
@@ -121,12 +124,12 @@ export function QuestionRunner({
                         </span>
                     ))}
                 </nav>
-                <div className="flex items-center gap-4">
+                <div className="flex shrink-0 items-center gap-1 sm:gap-4">
                     {tutorialEligible && (
                         <button type="button" onClick={tutorial.replay} disabled={!tutorial.canReplay || tutorialPaused}
                             aria-disabled={!tutorial.canReplay || tutorialPaused}
                             title={!tutorial.isSupported ? "Tutorials are available on larger screens" : recordingBusy ? "Finish recording before opening the tutorial" : "Replay the tutorial for this phase"}
-                            className="rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:bg-white focus-visible:outline-2 focus-visible:outline-mint disabled:cursor-not-allowed disabled:opacity-40">
+                            className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-[var(--color-ink)]/60 hover:bg-white focus-visible:outline-2 lg:block focus-visible:outline-mint disabled:cursor-not-allowed disabled:opacity-40">
                             Take the tour
                         </button>
                     )}
@@ -134,7 +137,7 @@ export function QuestionRunner({
                         type="button"
                         onClick={onExit}
                         aria-label="Exit station"
-                        className="rounded-lg p-2 text-[var(--color-ink)]/60 hover:bg-white"
+                        className="rounded-lg p-2.5 text-[var(--color-ink)]/60 hover:bg-white sm:p-2"
                     >
                         <ArrowLeft className="h-5 w-5" strokeWidth={2.25} />
                     </button>
@@ -144,21 +147,22 @@ export function QuestionRunner({
                         disabled={!dashboardReady}
                         aria-label="Go to dashboard"
                         title={dashboardReady ? "Go to dashboard" : "Finish onboarding to unlock your dashboard"}
-                        className={`rounded-lg p-2 transition ${dashboardReady
+                        className={`rounded-lg p-2.5 transition sm:p-2 ${dashboardReady
                             ? "text-[var(--color-ink)]/60 hover:bg-white"
                             : "cursor-not-allowed text-[var(--color-ink)]/25"
                             }`}
                     >
                         <Home className="h-5 w-5" strokeWidth={2.25} />
                     </button>
-                    <User className="h-6 w-6 text-[var(--color-ink)]/70" strokeWidth={1.75} />
+                    <User className="hidden h-6 w-6 text-[var(--color-ink)]/70 sm:block" strokeWidth={1.75} />
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-10 px-6 pb-10 lg:grid-cols-2">
+            <div className="mx-auto grid w-full max-w-2xl grid-cols-1 gap-6 px-4 pb-10 sm:px-6 lg:max-w-none lg:grid-cols-2 lg:gap-10">
                 <div className="flex flex-col lg:min-h-[600px]">
                     <div data-tour="question-scenario" className="flex flex-1 flex-col">
                         <ScenarioPanel
+                            collapsible={phase === "responding"}
                             text={question.scenario.text}
                             footerHint={
                                 phase === "reading" && !isRatedItems
@@ -172,13 +176,13 @@ export function QuestionRunner({
 
                     {/* Rated-items nav lives inside RatingPanel */}
                     {!isRatedItems && (
-                        <div className="mt-8 flex items-center gap-3">
+                        <div className={`mt-6 items-center gap-3 lg:mt-8 ${phase === "responding" ? "hidden lg:flex" : "flex"}`}>
                             <button
                                 type="button"
                                 disabled={!hasPrev || navLocked}
                                 onClick={onPrev}
                                 title={navLockedReason}
-                                className="flex items-center gap-1 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
+                                className="flex items-center gap-1 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 <ArrowLeft className="h-4 w-4" strokeWidth={2.5} />
                                 Prev
@@ -188,7 +192,7 @@ export function QuestionRunner({
                                 disabled={!hasNext || navLocked}
                                 onClick={onNext}
                                 title={navLockedReason}
-                                className="flex items-center gap-1 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
+                                className="flex items-center gap-1 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-[var(--color-ink)] shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)] transition hover:bg-[var(--color-sand)] disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Next
                                 <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
@@ -199,9 +203,10 @@ export function QuestionRunner({
 
                 <div className="flex flex-col items-center gap-8 lg:pt-4">
                     {phase === "reading" && (
-                        <div data-tour="reading-controls" className="flex flex-col items-center gap-8">
+                        <div data-tour="reading-controls" className="flex w-full flex-col items-center gap-8 sm:w-auto">
                             <Timer
                                 key={`read-${question.id}`}
+                                compactSlot={timerSlot}
                                 durationSeconds={question.scenario.reading_time_seconds}
                                 eyebrow="READING TIME"
                                 label="to read"
@@ -211,7 +216,7 @@ export function QuestionRunner({
                             <button
                                 type="button"
                                 onClick={() => setPhase("responding")}
-                                className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-6 py-3 text-sm font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
+                                className="flex items-center gap-1 rounded-xl bg-[var(--color-mint)] px-6 py-3 text-sm max-sm:w-full max-sm:justify-center font-semibold text-white shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(59,186,156,0.35)] transition hover:bg-[var(--color-mint-hover)]"
                             >
                                 I&apos;m ready, start responding
                                 <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
@@ -222,10 +227,11 @@ export function QuestionRunner({
                     {phase === "responding" && (
                         <div className="flex w-full max-w-xl flex-col items-center gap-6">
                             {question.scenario.response_time_seconds !== null && (
-                                <div data-tour="response-timer">
+                                <div data-tour="response-timer" className="max-md:hidden">
                                     <Timer
                                         isRunning={!tutorialPaused}
                                         key={`respond-${question.id}`}
+                                        compactSlot={timerSlot}
                                         durationSeconds={question.scenario.response_time_seconds}
                                         eyebrow="RESPONSE TIME"
                                         label="remaining"
@@ -258,7 +264,7 @@ export function QuestionRunner({
                     )}
 
                     {phase === "submitted" && (
-                        <div data-tour="question-feedback" data-clarity-mask="True" className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-8 py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
+                        <div data-tour="question-feedback" data-clarity-mask="True" className="flex w-full max-w-xl flex-col gap-4 rounded-2xl bg-white px-5 py-6 sm:px-8 sm:py-8 shadow-[0_1px_2px_rgba(26,26,26,0.04),0_8px_20px_rgba(26,26,26,0.08)]">
                             {feedback && "items" in feedback ? (
                                 <RatingFeedback feedback={feedback} />
                             ) : feedback ? (

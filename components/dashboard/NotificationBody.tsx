@@ -10,6 +10,7 @@ export function NotificationBody({ body }: { body: string }) {
         <div className="space-y-3 break-words text-sm leading-relaxed text-slate-600 [&_a]:text-[var(--color-ink)] [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5">
             <Markdown
                 allowedElements={["p", "strong", "em", "ul", "ol", "li", "a", "br"]}
+                unwrapDisallowed
                 skipHtml
                 urlTransform={(url) => safeNotificationHref(url) ?? ""}
                 components={{ a: ({ href, children }) => safeNotificationHref(href)

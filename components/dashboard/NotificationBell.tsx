@@ -118,6 +118,7 @@ function NotificationInbox() {
 
     function showMessage(item: Notification) {
         if (busy.current) return;
+        setError(null);
         setSelectedId(item.id);
         setOpen(false);
         if (!item.read) void mutate({ type: "read", id: item.id });
